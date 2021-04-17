@@ -1,0 +1,102 @@
+<div class="form-field-component" *ngIf="newField">
+    <!-- ten -->
+    <div class="field-name mb-3">
+        <label for="process-name" class="label required">Tên trường</label>
+        <input [class.border-error]="errorName" type="text" nbInput fullWidth id="process-name"
+            [(ngModel)]="newField.FieldName" placeholder="Nhập tên trường" [ngModelOptions]="{standalone: true}"
+            (keyup)="resetError(null,true)">
+    </div>
+
+    <!-- mo ta -->
+    <div class="field-des mb-3">
+        <label for="process-des" class="label">Mô tả</label>
+        <textarea id="process-des" nbInput fullWidth placeholder="Nhập mô tả" [(ngModel)]="newField.Description"
+            [ngModelOptions]="{standalone: true}"></textarea>
+    </div>
+
+    <!-- required -->
+    <div class="field-required mb-3">
+        <nb-toggle status="basic" [(ngModel)]="newField.IsRequired">Trường bắt buộc</nb-toggle>
+    </div>
+
+    <!-- type -->
+    <div class="field-type mb-3">
+        <label for="process-group" class="label col-12 padding-0 required">Loại</label>
+        <nb-select id="process-group" class="col-md-6 padding-0" status="{{errorType? 'danger' : 'basic'}}"
+            [(ngModel)]="newField.Type" placeholder="Chọn loại trường" (selectedChange)="resetError($event)"
+            [ngModelOptions]="{standalone: true}">
+            <nb-option [value]="field.Type" *ngFor="let field of listFieldEntity">
+                {{field.Text}}
+            </nb-option>
+        </nb-select>
+    </div>
+
+    <div class="field-type-config" *ngIf="newField.DataSettingObj">
+        <!-- placeholder -->
+        <div class="placeholder  mb-3"
+            *ngIf="newField.Type == fieldType.ShortText || newField.Type == fieldType.LongText || newField.Type == fieldType.Number">
+            <label for="field-pla" class="label">Placeholder</label>
+            <input id="field-pla" nbInput fullWidth placeholder="Nhập placeholder" [(ngModel)]="newField.DataSettingObj.Placeholder"
+                [ngModelOptions]="{standalone: true}">
+        </div>
+
+        <!-- lien ket -->
+        <ng-container *ngIf="newField.Type == fieldType.Link">
+            <div class="link-config-name  mb-3" >
+                <label for="field-pla" class="label">Tên liên kết</label>
+                <input id="field-pla" nbInput fullWidth placeholder="Nhập tên liên kết"
+                    [(ngModel)]="newField.DataSettingObj.LinkName" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="link-config-to  mb-3" >
+                <label for="field-pla" class="label">Liên kết tới</label>
+                <input id="field-pla" nbInput fullWidth placeholder="Nhập đường dẫn liên kết"
+                    [(ngModel)]="newField.DataSettingObj.LinkTo" [ngModelOptions]="{standalone: true}">
+            </div>
+        </ng-container>
+        <!-- dropdown, checkbox -->
+        <div class="value-dropdown mb-3" *ngIf="newField.Type == fieldType.Dropdown || newField.Type == fieldType.Checkbox">
+            <label for="field-pla" class="label">Giá trị</label>
+            <div class="step mb-3" *ngFor="let option of newField.DataSettingObj.ListOption; index as i">
+                <div class="dis-flex-a justify-content-between w-100">
+                    <div class="readonly">
+                        {{option.OptionName}}</div>
+                    <div class="dis-flex-a ml-2">
+                        <nb-icon  class="cursor-pointer" [icon]="'close-circle-outline'" pack="eva" (click)="deleteDropdownOption(i)">
+                        </nb-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="dis-flex-a btn-primaty-only-text" (click)="showInputAddOption($event)" *ngIf="!isshowInputAddOption"
+                [class.mt-3]="newField.DataSettingObj.ListOption && newField.DataSettingObj.ListOption.length > 0">
+                <div class="mr-2" style="font-size: 13px;">Thêm giá trị</div>
+
+            </div>
+        
+            <nb-form-field *ngIf="isshowInputAddOption" class=" mb-3 ">
+                <div class="dis-flex-a justify-content-between w-100">
+                    <input type="text" class="input-step-name" nbInput fullWidth [(ngModel)]="newDropDownOption.OptionName"
+                        placeholder="Nhập giá trị" #inputTaskName (keyup.enter)="addDropDownOption()">
+        
+                    <div class="dis-flex-a ml-2">
+        
+                        <nb-icon class="mr-2 cursor-pointer" [icon]="'checkmark-circle-2-outline'" pack="eva" (click)="addDropDownOption()">
+                        </nb-icon>
+                        <nb-icon class="cursor-pointer"  [icon]="'close-circle-outline'" pack="eva" (click)="hideInputAddOption()">
+                        </nb-icon>
+                    </div>
+                </div>
+            </nb-form-field>
+        </div>
+    </div>
+
+
+
+    <div class="btn-group dis-flex justify-content-end mt-4">
+        <button class="mr-2" status="primary" size="tiny" nbButton (click)="save()" >
+            {{ formMode == formModeEnum.Insert? 'Thêm' : 'Lưu'}}
+        </button>
+        <button status="default" nbButton size="tiny" (click)="cancel()">
+            Hủy bỏ
+        </button>
+    </div>
+</div>

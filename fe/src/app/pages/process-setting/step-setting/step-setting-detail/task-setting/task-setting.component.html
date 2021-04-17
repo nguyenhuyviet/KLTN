@@ -1,0 +1,65 @@
+<div>
+    <ng-container *ngIf="!readonly">
+        <div class="step mb-3" *ngFor="let task of listNewTask; index as i">
+            <div class="dis-flex-a justify-content-between w-100">
+                <div *ngIf="!task.IsInEdit" class="readonly">
+                    {{task.TaskName}}</div>
+    
+                <!-- <input *ngIf="task.IsInEdit" type="text" class="input-step-name" nbInput fullWidth
+                    [(ngModel)]="task.TaskName" placeholder="Tên bước"> -->
+    
+                <div class="dis-flex-a ml-2">
+                    <!-- <nb-icon class="mr-2 cursor-pointer" [icon]="'checkmark-circle-2-outline'" pack="eva" (click)="addTask(true,task)">
+                    </nb-icon> -->
+                    <nb-icon  class="cursor-pointer" [icon]="'close-circle-outline'" pack="eva" (click)="hideInputAddTask(true,i)">
+                    </nb-icon>
+                </div>
+            </div>
+        </div>
+        <div class="empty-data" *ngIf="!listNewTask || (listNewTask && listNewTask.length == 0) && !isShowInputStepTask">Chưa có công việc nào</div>
+    
+        <div class="dis-flex-a btn-primaty-only-text" (click)="showInputStepTask($event)" *ngIf="!isShowInputStepTask"
+            [class.mt-3]="listNewTask && listNewTask.length > 0">
+            <div class="mr-2">Thêm công việc</div>
+            <nb-icon [icon]="'plus-outline'" pack="eva">
+            </nb-icon>
+        </div>
+    
+        <nb-form-field *ngIf="isShowInputStepTask" class=" mb-3 ">
+            <div class="dis-flex-a justify-content-between w-100">
+                <input type="text" class="input-step-name" nbInput fullWidth [(ngModel)]="newTask.TaskName"
+                    placeholder="Tên công việc" #inputTaskName (keyup.enter)="addTask()">
+    
+                <div class="dis-flex-a ml-2">
+    
+                    <nb-icon class="mr-2 cursor-pointer" [icon]="'checkmark-circle-2-outline'" pack="eva" (click)="addTask()">
+                    </nb-icon>
+                    <nb-icon class="cursor-pointer"  [icon]="'close-circle-outline'" pack="eva" (click)="hideInputAddTask()">
+                    </nb-icon>
+                </div>
+            </div>
+        </nb-form-field>
+    
+    
+        <div class="btn-group dis-flex justify-content-end">
+            <button class="mr-2" status="primary" size="small" nbButton (click)="save()">
+                Lưu lại
+            </button>
+            <button status="default" nbButton size="" (click)="cancel()">
+                Hủy bỏ
+            </button>
+        </div>
+    </ng-container>
+
+
+    <!-- readonlyyyyyyyy -->
+    <ng-container *ngIf="readonly">
+        <div class="step mb-3" *ngFor="let task of listNewTask; index as i">
+            <div class="dis-flex-a justify-content-between w-100">
+                <div *ngIf="!task.IsInEdit" class="readonly">
+                    {{task.TaskName}}</div>
+            </div>
+        </div>
+        <div class="empty-data" *ngIf="!listNewTask || (listNewTask && listNewTask.length == 0) && !isShowInputStepTask">Chưa có công việc nào</div>
+    </ng-container>
+</div>

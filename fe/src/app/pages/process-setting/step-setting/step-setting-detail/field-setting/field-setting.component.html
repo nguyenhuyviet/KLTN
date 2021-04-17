@@ -1,0 +1,35 @@
+<div>
+    <div class="list-field">
+        <div class="field-item" *ngFor="let field of listNewField">
+            <ngx-field-view [readonly]="true" [fieldData]="field" *ngIf="!field.IsInEdit"></ngx-field-view>
+            <ngx-form-add-field [formMode]="formModeEnum.Insert" [fieldData]="field" *ngIf="field.IsInEdit"
+                (onSave)="updateField(field, $event)" (onCancel)="cancelEditField(field)">
+            </ngx-form-add-field>
+            <button class="btn-edit-field" nbSuffix nbButton ghost (click)="editField(field)" *ngIf="!field.IsInEdit">
+                <nb-icon [icon]="'edit-2-outline'" pack="eva">
+                </nb-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="dis-flex-a btn-primaty-only-text" (click)="showFormAddField()" *ngIf="!isShowFormAddField && !readonly"
+        [class.mt-3]="listNewField && listNewField.length > 0">
+        <div class="mr-2">Thêm trường</div>
+        <nb-icon [icon]="'plus-outline'" pack="eva">
+        </nb-icon>
+    </div>
+
+    <div class="form-field mb-4 mt-3 pb-3" *ngIf="isShowFormAddField">
+        <ngx-form-add-field [formMode]="formModeEnum.Insert" [fieldData]="newField" (onSave)="addNewField($event)"
+            (onCancel)="cancelAddField()"></ngx-form-add-field>
+    </div>
+
+    <div class="btn-group dis-flex justify-content-end" *ngIf="!readonly">
+        <button class="mr-2" status="primary" size="small" nbButton (click)="save()">
+            Lưu lại
+        </button>
+        <button status="default" nbButton size="" (click)="cancel()">
+            Hủy bỏ
+        </button>
+    </div>
+</div>

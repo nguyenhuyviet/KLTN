@@ -1,0 +1,67 @@
+<nb-card class="step-setting-container" *ngIf="currentProcess">
+    <nb-card-header class="container-fluid">
+        <div class="row align-items-center">
+            <div class="mb-1 mt-1 ">
+                <nb-form-field>
+                    <input type="text" class="input-process-name" [class.is-view]="!isEditInput" nbInput fullWidth
+                        [value]="currentProcess.ProcessName" placeholder="Tên quy trình" #inputProcessNameElm>
+                    <button nbSuffix nbButton ghost (click)="showEditProcessName()" *ngIf="!isEditInput">
+                        <nb-icon [icon]="'edit-2-outline'" pack="eva">
+                        </nb-icon>
+                    </button>
+                    <button nbSuffix nbButton ghost (click)="updateProcessName()" *ngIf="isEditInput">
+                        <nb-icon [icon]="'checkmark-outline'" pack="eva">
+                        </nb-icon>
+                    </button>
+                </nb-form-field>
+            </div>
+        </div>
+    </nb-card-header>
+
+    <nb-card-body class="container-fluid">
+        <div class="row">
+
+            <div class="col-4 col-lg-3 list-step-container">
+                <div class="title mb-2">Danh sách bước quy trình</div>
+                <div class="step " [class.step-focus]="currentStep.ProcessStepId == item.ProcessStepId" *ngFor="let item of currentProcess.ProcessSteps"
+                 (click)="showStep(item)">
+                    <div class="dis-flex-a justify-content-between w-100">
+                        <div>
+                            {{item.ProcessStepName}}</div>
+                        <nb-icon [icon]="'chevron-right-outline'" pack="eva">
+                        </nb-icon>
+                    </div>
+                </div>
+                <div class="dis-flex-a btn-primaty-only-text" (click)="showInputStepName($event)"
+                    *ngIf="!isShowInputStepName"
+                    [class.mt-3]="currentProcess.ProcessSteps && currentProcess.ProcessSteps.length > 0">
+                    <div class="mr-2">Thêm bước</div>
+                    <nb-icon [icon]="'plus-outline'" pack="eva">
+                    </nb-icon>
+                </div>
+
+                <nb-form-field *ngIf="isShowInputStepName" class="mt-3 mb-2">
+                    <input type="text" class="input-step-name" nbInput fullWidth [(ngModel)]="stepAddSidebarName"
+                        placeholder="Tên bước">
+
+                    <button nbSuffix nbButton ghost (click)="addSidebarStep()">
+                        <nb-icon [icon]="'checkmark-outline'" pack="eva">
+                        </nb-icon>
+                      
+                    </button>
+                    <!-- <button nbSuffix nbButton ghost >
+                        <nb-icon [icon]="'close-outline'" pack="eva">
+                        </nb-icon>
+                    </button> -->
+                    <span class="cancel" (click)="hideInputStepName($event)">Hủy</span>
+                </nb-form-field>
+                
+            </div>
+
+            <div class="col-8  col-lg-9 step-detail-container">
+                <ngx-step-setting-detail [isFirstStep]="currentStep.SortOrder == 1 ? true : false" [stepData]="currentStep" [formMode]="formMode.Update"> </ngx-step-setting-detail>
+            </div>
+        </div>
+
+    </nb-card-body>
+</nb-card>

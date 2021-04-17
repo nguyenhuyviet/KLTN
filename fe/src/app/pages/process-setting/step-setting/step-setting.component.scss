@@ -1,0 +1,56 @@
+:host {
+
+  .step-setting-container {
+    font-size: 14px;
+
+    ::ng-deep {
+      .input-process-name {
+        font-size: 18px !important;
+      }
+
+      .is-view {
+        background: none !important;
+        border: none !important;
+      }
+
+
+
+      .list-step-container {
+        border-right: 1px solid #e0e0e0;
+
+        .title {
+          font-weight: 600;
+        }
+
+        .step {
+          min-height: 48px;
+          display: flex;
+          align-items: center;
+          border-bottom: solid 1px #e0e0e0;
+          cursor: pointer;
+        }
+        .step-focus{
+          color: #3366ff;
+          font-weight: 700;
+        }
+
+        nb-form-field {
+          position: relative;
+
+          .cancel {
+            position: absolute;
+            top: 40px;
+            right: 8px;
+            color: #ff3d71;
+            font-size: 13px;
+            cursor: pointer;
+            &:hover{
+                text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

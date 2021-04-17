@@ -1,0 +1,91 @@
+<div class="step-setting-detail-component" *ngIf="newStep">
+
+    <div class="container">
+        <div class="row">
+            <div class="step-name col-12">
+                <div class="form-group">
+                    <label for="process-name" class="label">Tên bước</label>
+                    <input [class.border-error]="errorName" type="text" nbInput fullWidth id="process-name"
+                        [(ngModel)]="newStep.ProcessStepName" placeholder="Nhập tên bước"
+                        [ngModelOptions]="{standalone: true}" (keyup)="resetError(null,true)">
+                </div>
+            </div>
+
+            <div class="step-description col-12">
+                <div class="form-group">
+                    <label for="process-des" class="label">Mô tả</label>
+                    <textarea id="process-des" nbInput fullWidth placeholder="Nhập mô tả cho buớc"
+                        [(ngModel)]="newStep.Description" [ngModelOptions]="{standalone: true}"></textarea>
+                </div>
+            </div>
+            <div class="step-setting step-assignee col-12 mb-4" *ngIf="!isFirstStep">
+                <div class="step-section-title">Người thực hiện</div>
+                <div class="setting-item">
+                    <ngx-assignee-setting></ngx-assignee-setting>
+                </div>
+                <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva" *ngIf="!editEntities.EditAssignee">
+                </nb-icon>
+            </div>
+
+            <!-- deadline -->
+            <div class="step-setting step-deadline col-12 mb-4"  *ngIf="!isFirstStep">
+                <nb-toggle status="basic" [(ngModel)]="newStep.HasDeadline">Giới hạn thời gian</nb-toggle>
+                <div class="setting-item form-group"
+                    [class.readonly]="!newStep.HasDeadline || (newStep.HasDeadline && !editEntities.EditDeadline)">
+                    <div class="row">
+                        <div class="col-4">
+                            <input id="deadline-day" [class.border-error]="errorName" type="number" nbInput fullWidth
+                                placeholder="Ngày" (keyup)="resetError(null,true)" [(ngModel)]="deadline.day"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="col-4">
+
+                            <input id="deadline-day" [class.border-error]="errorName" type="number" nbInput fullWidth
+                                placeholder="Giờ" (keyup)="resetError(null,true)" [(ngModel)]="deadline.hour"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="col-4">
+
+                            <input id="deadline-day" [class.border-error]="errorName" type="number" nbInput fullWidth
+                                placeholder="Phút" (keyup)="resetError(null,true)" [(ngModel)]="deadline.minute"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+
+                </div>
+                <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva"
+                    *ngIf="!editEntities.EditDeadline && newStep.HasDeadline" (click)="handleEdit('deadline')">
+                </nb-icon>
+            </div>
+
+            <!-- task -->
+            <div class="step-setting step-task col-12 mb-4">
+                <nb-toggle status="basic" [(ngModel)]="newStep.HasTask">Công việc</nb-toggle>
+                <div class="setting-item"
+                    [class.readonly]="!newStep.HasTask || (newStep.HasTask && !editEntities.EditTask)">
+                    <ngx-task-setting [taskData]="newStep.StepTasks"
+                        [readonly]="!editEntities.EditTask" (onSave)="saveTask($event)" (onCancel)="cancelTask()">
+                    </ngx-task-setting>
+                </div>
+
+                <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva"
+                    *ngIf="!editEntities.EditTask && newStep.HasTask" (click)="handleEdit('task')">
+                </nb-icon>
+            </div>
+
+            <!-- field -->
+            <div class="step-setting step-field col-12">
+                <nb-toggle status="basic" [(ngModel)]="newStep.HasField">Trường tùy chỉnh</nb-toggle>
+                <div class="setting-item">
+                    <ngx-field-setting  [fieldData]="newStep.StepFields"
+                        [readonly]="!this.editEntities.EditField" (onSave)="saveField($event)"
+                        (onCancel)="cancelField()">
+                    </ngx-field-setting>
+                </div>
+                <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva"
+                    *ngIf="!editEntities.EditField && newStep.HasField" (click)="handleEdit('field')">
+                </nb-icon>
+            </div>
+        </div>
+    </div>
+</div>

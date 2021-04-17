@@ -1,0 +1,61 @@
+:host {
+  .list-assignee {
+    position: relative;
+  }
+
+  .list-assignee-display {
+    min-height: 400px;
+    position: absolute;
+    width: 100%;
+    background: #ffffff;
+    border: solid 1px #e0e0e0;
+    z-index: 1;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 16px;
+  }
+
+  .no-data {
+    display: flex;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    padding-top: 16px;
+  }
+
+  .active {
+    border-bottom: solid 2px #3366ff;
+    color: #3366ff;
+    font-weight: 500;
+  }
+
+  .tab-user {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 16px;
+      background-color: #e0e0e0;
+      top: 2px;
+      right: -10px;
+
+    }
+  }
+
+  .user{
+    height: 40px;
+    display: flex;
+    align-items: center;
+    border-bottom: solid 1px #e0e0e0;
+    cursor: pointer;
+    &:hover{
+        background-color: #e1e8ff;;
+    }
+  }
+  .close-list-assignee{
+    position: absolute;
+    top: 16px;
+    right: 9px;
+  }
+}

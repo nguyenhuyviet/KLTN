@@ -1,0 +1,36 @@
+<div class="row justify-content-center" *ngIf="newProcess">
+    <div class="col-md-8">
+        <nb-card>
+            <nb-card-header>{{titleForm}}</nb-card-header>
+            <nb-card-body>
+                <form (submit)="submitForm()">
+                    <div class="form-group">
+                        <label for="process-name" class="label">Tên quy trình</label>
+                        <input [class.border-error]="errorName" type="text" nbInput fullWidth id="process-name" [(ngModel)]="newProcess.ProcessName"
+                            placeholder="Nhập tên quy trình" [ngModelOptions]="{standalone: true}" (keyup)="resetError(null,true)">
+                    </div>
+                    <div class="form-group">
+                        <label for="process-des" class="label">Mô tả</label>
+                        <textarea id="process-des" nbInput fullWidth placeholder="Nhập mô tả cho quy trình" [(ngModel)]="newProcess.Description" [ngModelOptions]="{standalone: true}"></textarea>
+                    </div>
+                    <div class="form-group" *ngIf="listProcessGroup && listProcessGroup.length > 0">
+                        <label for="process-group" class="label col-12 padding-0">Nhóm quy trình</label>
+                        <nb-select  id="process-group" class="col-md-6 padding-0" status="{{errorGroup? 'danger' : 'basic'}}"
+                         [(ngModel)]="newProcess.ProcessGroupId" placeholder="Chọn nhóm quy trình" (selectedChange)="resetError($event)" [ngModelOptions]="{standalone: true}">
+                            <nb-option [value]="group.ProcessGroupId" *ngFor="let group of listProcessGroup">{{group.ProcessGroupName}}</nb-option>
+                        </nb-select>
+                    </div>
+
+                    <div class="form-group" *ngIf="formMode === formModeEnum.Update">
+                        <label for="process-group" class="label col-12 padding-0">Trạng thái</label>
+                        <nb-select  id="process-group" class="col-md-6 padding-0" status="{{errorGroup? 'danger' : 'basic'}}"
+                         [(ngModel)]="newProcess.ProcessStatus" placeholder="Chọn nhóm quy trình" [ngModelOptions]="{standalone: true}">
+                            <nb-option [value]="status.ProcessStatus" *ngFor="let status of listProcessStatus">{{status.Text}}</nb-option>
+                        </nb-select>
+                    </div>
+                    <button [class.btn-disabled]="isLoadingBtn" [nbSpinner]="isLoadingBtn" nbSpinnerStatus="warning" type="submit" nbButton status="primary" >Lưu lại</button>
+                </form>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>

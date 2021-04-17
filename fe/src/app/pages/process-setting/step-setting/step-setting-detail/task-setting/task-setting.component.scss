@@ -1,0 +1,42 @@
+:host {
+  ::ng-deep {
+
+      position: relative;
+
+      .cancel {
+        position: absolute;
+        top: 40px;
+        right: 8px;
+        color: #ff3d71;
+        font-size: 13px;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+
+  }
+  .step{
+    .readonly{
+      width: 100%;
+      height: 40px;
+      border: solid 1px #e0e0e0;
+      padding: 8px 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      border-radius: 4px;
+  
+    }
+    
+  }
+  .empty-data{
+    height: 32px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+}

@@ -1,0 +1,17 @@
+:host {
+
+  .form-field {
+    border-bottom: solid 1px #e0e0e0;
+  }
+  .field-item{
+    position: relative;
+    .btn-edit-field{
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+  .list-field{
+    border-bottom: solid 1px #e0e0e0;
+  }
+}

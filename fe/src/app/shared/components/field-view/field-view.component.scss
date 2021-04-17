@@ -1,0 +1,16 @@
+:host {
+  .label {
+    font-size: 14px;
+  }
+
+  .field-des {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #666666;
+  }
+
+  .readonly {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}

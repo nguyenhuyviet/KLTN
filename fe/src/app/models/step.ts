@@ -1,6 +1,5 @@
 
 export class Step {
-
     AssigneFromGroup: boolean
     AssigneeType  :number
     DeadLine :number

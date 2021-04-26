@@ -1,10 +1,13 @@
 :host {
+  .title{
+    font-size: 13px;
+    font-weight: 700;
+  }
   .list-assignee {
     position: relative;
   }
 
   .list-assignee-display {
-    min-height: 400px;
     position: absolute;
     width: 100%;
     background: #ffffff;
@@ -12,6 +15,11 @@
     z-index: 1;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     padding: 16px;
+  }
+  .data{
+    min-height: 250px;
+    max-height: 250px;
+    overflow: auto;
   }
 
   .no-data {
@@ -47,6 +55,7 @@
     height: 40px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-bottom: solid 1px #e0e0e0;
     cursor: pointer;
     &:hover{
@@ -57,5 +66,17 @@
     position: absolute;
     top: 16px;
     right: 9px;
+  }
+  .asignee-selected{
+    border: 1px solid #e0e0e0;
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    max-height: 100px;
+    overflow: auto;
+    .group{
+      color: rgb(248, 200, 109);
+    }
   }
 }

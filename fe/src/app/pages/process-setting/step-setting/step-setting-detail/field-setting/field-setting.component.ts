@@ -51,11 +51,18 @@ export class FieldSettingComponent implements OnInit {
 
   prepareData() {
     if (this.fieldData) {
-      this.listNewField = _.cloneDeep(this.fieldData);
-      this.listNewField.forEach(x => {
+      this.fieldData.forEach(x => {
         x.DataSettingObj = JSON.parse(x.DataSetting);
       })
+
+      this.listNewField = _.cloneDeep(this.fieldData);
+
     }
+
+    this.isShowInputStepField = false;
+
+    this.isShowFormAddField = false;
+  
   }
 
   showFormAddField() {
@@ -63,7 +70,11 @@ export class FieldSettingComponent implements OnInit {
   }
 
   addNewField(e) {
+    if(this.readonly){
+      return;
+    }
     this.newField = e;
+    this.newField.DataSetting = JSON.stringify(e.DataSettingObj);
     this.listNewField.push(e);
     this.newField = new StepField();
   }
@@ -83,8 +94,18 @@ export class FieldSettingComponent implements OnInit {
     this.listNewField = _.cloneDeep(this.fieldData);
   }
 
+  delField(field){
+    if(this.readonly){
+      return;
+    }
+    field.State = 3;
+
+  }
 
   editField(field) {
+    if(this.readonly){
+      return;
+    }
     field.IsInEdit = true;
   }
 
@@ -98,7 +119,7 @@ export class FieldSettingComponent implements OnInit {
     field.Description = event.Description;
     field.IsRequired = event.IsRequired;
     field.Type = event.Type;
-    field.DataSetting = event.DataSetting;
+    field.DataSetting = JSON.stringify(event.DataSettingObj);
     field.DataSettingObj = event.DataSettingObj;
 
     field.IsInEdit = false;

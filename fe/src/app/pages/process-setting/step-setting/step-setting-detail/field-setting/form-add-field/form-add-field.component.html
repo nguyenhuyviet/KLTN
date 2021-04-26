@@ -2,9 +2,9 @@
     <!-- ten -->
     <div class="field-name mb-3">
         <label for="process-name" class="label required">Tên trường</label>
-        <input [class.border-error]="errorName" type="text" nbInput fullWidth id="process-name"
+        <input [class.border-error]="error.ErrFieldName" type="text" nbInput fullWidth id="process-name"
             [(ngModel)]="newField.FieldName" placeholder="Nhập tên trường" [ngModelOptions]="{standalone: true}"
-            (keyup)="resetError(null,true)">
+            (keyup)="resetError('field-name')">
     </div>
 
     <!-- mo ta -->
@@ -22,7 +22,7 @@
     <!-- type -->
     <div class="field-type mb-3">
         <label for="process-group" class="label col-12 padding-0 required">Loại</label>
-        <nb-select id="process-group" class="col-md-6 padding-0" status="{{errorType? 'danger' : 'basic'}}"
+        <nb-select id="process-group" class="col-md-6 padding-0" status="{{error.ErrType? 'danger' : 'basic'}}"
             [(ngModel)]="newField.Type" placeholder="Chọn loại trường" (selectedChange)="resetError($event)"
             [ngModelOptions]="{standalone: true}">
             <nb-option [value]="field.Type" *ngFor="let field of listFieldEntity">
@@ -34,7 +34,8 @@
     <div class="field-type-config" *ngIf="newField.DataSettingObj">
         <!-- placeholder -->
         <div class="placeholder  mb-3"
-            *ngIf="newField.Type == fieldType.ShortText || newField.Type == fieldType.LongText || newField.Type == fieldType.Number">
+            *ngIf="newField.Type == fieldType.ShortText || newField.Type == fieldType.LongText || newField.Type == fieldType.Number 
+            || newField.Type == fieldType.Date|| newField.Type == fieldType.DateTime|| newField.Type == fieldType.Hour">
             <label for="field-pla" class="label">Placeholder</label>
             <input id="field-pla" nbInput fullWidth placeholder="Nhập placeholder" [(ngModel)]="newField.DataSettingObj.Placeholder"
                 [ngModelOptions]="{standalone: true}">
@@ -44,13 +45,13 @@
         <ng-container *ngIf="newField.Type == fieldType.Link">
             <div class="link-config-name  mb-3" >
                 <label for="field-pla" class="label">Tên liên kết</label>
-                <input id="field-pla" nbInput fullWidth placeholder="Nhập tên liên kết"
-                    [(ngModel)]="newField.DataSettingObj.LinkName" [ngModelOptions]="{standalone: true}">
+                <input id="field-pla" nbInput fullWidth placeholder="Nhập tên liên kết" [class.border-error]="error.ErrLinkName" type="text" 
+                    [(ngModel)]="newField.DataSettingObj.LinkName" [ngModelOptions]="{standalone: true}" (keyup)="resetError('link-name')">
             </div>
             <div class="link-config-to  mb-3" >
-                <label for="field-pla" class="label">Liên kết tới</label>
-                <input id="field-pla" nbInput fullWidth placeholder="Nhập đường dẫn liên kết"
-                    [(ngModel)]="newField.DataSettingObj.LinkTo" [ngModelOptions]="{standalone: true}">
+                <label for="field-pla" class="label">Liên kết tới</label> 
+                <input id="field-pla" nbInput fullWidth placeholder="Nhập đường dẫn liên kết"  [class.border-error]="error.ErrLinkTo" 
+                    [(ngModel)]="newField.DataSettingObj.LinkTo" [ngModelOptions]="{standalone: true}" (keyup)="resetError('link-to')">
             </div>
         </ng-container>
         <!-- dropdown, checkbox -->
@@ -74,8 +75,8 @@
         
             <nb-form-field *ngIf="isshowInputAddOption" class=" mb-3 ">
                 <div class="dis-flex-a justify-content-between w-100">
-                    <input type="text" class="input-step-name" nbInput fullWidth [(ngModel)]="newDropDownOption.OptionName"
-                        placeholder="Nhập giá trị" #inputTaskName (keyup.enter)="addDropDownOption()">
+                    <input type="text" class="input-step-name" nbInput fullWidth [(ngModel)]="newDropDownOption.OptionName" [class.border-error]="error.ErrOption" 
+                        placeholder="Nhập giá trị" #inputTaskName (keyup.enter)="addDropDownOption()" (keyup)="resetError('option-dropdown')">
         
                     <div class="dis-flex-a ml-2">
         

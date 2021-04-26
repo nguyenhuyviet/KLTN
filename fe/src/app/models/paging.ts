@@ -4,6 +4,7 @@ export class Paging {
     Sort: string;
     SortBy: string;
     FilterString: string;
+    ExtraCondition: any;
     constructor(){
         this.FilterString = "";
     }

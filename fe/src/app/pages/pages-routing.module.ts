@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
+import { ProcessExecutionComponent } from './process-execution/process-execution.component';
 
 const routes: Routes = [{
   path: '',
@@ -17,7 +18,21 @@ const routes: Routes = [{
       path: 'process',
       loadChildren: () => import('./process-setting/process.module')
         .then(m => m.ProcessModule),
+    },  
+    {
+      path: 'process-execution',
+      component: ProcessExecutionComponent
     },
+    {
+      path: 'process-related',
+      loadChildren: () => import('./process-related-me/process-related-me.module')
+        .then(m => m.ProcessRelatedMeModule),
+    }, 
+    {
+      path: 'process-done',
+      loadChildren: () => import('./process-done/process-done.module')
+        .then(m => m.ProcessDoneModule),
+    },  
     {
       path: 'layout',
       loadChildren: () => import('./layout/layout.module')

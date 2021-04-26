@@ -22,9 +22,10 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ListStepDoneComponent } from './list-step-done/list-step-done.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ListStepDoneComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

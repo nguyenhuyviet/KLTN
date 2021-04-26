@@ -1,8 +1,8 @@
-<div class="step-setting-detail-component" *ngIf="newStep">
+<div class="step-setting-detail-component" *ngIf="newStep" [class.readonly]="readonly">
 
     <div class="container">
         <div class="row">
-            <div class="step-name col-12">
+            <div class="step-name mb-3 col-12">
                 <div class="form-group">
                     <label for="process-name" class="label">Tên bước</label>
                     <input [class.border-error]="errorName" type="text" nbInput fullWidth id="process-name"
@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <div class="step-description col-12">
+            <div class="step-description mb-3 col-12">
                 <div class="form-group">
                     <label for="process-des" class="label">Mô tả</label>
                     <textarea id="process-des" nbInput fullWidth placeholder="Nhập mô tả cho buớc"
@@ -19,11 +19,13 @@
                 </div>
             </div>
             <div class="step-setting step-assignee col-12 mb-4" *ngIf="!isFirstStep">
-                <div class="step-section-title">Người thực hiện</div>
-                <div class="setting-item">
-                    <ngx-assignee-setting></ngx-assignee-setting>
+                <div class="step-section-title mb-3">Người thực hiện</div>
+                <div class="setting-item form-group"  [class.readonly]="!editEntities.EditAssignee">
+                    <ngx-assignee-setting  [readonly]="!editEntities.EditAssignee" [assigneeData]="newStep.StepAssignees"  [stepID]="stepData.ProcessStepId"
+                    (onSave)="saveAssignee($event)" (onCancel)="saveAssignee()"
+                    ></ngx-assignee-setting>
                 </div>
-                <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva" *ngIf="!editEntities.EditAssignee">
+                <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva" *ngIf="!editEntities.EditAssignee && !readonly" (click)="handleEdit('assignee')">
                 </nb-icon>
             </div>
 
@@ -32,7 +34,7 @@
                 <nb-toggle status="basic" [(ngModel)]="newStep.HasDeadline">Giới hạn thời gian</nb-toggle>
                 <div class="setting-item form-group"
                     [class.readonly]="!newStep.HasDeadline || (newStep.HasDeadline && !editEntities.EditDeadline)">
-                    <div class="row">
+                    <div class="row mb-4">
                         <div class="col-4">
                             <input id="deadline-day" [class.border-error]="errorName" type="number" nbInput fullWidth
                                 placeholder="Ngày" (keyup)="resetError(null,true)" [(ngModel)]="deadline.day"
@@ -51,17 +53,24 @@
                                 [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>
-
+                    <div class="btn-group dis-flex justify-content-end" *ngIf="editEntities.EditDeadline">
+                        <button class="mr-2" status="primary" size="small" nbButton (click)="saveDeadline()">
+                            Lưu lại
+                        </button>
+                        <button status="default" nbButton size="" (click)="cancelDeadline()">
+                            Hủy bỏ
+                        </button>
+                    </div>
                 </div>
                 <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva"
-                    *ngIf="!editEntities.EditDeadline && newStep.HasDeadline" (click)="handleEdit('deadline')">
+                    *ngIf="!editEntities.EditDeadline && newStep.HasDeadline && !readonly" (click)="handleEdit('deadline')">
                 </nb-icon>
             </div>
 
             <!-- task -->
             <div class="step-setting step-task col-12 mb-4">
-                <nb-toggle status="basic" [(ngModel)]="newStep.HasTask">Công việc</nb-toggle>
-                <div class="setting-item"
+                <nb-toggle status="basic" [(ngModel)]="newStep.HasTask" (ngModelChange)="test($event)">Công việc</nb-toggle>
+                <div class="setting-item form-group"
                     [class.readonly]="!newStep.HasTask || (newStep.HasTask && !editEntities.EditTask)">
                     <ngx-task-setting [taskData]="newStep.StepTasks"
                         [readonly]="!editEntities.EditTask" (onSave)="saveTask($event)" (onCancel)="cancelTask()">
@@ -69,22 +78,31 @@
                 </div>
 
                 <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva"
-                    *ngIf="!editEntities.EditTask && newStep.HasTask" (click)="handleEdit('task')">
+                    *ngIf="!editEntities.EditTask && newStep.HasTask && !readonly" (click)="handleEdit('task')">
                 </nb-icon>
             </div>
 
             <!-- field -->
             <div class="step-setting step-field col-12">
                 <nb-toggle status="basic" [(ngModel)]="newStep.HasField">Trường tùy chỉnh</nb-toggle>
-                <div class="setting-item">
+                <div class="setting-item"   [class.readonly]="!newStep.HasField || (newStep.HasField && !editEntities.EditField)">
                     <ngx-field-setting  [fieldData]="newStep.StepFields"
                         [readonly]="!this.editEntities.EditField" (onSave)="saveField($event)"
                         (onCancel)="cancelField()">
                     </ngx-field-setting>
                 </div>
                 <nb-icon class="icon-edit" [icon]="'edit-2-outline'" pack="eva"
-                    *ngIf="!editEntities.EditField && newStep.HasField" (click)="handleEdit('field')">
+                    *ngIf="!editEntities.EditField && newStep.HasField && !readonly" (click)="handleEdit('field')">
                 </nb-icon>
+            </div>
+
+            <div class="btn-group col-12 dis-flex justify-content-end mt-4" *ngIf="!readonly">
+                <button class="mr-2" status="primary" size="small" nbButton (click)="saveStep()">
+                    Lưu lại
+                </button>
+                <button status="default" nbButton size="small" (click)="cancelStep()">
+                    Hủy bỏ
+                </button>
             </div>
         </div>
     </div>

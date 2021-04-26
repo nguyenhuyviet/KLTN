@@ -77,13 +77,7 @@ export class TaskSettingComponent implements OnInit {
   hideInputAddTask(isEdit = false, index = null) {
     if (isEdit) {
       if (this.listNewTask) {
-
-        this.listNewTask.splice(index, 1);
-        this.listNewTask.forEach((x, i) => {
-          if (i >= index) {
-            x.SortOrder--;
-          }
-        })
+        this.listNewTask[index].State = 3;
       }
     } else {
       this.isShowInputStepTask = false;
@@ -97,5 +91,6 @@ export class TaskSettingComponent implements OnInit {
   cancel() {
     this.onCancel.emit();
     this.listNewTask = _.cloneDeep(this.taskData);
+    this.isShowInputStepTask = false;
   }
 }

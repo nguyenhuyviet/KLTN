@@ -1,56 +1,83 @@
-<!-- checkbox -->
-<div class="field-des mb-3">
-    <div style="display: flex;flex-direction: column;">
-        <nb-checkbox *ngFor="let option of optionSelect">{{option.Text}}</nb-checkbox>
+<div class="title mb-2">Danh sách hiện tại</div>
+
+<div class="asignee-selected">
+    <div *ngFor="let assignee of listAssigneeData" class="mr-3">
+        <div *ngIf="assignee.User ">{{assignee.User.FullName}} - {{assignee.User.Email}};
+        </div>
+        <div class="group" *ngIf="assignee.UserGroup">
+            {{assignee.UserGroup.UserGroupName}};</div>
     </div>
 </div>
-<div class="asignee-selected">
-    <div></div>
-</div>
+<ng-container *ngIf="!readonly">
+    <div class="asignee-search col-12 col-md-6" #listAssigneeElm>
+        <div class="search">
+            <!-- tim kiem -->
+            <nb-form-field>
+                <input type="text" nbInput fullWidth [value]="pagingUser.FilterString" placeholder="Tìm kiếm"
+                    (keyup)="searchProcess($event)" (focus)="showListAssignee()">
+                <button nbSuffix nbButton ghost (click)="clearSearch()">
+                    <nb-icon [icon]="'close-circle-outline'" pack="eva">
+                    </nb-icon>
+                </button>
+            </nb-form-field>
 
-<div class="asignee-search col-12 col-md-6">
-    <div class="search">
-        <nb-form-field>
-            <input type="text" nbInput fullWidth [value]="pagingUser.FilterString" placeholder="Tìm kiếm"
-                (keyup)="searchProcess($event)" (focus)="showListAssignee()">
-            <button nbSuffix nbButton ghost (click)="clearSearch()">
-                <nb-icon [icon]="'close-circle-outline'" pack="eva">
-                </nb-icon>
-            </button>
-        </nb-form-field>
-        <div class="list-assignee" *ngIf="visibleListAssignee">
-            <div class="list-assignee-display">
-                <div class="tab dis-flex mb-3">
-                    <div class="tab-user cursor-pointer mr-3" [class.active]="filterType == 1"
-                        (click)="setFilterType()">Người dùng</div>
-                    <div class="tab-grp cursor-pointer" [class.active]="filterType == 2" (click)="setFilterType(true)">
-                        Nhóm</div>
+            <!-- ds assignee -->
+            <div class="list-assignee" *ngIf="visibleListAssignee">
+                <div class="list-assignee-display">
+                    <div class="tab dis-flex mb-3">
+                        <div class="tab-user cursor-pointer mr-3" [class.active]="filterType == 1"
+                            (click)="setFilterType()">Người dùng</div>
+                        <div class="tab-grp cursor-pointer" [class.active]="filterType == 2"
+                            (click)="setFilterType(true)">
+                            Nhóm</div>
+                    </div>
+                    <nb-icon [icon]="'close-outline'" class="close-list-assignee cursor-pointer" pack="eva"
+                        (click)="hideListAssignee()">
+                    </nb-icon>
+                    <!-- user -->
+                    <ng-container *ngIf="filterType == 1">
+                        <div class="no-data" *ngIf="!listUserRes || (listUserRes && listUserRes.length == 0)">
+                            Không
+                            có dữ liệu</div>
+                        <div class="data" *ngIf="listUserRes && listUserRes.length > 0" (scroll)="handleScroll($event)">
+                            <div class="user" *ngFor="let user of listUserRes" (click)="handleSelectAssignee(user)">
+                                <div>{{user.FullName}} - {{user.Email}}</div>
+                                <nb-icon [icon]="'checkmark-outline'" pack="eva" *ngIf="user.IsChecked">
+                                </nb-icon>
+                            </div>
+
+                        </div>
+                    </ng-container>
+
+                    <!-- group -->
+                    <ng-container *ngIf="filterType == 2">
+                        <div class="no-data"
+                            *ngIf="!listGroupUserRes || (listGroupUserRes && listGroupUserRes.length == 0)">
+                            Không
+                            có dữ liệu</div>
+                        <div class="data" *ngIf="listGroupUserRes && listGroupUserRes.length > 0"
+                            (scroll)="handleScroll($event)">
+                            <div class="user" *ngFor="let user of listGroupUserRes"
+                                (click)="handleSelectAssignee(user, true)">
+                                <div>{{user.UserGroupName}}</div>
+                                <nb-icon [icon]="'checkmark-outline'" pack="eva" *ngIf="user.IsChecked">
+                                </nb-icon>
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
-                <nb-icon [icon]="'close-outline'" class="close-list-assignee cursor-pointer" pack="eva" (click)="hideListAssignee()">
-                </nb-icon>
-                <ng-container *ngIf="filterType == 1">
-                    <div class="no-data" *ngIf="!listUserRes || (listUserRes && listUserRes.length == 0)">
-                        Không
-                        có dữ liệu</div>
-                    <div class="data" *ngIf="listUserRes && listUserRes.length > 0">
-                        <div class="user" *ngFor="let user of listUserRes">
-                            <div>{{user.FullName}} - {{user.Email}}</div>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="filterType == 2">
-                    <div class="no-data"
-                        *ngIf="!listGroupUserRes || (listGroupUserRes && listGroupUserRes.length == 0)">
-                        Không
-                        có dữ liệu</div>
-                    <div class="data" *ngIf="listGroupUserRes && listGroupUserRes.length > 0">
-                        <div class="user" *ngFor="let user of listGroupUserRes">
-                            <div>{{user.UserGroupName}}</div>
-                        </div>
-                    </div>
-                </ng-container>
             </div>
         </div>
+
     </div>
 
-</div>
+
+    <div class="btn-group dis-flex justify-content-end">
+        <button class="mr-2" status="primary" size="small" nbButton (click)="save()">
+            Lưu lại
+        </button>
+        <button status="default" nbButton size="" (click)="cancel()">
+            Hủy bỏ
+        </button>
+    </div>
+</ng-container>

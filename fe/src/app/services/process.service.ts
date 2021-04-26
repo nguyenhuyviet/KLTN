@@ -76,8 +76,57 @@ export class ProcessService {
             );
     }
 
-    getStepByID(processID, processStepID): Observable<ServiceResponse>  {
+    getStepByID(processID, processStepID): Observable<ServiceResponse> {
         return this.http.get<ServiceResponse>(`${this.processUrl}/GetStepByID/${processID}/${processStepID}`)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    getFirstStep(processID): Observable<ServiceResponse> {
+        return this.http.get<ServiceResponse>(`${this.processUrl}/getFirstStep/${processID}`)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    getStepById(processStepID): Observable<ServiceResponse> {
+        return this.http.get<ServiceResponse>(`${this.processUrl}/getStepById/${processStepID}`)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }    
+    
+    getListAssignee(processStep): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/getListAssignee`, processStep, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    } 
+    
+    initProcessExe(fieldData): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/initProcessExe`, fieldData, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+    
+    addStep(step): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/AddStep`, step, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    updateStep(step): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/UpdateStep`, step, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    deleteStep(stepId): Observable<ServiceResponse> {
+        return this.http.get<ServiceResponse>(`${this.processUrl}/DeleteStep/${stepId}`)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );

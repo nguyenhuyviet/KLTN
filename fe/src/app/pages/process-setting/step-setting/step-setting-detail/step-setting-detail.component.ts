@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { FormMode } from '../../../../enums/form-mode.enum';
 import { Step } from '../../../../models/step';
 import * as _ from "lodash";
+import { ConvertMinutes } from '../../../../shared/fn/common.fn';
+import { Output } from '@angular/core';
 
 @Component({
   selector: 'ngx-step-setting-detail',
@@ -10,19 +12,20 @@ import * as _ from "lodash";
 })
 export class StepSettingDetailComponent implements OnInit {
 
-  @Input() formMode = FormMode.Insert;
 
   _stepData;
-  @Input() 
-  get stepData(){
+  @Input()
+  get stepData() {
     return this._stepData;
   }
-  set stepData(value){
+  set stepData(value) {
     this._stepData = _.cloneDeep(value);
     this.prepareData();
   }
 
   @Input() isFirstStep;
+
+  @Input() readonly;
 
   formModeEnum = FormMode;
 
@@ -39,12 +42,7 @@ export class StepSettingDetailComponent implements OnInit {
     Deadline: FormMode.Insert,
   };
 
-  editEntities = {
-    EditTask: false,
-    EditAssignee: false,
-    EditDeadline: false,
-    EditField: false,
-  };
+  editEntities;
 
   deadline = {
     day: null,
@@ -52,29 +50,38 @@ export class StepSettingDetailComponent implements OnInit {
     minute: null
   }
 
+  @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
+  
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  test(e){
+    console.log(e);
+    
+  }
   prepareData() {
-    if (this.formMode == this.formModeEnum.Insert) {
-      this.prepareDataInsert();
-
-    } else if (this.formMode == this.formModeEnum.Update) {
-      this.prepareDataUpdate();
-    }
-  }
-  prepareDataInsert() {
-    this.newStep = new Step();
-  }
-
-  prepareDataUpdate() {
-    if (!this.newStep) {
+    if (!this.stepData) {
       this.newStep = new Step();
     } else {
-      this.newStep = this.stepData;
+      this.newStep = _.cloneDeep(this.stepData);
+      const deadLine = this.newStep.DeadLine;
+
+      let deadlineCv = ConvertMinutes(deadLine);
+      this.deadline.day = deadlineCv.day;
+      this.deadline.hour = deadlineCv.hour;
+      this.deadline.minute = deadlineCv.minute;
     }
+
+    this.editEntities = {
+      EditTask: false,
+      EditAssignee: false,
+      EditDeadline: false,
+      EditField: false,
+    };
+  
 
   }
 
@@ -82,9 +89,53 @@ export class StepSettingDetailComponent implements OnInit {
 
   }
 
+  saveDeadline() {
+    if(this.readonly){
+      return;
+    }
+
+    const nDeadLine = this.deadline.day * 60 * 24 + this.deadline.hour * 60 + this.deadline.minute;
+    this.newStep.DeadLine = nDeadLine;
+    this.editEntities.EditDeadline = false;
+    this.calculatorDeadline();
+
+
+  }
+
+  cancelDeadline() {
+    this.editEntities.EditDeadline = false;
+    this.calculatorDeadline();
+  }
+
+  calculatorDeadline() {
+    const deadLine = this.newStep.DeadLine;
+
+    let deadlineCv = ConvertMinutes(deadLine);
+    this.deadline.day = deadlineCv.day;
+    this.deadline.hour = deadlineCv.hour;
+    this.deadline.minute = deadlineCv.minute;
+  }
+
+  saveAssignee(e) {
+    if(this.readonly){
+      return;
+    }
+
+    this.newStep.StepAssignees = e;
+    this.editEntities.EditAssignee = false;
+
+  }
+
+  cancelAssignee() {
+    this.editEntities.EditAssignee = false;
+  }
 
   saveTask(e) {
-    console.log(e);
+    if(this.readonly){
+      return;
+    }
+
+    this.newStep.StepTasks = e;
     this.editEntities.EditTask = false;
 
   }
@@ -95,7 +146,11 @@ export class StepSettingDetailComponent implements OnInit {
 
 
   saveField(e) {
-    console.log(e);
+    if(this.readonly){
+      return;
+    }
+
+    this.newStep.StepFields = e;
     this.editEntities.EditField = false;
 
   }
@@ -107,7 +162,7 @@ export class StepSettingDetailComponent implements OnInit {
   handleEdit(type) {
     switch (type) {
       case 'assignee':
-
+        this.editEntities.EditAssignee = true;
         break;
       case 'task':
         this.editEntities.EditTask = true;
@@ -122,4 +177,22 @@ export class StepSettingDetailComponent implements OnInit {
         break;
     }
   }
+
+  saveStep(){
+    this.onSave.emit(this.newStep);
+  }
+
+  cancelStep(){
+    this.newStep = _.cloneDeep(this.stepData);
+    
+    this.editEntities = {
+      EditTask: false,
+      EditAssignee: false,
+      EditDeadline: false,
+      EditField: false,
+    };
+
+    this.onCancel.emit();
+  }
+
 }

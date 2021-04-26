@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StepSettingComponent } from './step-setting.component';
-import { NbCardModule, NbIconModule, NbInputModule, NbButtonModule, NbFormFieldModule, NbButtonGroupModule, NbCheckboxModule } from '@nebular/theme';
+import { NbCardModule, NbIconModule, NbInputModule, NbButtonModule, NbFormFieldModule, NbButtonGroupModule, NbCheckboxModule, NbSpinnerModule } from '@nebular/theme';
 import { ThemeModule } from '../../../@theme/theme.module';
 import { FormsModule } from '@angular/forms';
 import { StepSettingDetailModule } from './step-setting-detail/step-setting-detail.module';
@@ -21,7 +21,8 @@ import { StepSettingDetailModule } from './step-setting-detail/step-setting-deta
     FormsModule,
     NbButtonGroupModule,
     StepSettingDetailModule,
-    NbCheckboxModule
+    NbCheckboxModule,
+    NbSpinnerModule
   ]
 })
 export class StepSettingModule { }

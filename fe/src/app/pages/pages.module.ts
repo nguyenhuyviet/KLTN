@@ -6,6 +6,7 @@ import { PagesComponent } from './pages.component';
 import { ECommerceModule } from './e-commerce/e-commerce.module';
 import { PagesRoutingModule } from './pages-routing.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
+import { ProcessExecutionModule } from './process-execution/process-execution.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
     NbMenuModule,
     ECommerceModule,
     MiscellaneousModule,
+    ProcessExecutionModule
   ],
   declarations: [
     PagesComponent,

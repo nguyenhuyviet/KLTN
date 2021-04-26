@@ -1,19 +1,30 @@
 <div>
-    <div class="list-field">
-        <div class="field-item" *ngFor="let field of listNewField">
-            <ngx-field-view [readonly]="true" [fieldData]="field" *ngIf="!field.IsInEdit"></ngx-field-view>
-            <ngx-form-add-field [formMode]="formModeEnum.Insert" [fieldData]="field" *ngIf="field.IsInEdit"
-                (onSave)="updateField(field, $event)" (onCancel)="cancelEditField(field)">
-            </ngx-form-add-field>
-            <button class="btn-edit-field" nbSuffix nbButton ghost (click)="editField(field)" *ngIf="!field.IsInEdit">
-                <nb-icon [icon]="'edit-2-outline'" pack="eva">
-                </nb-icon>
-            </button>
-        </div>
+    <div class="list-field" *ngIf="listNewField && listNewField.length > 0">
+        <ng-container *ngFor="let field of listNewField">
+            <div class="field-item" *ngIf="field.State != 3">
+                <ngx-field-view [readonly]="true" [fieldData]="field" *ngIf="!field.IsInEdit"></ngx-field-view>
+                <ngx-form-add-field [formMode]="formModeEnum.Update" [fieldData]="field" *ngIf="field.IsInEdit"
+                    (onSave)="updateField(field, $event)" (onCancel)="cancelEditField(field)">
+                </ngx-form-add-field>
+                <button class="btn-edit-field" nbSuffix nbButton ghost (click)="editField(field)"
+                    *ngIf="!field.IsInEdit">
+                    <nb-icon [icon]="'edit-2-outline'" pack="eva">
+                    </nb-icon>
+                </button>
+                <button class="btn-del-field" nbSuffix nbButton ghost (click)="delField(field)" *ngIf="!field.IsInEdit">
+                    <nb-icon class="cursor-pointer" [icon]="'trash-2-outline'" pack="eva">
+                    </nb-icon>
+                </button>
+
+            </div>
+        </ng-container>
+    </div>
+    <div class="no-data " *ngIf="!(listNewField && listNewField.length > 0)">
+        Chưa có trường tùy chỉnh nào
     </div>
 
-    <div class="dis-flex-a btn-primaty-only-text" (click)="showFormAddField()" *ngIf="!isShowFormAddField && !readonly"
-        [class.mt-3]="listNewField && listNewField.length > 0">
+    <div class="dis-flex-a btn-primaty-only-text mt-3" (click)="showFormAddField()"
+        *ngIf="!isShowFormAddField && !readonly">
         <div class="mr-2">Thêm trường</div>
         <nb-icon [icon]="'plus-outline'" pack="eva">
         </nb-icon>

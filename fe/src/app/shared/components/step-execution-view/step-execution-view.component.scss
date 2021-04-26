@@ -1,0 +1,73 @@
+:host {
+  .title {
+    font-size: 20px;
+  }
+
+  .section-title {
+    font-size: 15px;
+  }
+
+  .task-item {
+    border: solid 1px #e0e0e0;
+    border-radius: 4px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0px 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  nb-card-body {
+    max-height: calc(100vh - 212px);
+  }
+
+  .header-view {
+    justify-content: space-between;
+    padding: 0px 20px 0px 13px;
+  }
+
+  .no-data {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .active {
+    background-color: #3366ff;
+  }
+
+  .left {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+    padding-right: 12px;
+    border-right: solid 1px #e0e0e0;
+  }
+
+  .right {
+    padding-left: 12px;
+    width: 100%;
+
+  }
+
+
+  .item-body-custom {
+    font-size: 14px;
+
+    .title-acc {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+  }
+
+
+
+  .border-error {
+    ::ng-deep {
+      .select-button {
+        border-color: #ff3d71 !important;
+
+      }
+    }
+  }
+}

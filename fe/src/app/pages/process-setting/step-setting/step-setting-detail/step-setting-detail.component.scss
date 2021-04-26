@@ -1,5 +1,15 @@
 :host {
 
+  .step-name,
+  .step-description {
+    .label {
+
+      font-size: 14px;
+      font-weight: 700;
+      color: black;
+    }
+  }
+
   .setting-item {
     border: solid 1px #e0e0e0;
     padding: 24px;
@@ -15,6 +25,11 @@
           transform: scale(0.7);
           margin-left: -8px;
         }
+      }
+
+      .text {
+        font-size: 14px;
+        font-weight: 700;
       }
     }
   }
@@ -32,8 +47,8 @@
   }
 
   .step-section-title {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
   }
 
   ::ng-deep {

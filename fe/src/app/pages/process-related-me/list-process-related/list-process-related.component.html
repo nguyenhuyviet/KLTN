@@ -1,0 +1,53 @@
+<nb-card>
+    <nb-card-header class="container-fluid">
+      <div class="row align-items-center">
+  
+  
+        <div class="col-md-6 mb-1 mt-1 ">
+          <div>
+            Danh sách quy trình cần tôi duyệt
+          </div>
+        </div>
+       
+      </div>
+    </nb-card-header>
+  
+    <nb-card-body>
+      <!-- <ng2-smart-table  [settings]="settings" [source]="source" (edit)="onEditItem($event)">
+      </ng2-smart-table> -->
+  
+      <ngx-datatable class="material fullscreen" [rows]="listProcess" [columns]="colummSetting"
+        [columnMode]="columnMode.force" [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading"
+        [footerHeight]="50" [rowHeight]="'auto'" [scrollbarH]="true" [externalPaging]="true" [externalSorting]="true"
+        [count]="totalRecord" [offset]="paging.CurrentPage - 1" [limit]="paging.PageSize" (page)="setPage($event)"
+        (sort)="setSort($event)" (select)="onSelectRow($event)"  [selectionType]="selectionType.single">
+  
+        <ngx-datatable-column name="Tên quy trình" prop="ProcessName" width="150">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+           {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Bước hiện tại" prop="CurrentStepName" width="150">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Mô tả" prop="StepDescription" width="200">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Người tạo" prop="OwnerName" width="100">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Ngày tạo" prop="CreatedDate" width="100">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            {{value | date:'yyyy/MM/dd hh:mm'}}
+          </ng-template>
+        </ngx-datatable-column>
+  
+      </ngx-datatable>
+    </nb-card-body>
+  </nb-card>

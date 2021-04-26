@@ -7,11 +7,20 @@
     position: relative;
     .btn-edit-field{
       position: absolute;
+      right: 36px;
+      top: 0;
+    }
+    .btn-del-field{
+      position: absolute;
       right: 0;
       top: 0;
     }
   }
   .list-field{
     border-bottom: solid 1px #e0e0e0;
+  }
+  .no-data {
+    font-size: 13px;
+    font-weight: 700;
   }
 }

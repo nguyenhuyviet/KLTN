@@ -1,0 +1,161 @@
+<div class="row justify-content-center">
+    <nb-card *ngIf="step" class="col-10">
+        <nb-card-header class="container-fluid">
+            <div class="row align-items-center header-view">
+
+                <div class="col-8 mb-1 mt-1 row">
+                    <nb-icon class="mr-2 cursor-pointer" [icon]="'arrow-back-outline'" pack="eva"
+                        (click)="backToProcess()">
+                    </nb-icon>
+                    <div class="title">
+                        {{step.ProcessStepName}}
+                    </div>
+                </div>
+                <div class="col-4 btn-group row justify-content-end">
+                    <button class="mr-2" status="primary" size="small" nbButton
+                        (click)="openSelectAssignee(dialogSelectAssignee)">
+                        Chuyển tiếp
+                    </button>
+                    <button status="danger" nbButton size="small" (click)="refuseStep()">
+                        Từ chối
+                    </button>
+                </div>
+            </div>
+        </nb-card-header>
+
+        <nb-card-body>
+            <div class="dis-flex">
+                <div class="left" *ngIf="!fistStep">
+                    <nb-accordion>
+                        <nb-accordion-item *ngFor="let item of listPrevStep ; index as i">
+                            <nb-accordion-item-header>
+                                Bước {{i + 1}}: {{item.ProcessStep?.ProcessStepName}}
+                            </nb-accordion-item-header>
+                            <nb-accordion-item-body>
+                                <div class="item-body-custom">
+                                    <div class="section mb-3">
+
+                                        <div class="title-acc">
+                                            Mô tả
+                                        </div>
+                                        <div>
+                                            {{item.ProcessStep?.Description}}
+                                        </div>
+                                    </div>
+                                    <div class="section mb-3">
+                                        <div class="title-acc">
+                                            Nguời giao việc
+                                        </div>
+                                        <div>
+                                            {{item.CurrentAssignee?.FullName}} - {{item.CurrentAssignee?.Email}}
+                                        </div>
+                                    </div>
+
+                                    <div class="section">
+                                        <div class="btn-primaty-only-text"
+                                            (click)="showDetailStepPrev(dialogStepDetail,item)">
+                                            Chi tiết
+                                        </div>
+                                    </div>
+                                </div>
+                            </nb-accordion-item-body>
+                        </nb-accordion-item>
+
+                    </nb-accordion>
+                </div>
+                <div class="right">
+                    <div class="step-item-view task-view mb-3" *ngIf="step.HasTask">
+                        <div class="section-title mb-2">Công việc</div>
+                        <div class="task-item" *ngFor="let task of step.StepTasks">
+                            {{task.TaskName}}
+                        </div>
+                        <div class="no-data" *ngIf="!step.StepTasks || (step.StepTasks && step.StepTasks.length == 0)">
+                            Không có công việc nào
+                        </div>
+                    </div>
+                    <div class="step-item-view field-view">
+                        <div class="section-title  mb-2">Thông tin cần hoàn thành</div>
+                        <div *ngFor="let field of step.StepFields">
+                            <ngx-field-view [fieldData]="field"></ngx-field-view>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+
+</div>
+<ng-template #dialogSelectAssignee let-data let-ref="dialogRef">
+    <nb-card accent="danger" size="tiny" [nbSpinner]="isLoadingAssignee" nbSpinnerStatus="danger" nbSpinnerSize="large"
+        nbSpinnerMessage="" style="width: 400px" *ngIf="step && step.StepSortOrder != 2">
+        <nb-card-header>Chọn người thực hiện</nb-card-header>
+        <nb-card-body>
+            <!-- dropdown -->
+            <nb-select id="field-name" status="{{errAssignee? 'danger' : 'basic'}}" [(ngModel)]="assingeeID"
+                [ngModelOptions]="{standalone: true}" *ngIf="listAssignee" fullWidth placeholder="Chọn người thực hiện"
+                (selectedChange)="resetError()">
+                <nb-option [value]="option.UserId" *ngFor="let option of listAssignee"
+                    [class.active]="assingeeID == option.UserId">
+                    {{option.FullName}} - {{option.Email}}
+                </nb-option>
+            </nb-select>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="btn-group dis-flex justify-content-end">
+                <button class="mr-2" nbButton (click)="nextStep(ref)" status="danger">Đồng ý</button>
+                <button nbButton (click)="ref.close()">Hủy bỏ</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+
+
+    <nb-card accent="danger" size="tiny" style="width: 400px" *ngIf="step && step.StepSortOrder == 2">
+        <nb-card-header>Hoàn thành quy trình</nb-card-header>
+        <nb-card-body>
+            Quy trình sẽ được chuyển sang trạng thái hoàn thành.
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="btn-group dis-flex justify-content-end">
+                <button class="mr-2" nbButton (click)="doneProcess(ref)" status="danger">Đồng ý</button>
+                <button nbButton (click)="ref.close()">Hủy bỏ</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+
+
+
+<ng-template #dialogStepDetail let-data let-ref="dialogRef">
+    <nb-card accent="danger" [nbSpinner]="loadingDetailStep" nbSpinnerStatus="danger" nbSpinnerSize="large"
+        nbSpinnerMessage="" style="width: 800px;min-height: 400px; max-height: calc(100vh - 60px);">
+        <ng-container *ngIf="currentDetailStep && !loadingDetailStep">
+            <nb-card-header>{{currentDetailStep.ProcessStepName}}</nb-card-header>
+            <nb-card-body>
+                <div class="right">
+                    <div class="step-item-view task-view mb-3" *ngIf="currentDetailStep.HasTask">
+                        <div class="section-title mb-2">Công việc</div>
+                        <div class="task-item" *ngFor="let task of currentDetailStep.StepTasks">
+                            {{task.TaskName}}
+                        </div>
+                        <div class="no-data"
+                            *ngIf="!currentDetailStep.StepTasks || (currentDetailStep.StepTasks && currentDetailStep.StepTasks.length == 0)">
+                            Không có công việc nào
+                        </div>
+                    </div>
+                    <div class="step-item-view field-view">
+                        <div class="section-title  mb-2">Thông tin cần hoàn thành</div>
+                        <div *ngFor="let field of currentDetailStep.StepFields">
+                            <ngx-field-view [fieldData]="field"></ngx-field-view>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="btn-group dis-flex justify-content-end">
+                    <button nbButton (click)="ref.close()">Đóng</button>
+                </div>
+            </nb-card-footer>
+        </ng-container>
+    </nb-card>
+
+</ng-template>

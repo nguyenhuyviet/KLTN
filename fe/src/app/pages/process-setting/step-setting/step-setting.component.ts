@@ -1,7 +1,10 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NbComponentStatus, NbDialogService, NbToastrService } from '@nebular/theme';
 import { FormMode } from '../../../enums/form-mode.enum';
+import { Step } from '../../../models/step';
 import { ProcessService } from '../../../services/process.service';
+import { showToast } from '../../../shared/fn/common.fn';
 
 @Component({
   selector: 'app-step-setting',
@@ -20,13 +23,19 @@ export class StepSettingComponent implements OnInit {
   currentStep;
   formMode = FormMode;
 
+
+  isUpdateStep = false;
+
+  statusToast: NbComponentStatus
   @ViewChild('inputStepNameElm') inputStepNameElm: ElementRef;
   @ViewChild('inputProcessNameElm') inputProcessNameElm: ElementRef;
 
   constructor(
     private processSV: ProcessService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dialogService: NbDialogService,
+    private toastrService: NbToastrService
 
   ) { }
 
@@ -43,7 +52,9 @@ export class StepSettingComponent implements OnInit {
     this.route.queryParamMap.subscribe(queryParams => {
       if (queryParams[`params`].stepId) {
         const stepID = +queryParams[`params`].stepId;
-        this.getStepByID(queryParams[`params`].stepId);
+        if (!queryParams[`params`].isJustAdd) {
+          this.getStepByID(stepID);
+        }
       }
     });
   }
@@ -73,18 +84,49 @@ export class StepSettingComponent implements OnInit {
     }, 300);
   }
   updateProcessName() {
-    this.isEditInput = false;
+    if (!this.currentProcess.ProcessName && !this.currentProcess.ProcessName.trim()) {
+      return;
+    }
+    this.processSV.updateProcess(this.currentProcess).subscribe(data => {
+      if (data && data.Data) {
+        showToast(this.toastrService,"Cập nhật thành công", "success");
+      } else {
+        showToast(this.toastrService,"Cập nhật thất bại", "danger");
+      }
+      this.isEditInput = false;
+    });
+
   }
 
   addSidebarStep() {
     if (!this.stepAddSidebarName && !this.stepAddSidebarName.trim()) {
-      this.currentProcess.push({ ProcessName: this.stepAddSidebarName });
-      this.hideInputStepName();
-    } else {
-
+      return;
     }
+
+    const step = {
+      ProcessId: this.currentProcess.ProcessId,
+      ProcessStepName: this.stepAddSidebarName,
+      SortOrder: this.currentProcess.ProcessSteps ? this.currentProcess.ProcessSteps[this.currentProcess.ProcessSteps.length - 1].SortOrder + 1 : 1
+    };
+
+    this.addStep(step);
+    this.hideInputStepName();
   }
 
+  addStep(step) {
+    this.isLoading = true;
+    this.processSV.addStep(step).subscribe(data => {
+      if (data && data.Data) {
+        if (!this.currentProcess.ProcessSteps) {
+          this.currentProcess.ProcessSteps = [];
+        }
+        this.currentProcess.ProcessSteps.push(data.Data);
+        this.currentStep = data.Data;
+        this.router.navigate([`/pages/process/stepSetting/${this.currentProcess.ProcessId}`], { queryParams: { stepId: step.ProcessStepId, isJustAdd: true } });
+      }
+      this.isLoading = false;
+    });
+  }
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -111,6 +153,7 @@ export class StepSettingComponent implements OnInit {
 
     }, 300);
   }
+
   hideInputStepName() {
     this.isShowInputStepName = false;
     this.stepAddSidebarName = "";
@@ -130,7 +173,56 @@ export class StepSettingComponent implements OnInit {
         this.router.navigateByUrl("not-found");
 
       }
-      this.isLoading = false;
+      this.isLoadingStep = false;
+
+    });
+  }
+
+  showUpdateStep() {
+    this.isUpdateStep = true;
+
+  }
+
+  updateStep(e) {
+    this.currentStep = e;
+    this.isLoadingStep = true;
+    this.processSV.updateStep(e).subscribe(data => {
+      if (data && data.Data) {
+        this.currentStep = data.Data;
+        showToast(this.toastrService,"Cập nhật thành công", "success");
+      }else{
+        showToast(this.toastrService,"Cập nhật thất bại", "danger");
+      }
+      this.isLoadingStep = false;
+      this.isUpdateStep = false;
+
+    });
+  }
+
+
+  cancelUpdateStep() {
+    this.isUpdateStep = false;
+  }
+
+  openConfirmDelStep(dialog: TemplateRef<any>) {
+    this.dialogService.open(dialog);
+  }
+
+  delStep(ref) {
+    this.processSV.deleteStep(this.currentStep.ProcessStepId).subscribe(data => {
+      if (data && data.Data) {
+        if (this.currentProcess.ProcessSteps && this.currentProcess.ProcessSteps.length > 0) {
+          const index = this.currentProcess.ProcessSteps.findIndex(x => x.ProcessStepId == this.currentStep.ProcessStepId);
+          this.currentProcess.ProcessSteps.splice(index, 1);
+          const step = this.currentProcess.ProcessSteps[index > 0 ? index - 1 : 0];
+          this.showStep(step);
+        }
+        // showToast(this.toastrService,"Xóa bước thành công", "success");
+        ref.close();
+        this.toastrService.show("","ádasdasd",{"destroyByClick": true})
+      }else{
+        showToast(this.toastrService,"Xóa bước thất bại", "danger");
+      }
     });
   }
 }

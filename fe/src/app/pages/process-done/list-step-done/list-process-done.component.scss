@@ -1,0 +1,33 @@
+:host {
+  .not-done {
+    width: 8px;
+    height: 8px;
+    background: #e5e503;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .done {
+    width: 8px;
+    height: 8px;
+    background: #39a50e;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .rejected {
+    width: 8px;
+    height: 8px;
+    background: #d52727;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  .icon-search{
+    position: absolute;
+    top: 10px;
+    left: 20px;
+  }
+}

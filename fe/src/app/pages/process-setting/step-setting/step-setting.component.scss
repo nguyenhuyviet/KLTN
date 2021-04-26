@@ -53,4 +53,19 @@
     }
   }
 
+  .step-detail-container{
+    position: relative;
+    .edit-step{
+      position: absolute;
+      top: 0;
+      right: 44px;
+      cursor: pointer;
+    }
+    .del-step{
+      position: absolute;
+      top: 0;
+      right: 8px;
+      cursor: pointer;
+    }
+  }
 }

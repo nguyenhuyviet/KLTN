@@ -1,90 +1,96 @@
 <div class="field-type-component" [class.readonly]="readonly" *ngIf="fieldData">
     <!-- short text -->
     <div class="field-name mb-3" *ngIf="fieldData.Type == fieldType.ShortText">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
 
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input [class.border-error]="" type="text" nbInput fullWidth id="field-name" [placeholder]="fieldData.DataSettingObj?.Placeholder"
-            [disabled]="readonly">
+        <input [class.border-error]="" type="text" nbInput fullWidth id="field-{{fieldData.StepFieldId}}" [placeholder]="fieldData.DataSettingObj?.Placeholder"
+            [disabled]="readonly" [(ngModel)]="fieldValue.Value">
     </div>
 
     <!-- long text -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.LongText">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <textarea id="field-name" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" [disabled]="readonly"></textarea>
+        <textarea id="field-{{fieldData.StepFieldId}}" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" [disabled]="readonly"
+        [(ngModel)]="fieldValue.Value"
+        ></textarea>
     </div>
 
     <!-- number -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Number">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-name" type="number" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" [disabled]="readonly">
+        <input id="field-{{fieldData.StepFieldId}}" type="number" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" 
+        [(ngModel)]="fieldValue.Value"
+        [disabled]="readonly">
     </div>
 
     <!-- hour  [(ngModel)]="date" -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Hour">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-name" nbInput type="text" [nbTimepicker]="timepicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder">
+        <input id="field-{{fieldData.StepFieldId}}" nbInput type="text" [nbTimepicker]="timepicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder"
+        [(ngModel)]="fieldValue.Value">
         <nb-timepicker #timepicker></nb-timepicker>
     </div>
     <!-- date -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Date">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-name" nbInput type="text" [nbDatepicker]="dateTimePicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder">
+        <input id="field-{{fieldData.StepFieldId}}" nbInput type="text" [nbDatepicker]="dateTimePicker" [(ngModel)]="fieldValue.Value"  [placeholder]="fieldData.DataSettingObj?.Placeholder"
+        [(ngModel)]="fieldValue.Value">
         <nb-datepicker #dateTimePicker></nb-datepicker>
     </div>
     <!-- datetime -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.DateTime">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-name"  nbInput placeholder="Pick Date"  [nbDatepicker]="dateTimePicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder">
+        <input id="field-{{fieldData.StepFieldId}}"  nbInput placeholder="Pick Date" [(ngModel)]="fieldValue.Value"  [nbDatepicker]="dateTimePicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder">
         <nb-date-timepicker withSeconds #dateTimePicker></nb-date-timepicker>
     </div>
     <!-- dropdown -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Dropdown">
-        <label for="field-name" class="label ">{{fieldData.FieldName}}</label>
+        <label for="field-{{fieldData.StepFieldId}}" class="label ">{{fieldData.FieldName}}</label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <nb-select id="field-name" class="">
+        <nb-select id="field-{{fieldData.StepFieldId}}" class="" [(ngModel)]="fieldValue.Value">
             <nb-option [value]="option.OptionId" *ngFor="let option of fieldData.DataSettingObj?.ListOption">{{option.OptionName}}
             </nb-option>
         </nb-select>
     </div>
     <!-- checkbox -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Checkbox">
-        <label for="field-name" class="label">{{fieldData.FieldName}}</label>
+        <label for="field-{{fieldData.StepFieldId}}" class="label">{{fieldData.FieldName}}</label>
         <div class="field-des">{{fieldData.Description}}</div>
         <div style="display: flex;flex-direction: column;">
 
-            <nb-checkbox *ngFor="let option of fieldData.DataSettingObj?.ListOption">{{option.OptionName}}</nb-checkbox>
+            <nb-checkbox [checked]="option.Checked" *ngFor="let option of fieldData.DataSettingObj?.ListOption">{{option.OptionName}}</nb-checkbox>
         </div>
     </div>
     <!-- file -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.File">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-name" type="file" nbInput fullWidth placeholder="Nhập mô tả" [disabled]="readonly">
+        <input id="field-{{fieldData.StepFieldId}}" type="file" [(ngModel)]="fieldValue.Value" nbInput fullWidth placeholder="Nhập mô tả" [disabled]="readonly">
     </div>
     <!-- yes/ no -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.YesNo">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <nb-toggle status="basic" >Yes / No</nb-toggle>
+        <nb-toggle [(ngModel)]="fieldValue.Value" status="basic">Yes / No</nb-toggle>
     </div>
    
     <!-- link-->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Link">
-        <label for="field-name" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
         <a [href]="fieldData.DataSettingObj?.LinkTo">{{fieldData.DataSettingObj?.LinkName}}</a>

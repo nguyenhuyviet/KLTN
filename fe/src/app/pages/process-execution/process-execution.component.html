@@ -1,1 +1,51 @@
-<p>process-execution works!</p>
+<nb-card *ngIf="viewListProcess">
+    <nb-card-header class="container-fluid">
+        <div class="row align-items-center">
+
+
+            <div class="col-md-6 mb-1 mt-1 ">
+                <div class="title">
+                    Danh sách quy trình
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row justify-content-end">
+
+                    <div class="col-12 col-md-8 mb-1 mt-1 ">
+                        <nb-form-field>
+                            <input type="text" nbInput fullWidth [value]="paging.FilterString" placeholder="Tìm kiếm"
+                                (keyup)="searchProcess($event)">
+                            <button nbSuffix nbButton ghost (click)="clearSearch()">
+                                <nb-icon [icon]="'close-circle-outline'" pack="eva">
+                                </nb-icon>
+                            </button>
+                        </nb-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-header>
+
+    <nb-card-body>
+
+
+        <ngx-datatable class="material fullscreen" [rows]="listProcess" [columns]="colummSetting"
+            [columnMode]="columnMode.force" [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading"
+            [footerHeight]="50" [rowHeight]="'auto'" [scrollbarH]="true" [externalPaging]="true"
+            [externalSorting]="true" [count]="totalRecord" [offset]="paging.CurrentPage - 1" [limit]="paging.PageSize"
+            (page)="setPage($event)" (sort)="setSort($event)" (select)="onSelectRow($event)"  [selectionType]="selectionType.single">
+
+            <!-- <ngx-datatable-column name="Trạng thái" prop="ProcessStatus">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <div *ngIf="value === processStatusEnum.Active">Đang hoạt động</div>
+            <div *ngIf="value === processStatusEnum.InActive">Ngưng hoạt động</div>
+            <div *ngIf="value === processStatusEnum.Draf">Phác thảo</div>
+            <div *ngIf="value === processStatusEnum.Stop">Ngừng sử dụng</div>
+          </ng-template>
+        </ngx-datatable-column> -->
+
+        </ngx-datatable>
+    </nb-card-body>
+</nb-card>
+
+<ngx-step-execution-view *ngIf="!viewListProcess" [processId]="currentProcess.ProcessId" [fistStep]="true" (onBack)="backToProcess()"></ngx-step-execution-view>

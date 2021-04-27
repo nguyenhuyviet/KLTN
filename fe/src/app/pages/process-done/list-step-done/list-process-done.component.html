@@ -4,9 +4,10 @@
 
 
       <div class="col-md-6 mb-1 mt-1 ">
-        <div>
-          Danh sách quy trình cần tôi duyệt
-        </div>
+        <nb-button-group shape="rectangle">
+          <button nbButtonToggle (pressedChange)="setFilter(1)">Tôi đã tham gia</button>
+          <button nbButtonToggle (pressedChange)="setFilter(2)">Tôi đã tạo</button>
+        </nb-button-group>
       </div>
       <div class="col-md-6">
         <div class="row justify-content-end">

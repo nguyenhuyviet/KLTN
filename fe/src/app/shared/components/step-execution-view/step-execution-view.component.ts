@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { NbDialogService } from '@nebular/theme';
+import { FieldType } from '../../../enums/field-type.enum';
 import { ProcessExecution } from '../../../models/process-exe';
 import { ProcessExecutionService } from '../../../services/process-exe.service';
 import { ProcessService } from '../../../services/process.service';
@@ -95,6 +96,9 @@ export class StepExecutionViewComponent implements OnInit {
     this.errAssignee = false;
   }
   openSelectAssignee(dialog: TemplateRef<any>) {
+    if(this.validateRequiredField()){
+      return;
+    }
     this.dialogService.open(dialog);
     this.getAssigne();
 
@@ -185,5 +189,27 @@ export class StepExecutionViewComponent implements OnInit {
     this.loadingDetailStep = false;
 
     });
+  }
+
+
+
+  validateRequiredField(){
+    let invalid = false;
+    
+    if (this.step && this.step.StepFields) {
+      this.step.StepFields.forEach(x => {
+          if(x.Type == FieldType.ShortText || x.Type == FieldType.LongText 
+            || x.Type == FieldType.Number || x.Type == FieldType.DateTime 
+            || x.Type == FieldType.Hour ||x.Type == FieldType.Date || x.Type == FieldType.Dropdown){
+            
+              if(x.IsRequired && ( !x.FieldValue.Value || (x.Type == !FieldType.Dropdown && x.FieldValue.Value && !x.FieldValue.Value.trim()))){
+                x.FieldValue.Empty = true;
+                invalid = true;
+              }
+          }
+      })
+    }
+
+    return invalid;
   }
 }

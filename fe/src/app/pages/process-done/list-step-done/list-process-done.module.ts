@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NbButtonModule, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule } from '@nebular/theme';
+import { NbButtonGroupModule, NbButtonModule, NbButtonToggleDirective, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule } from '@nebular/theme';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ThemeModule } from '../../../@theme/theme.module';
 import { ListProcessDoneComponent } from './list-process-done.component';
@@ -17,7 +17,8 @@ import { ListProcessDoneComponent } from './list-process-done.component';
     ThemeModule,
     NbButtonModule,
     NgxDatatableModule,
-    NbFormFieldModule
+    NbFormFieldModule,
+    NbButtonGroupModule
   ]
 })
 export class ListProcessDoneModule { }

@@ -5,8 +5,8 @@
 
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input [class.border-error]="" type="text" nbInput fullWidth id="field-{{fieldData.StepFieldId}}" [placeholder]="fieldData.DataSettingObj?.Placeholder"
-            [disabled]="readonly" [(ngModel)]="fieldValue.Value">
+        <input [class.border-error]="fieldValue.Empty" type="text" nbInput fullWidth id="field-{{fieldData.StepFieldId}}" [placeholder]="fieldData.DataSettingObj?.Placeholder"
+            [disabled]="readonly" [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()">
     </div>
 
     <!-- long text -->
@@ -14,8 +14,8 @@
         <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <textarea id="field-{{fieldData.StepFieldId}}" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" [disabled]="readonly"
-        [(ngModel)]="fieldValue.Value"
+        <textarea [class.border-error]="fieldValue.Empty" id="field-{{fieldData.StepFieldId}}" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" [disabled]="readonly"
+        [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()"
         ></textarea>
     </div>
 
@@ -24,8 +24,8 @@
         <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-{{fieldData.StepFieldId}}" type="number" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" 
-        [(ngModel)]="fieldValue.Value"
+        <input [class.border-error]="fieldValue.Empty" id="field-{{fieldData.StepFieldId}}" type="number" nbInput fullWidth  [placeholder]="fieldData.DataSettingObj?.Placeholder" 
+        [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()"
         [disabled]="readonly">
     </div>
 
@@ -34,8 +34,8 @@
         <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-{{fieldData.StepFieldId}}" nbInput type="text" [nbTimepicker]="timepicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder"
-        [(ngModel)]="fieldValue.Value">
+        <input [class.border-error]="fieldValue.Empty" id="field-{{fieldData.StepFieldId}}" nbInput type="text" [nbTimepicker]="timepicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder"
+        [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()">
         <nb-timepicker #timepicker></nb-timepicker>
     </div>
     <!-- date -->
@@ -43,8 +43,8 @@
         <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-{{fieldData.StepFieldId}}" nbInput type="text" [nbDatepicker]="dateTimePicker" [(ngModel)]="fieldValue.Value"  [placeholder]="fieldData.DataSettingObj?.Placeholder"
-        [(ngModel)]="fieldValue.Value">
+        <input [class.border-error]="fieldValue.Empty" id="field-{{fieldData.StepFieldId}}" nbInput type="text" [nbDatepicker]="dateTimePicker" [(ngModel)]="fieldValue.Value"  [placeholder]="fieldData.DataSettingObj?.Placeholder"
+        [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()">
         <nb-datepicker #dateTimePicker></nb-datepicker>
     </div>
     <!-- datetime -->
@@ -52,14 +52,15 @@
         <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-{{fieldData.StepFieldId}}"  nbInput placeholder="Pick Date" [(ngModel)]="fieldValue.Value"  [nbDatepicker]="dateTimePicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder">
+        <input [class.border-error]="fieldValue.Empty" id="field-{{fieldData.StepFieldId}}"  nbInput placeholder="Pick Date" [(ngModel)]="fieldValue.Value" 
+         [nbDatepicker]="dateTimePicker"  [placeholder]="fieldData.DataSettingObj?.Placeholder" (ngModelChange)="resetError()">
         <nb-date-timepicker withSeconds #dateTimePicker></nb-date-timepicker>
     </div>
     <!-- dropdown -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Dropdown">
         <label for="field-{{fieldData.StepFieldId}}" class="label ">{{fieldData.FieldName}}</label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <nb-select id="field-{{fieldData.StepFieldId}}" class="" [(ngModel)]="fieldValue.Value">
+        <nb-select status="{{fieldValue.Empty? 'danger' : 'basic'}}" id="field-{{fieldData.StepFieldId}}" class="" style="min-width: 300px;" [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()">
             <nb-option [value]="option.OptionId" *ngFor="let option of fieldData.DataSettingObj?.ListOption">{{option.OptionName}}
             </nb-option>
         </nb-select>
@@ -70,7 +71,7 @@
         <div class="field-des">{{fieldData.Description}}</div>
         <div style="display: flex;flex-direction: column;">
 
-            <nb-checkbox [checked]="option.Checked" *ngFor="let option of fieldData.DataSettingObj?.ListOption">{{option.OptionName}}</nb-checkbox>
+            <nb-checkbox [checked]="option.Value" *ngFor="let option of fieldData.DataSettingObj?.ListOption" (checkedChange)="setValueChecked(option, $event)">{{option.OptionName}}</nb-checkbox>
         </div>
     </div>
     <!-- file -->

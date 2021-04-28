@@ -141,8 +141,11 @@ namespace BusinessAccess.Services
             }
 
 
-            var status = paging.ExtraCondition.Status;
-
+            var status = 0;
+            if(paging.ExtraCondition != null)
+            {
+                status = paging.ExtraCondition.Status;
+            }
 
             if (!String.IsNullOrEmpty(paging.FilterString))
             {

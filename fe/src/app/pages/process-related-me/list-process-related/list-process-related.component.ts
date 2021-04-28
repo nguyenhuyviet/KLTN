@@ -64,7 +64,7 @@ export class ListProcessRelatedComponent implements OnInit {
     this.paging.PageSize = 10;
     this.paging.FilterString = "";
     this.paging.ExtraCondition = {
-      StatusValue: 1
+      Status: 1
     };
   }
   ngOnInit(): void {

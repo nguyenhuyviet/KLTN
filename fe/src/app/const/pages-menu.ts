@@ -34,7 +34,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Nhóm quy trình',
     icon: 'briefcase-outline',
-    link: '/pages/process-',
+    link: '/pages/process-group',
   },
   {
     title: 'Người dùng',
@@ -43,11 +43,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Nhóm người dùng',
     icon: 'people-outline',
-    link: '/pages/process-',
+    link: '/pages/user-group',
   },
   {
     title: 'Thiết lập người dùng',
     icon: 'person-add-outline',
-    link: '/pages/process-',
+    link: '/pages/user-setting',
   },
 ];

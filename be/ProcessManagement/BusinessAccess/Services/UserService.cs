@@ -3,6 +3,7 @@ using DataAccess.Infrastructure;
 using DataAccess.Models;
 using DataAccess.UtilModels;
 using Microsoft.IdentityModel.Tokens;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,6 +21,8 @@ namespace BusinessAccess.Services
         ServiceResponse Update(UserInfor user);
         ServiceResponse Delete(int id);
         ServiceResponse GetUserLoginById(int id);
+        ServiceResponse GetMultiPagingInGroup(Paging paging, string[] includes = null);
+
         ServiceResponse GetAll();
         string GetToken(UserInfor userInfor);
         UserInfor GetUserInforLogin(UserLogin userLogin);
@@ -28,6 +31,16 @@ namespace BusinessAccess.Services
         ServiceResponse GetInStepSetting(Paging paging, string[] includes = null);
 
         ServiceResponse GetUserGroupInStepSetting(Paging paging, string[] includes = null);
+        ServiceResponse GetMultiPagingGroup(Paging paging, string[] includes = null);
+        ServiceResponse AddGroup(UserGroup user, int currentUserID, string currentUsername);
+        ServiceResponse UpdateGroup(UserGroup user, int currentUserID, string currentUsername);
+        ServiceResponse AddUserToGroup(List<UserGroupDetail> listUserGroupDetail, int currentUserID, string currentUsername);
+        ServiceResponse GetGroupById(int groupId);
+        ServiceResponse RemoveFromGroup(UserGroupDetail userGrpDetail);
+        ServiceResponse DeleteGroup(int groupId);
+
+        ServiceResponse GetPagingUserAddGroup(Paging paging, string[] includes = null);
+
         void Save();
 
     }
@@ -36,15 +49,17 @@ namespace BusinessAccess.Services
         IRepository<UserInfor> _userRepository;
         IRepository<UserGroup> _userGrpRepository;
         IRepository<UserLogin> _userLoginRepository;
+        IRepository<UserGroupDetail> _userGrpDetailRepository;
         IRepository<Role> _roleRepository;
         IUnitOfWork unitOfWork;
 
-        public UserService(IRepository<UserInfor> user, IRepository<UserGroup> userGrpRepository, IRepository<UserLogin> userLoginRepository, IRepository<Role> role, IUnitOfWork unitOfWork)
+        public UserService(IRepository<UserInfor> user, IRepository<UserGroupDetail> userGrpDetailRepository, IRepository<UserGroup> userGrpRepository, IRepository<UserLogin> userLoginRepository, IRepository<Role> role, IUnitOfWork unitOfWork)
         {
             this._userRepository = user;
             this._userGrpRepository = userGrpRepository;
             this._roleRepository = role;
             this._userLoginRepository = userLoginRepository;
+            this._userGrpDetailRepository = userGrpDetailRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -334,6 +349,372 @@ namespace BusinessAccess.Services
 
         }
 
+
+        public ServiceResponse GetMultiPagingGroup(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<UserGroup> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
+
+
+
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+                // 
+                query = _userGrpRepository.GetMulti(x => x.UserGroupName.ToUpper().Contains(paging.FilterString.ToUpper())
+                || x.Description.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
+
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+
+                query = _userGrpRepository.GetAll(includes);
+
+
+            }
+
+            if (!String.IsNullOrEmpty(paging.SortBy))
+            {
+                var propertyInfo = typeof(UserGroup).GetProperty(paging.SortBy);
+                if (paging.Sort != null && (paging.Sort.ToUpper().Equals("DESC") || paging.Sort.Equals(null)))
+                {
+                    query = query.OrderByDescending(x => propertyInfo.GetValue(x, null));
+                }
+                else
+                {
+
+                    query = query.OrderBy(x => propertyInfo.GetValue(x, null));
+                }
+            }
+            data.TotalRecord = query.Count();
+            data.PageData = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize);
+            res.OnSuccess(data);
+            return res;
+
+        }
+
+        public ServiceResponse AddGroup(UserGroup user, int currentUserID, string currentUsername)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (user == null || (user != null && user.UserGroupName == null))
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+
+            if (!_userGrpRepository.CheckContains(x => x.UserGroupName == user.UserGroupName))
+            {
+                TimeZone localZone = TimeZone.CurrentTimeZone;
+                DateTime now = DateTime.Now;
+
+                user.CreatedBy = currentUsername;
+                user.CreatedDate = localZone.ToUniversalTime(now);
+                user.ModifiedBy = currentUsername;
+                user.ModifiedDate = localZone.ToUniversalTime(now);
+
+                var userGrpAdd = _userGrpRepository.Add(user);
+                res.OnSuccess(userGrpAdd);
+
+                this.Save();
+
+            }
+            else
+            {
+                res.OnError("Duplicate group");
+            }
+            return res;
+        }
+
+        public ServiceResponse UpdateGroup(UserGroup user, int currentUserID, string currentUsername)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (user == null || (user != null && user.UserGroupName == null))
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+            var userGrp = _userGrpRepository.GetSingleById(user.UserGroupId);
+            if (userGrp == null)
+            {
+
+                res.OnError("Group not exist");
+                return res;
+            }
+
+            if (!_userGrpRepository.CheckContains(x => x.UserGroupName == user.UserGroupName))
+            {
+                TimeZone localZone = TimeZone.CurrentTimeZone;
+                DateTime now = DateTime.Now;
+
+                userGrp.UserGroupName = user.UserGroupName;
+                userGrp.ModifiedBy = currentUsername;
+                userGrp.ModifiedDate = localZone.ToUniversalTime(now);
+
+                _userGrpRepository.Update(userGrp);
+                res.OnSuccess(userGrp);
+                this.Save();
+
+            }
+            else
+            {
+                res.OnError("Duplicate group");
+            }
+            return res;
+        }
+
+        public ServiceResponse GetMultiPagingInGroup(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<UserGroupDetail> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
+
+            var userGrpId = 0;
+            if (paging.ExtraCondition != null)
+            {
+                userGrpId = paging.ExtraCondition.UserGroupId;
+            }
+
+            includes = new string[1] { "User" };
+
+
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+
+
+                query = _userGrpDetailRepository.GetMulti(x => x.UserGroupId == userGrpId
+                && x.User.FullName.ToUpper().Contains(paging.FilterString.ToUpper())
+                || x.User.Email.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
+
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+                query = _userGrpDetailRepository.GetMulti(x => x.UserGroupId == userGrpId, includes);
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+
+            var query1 = query.Select(x => x.User);
+
+            if (!String.IsNullOrEmpty(paging.SortBy))
+            {
+                var propertyInfo = typeof(UserInfor).GetProperty(paging.SortBy);
+                if (paging.Sort != null && (paging.Sort.ToUpper().Equals("DESC") || paging.Sort.Equals(null)))
+                {
+                    query1 = query1.OrderByDescending(x => propertyInfo.GetValue(x, null));
+                }
+                else
+                {
+
+                    query1 = query1.OrderBy(x => propertyInfo.GetValue(x, null));
+                }
+            }
+            data.TotalRecord = query1.Count();
+            var listResult = query1.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+            if (listResult != null)
+            {
+                foreach (var item in listResult)
+                {
+
+
+                    item.UserGroupDetails = null;
+
+                }
+            }
+            data.PageData = listResult;
+            res.OnSuccess(data);
+            return res;
+        }
+
+
+        #region group
+
+        public ServiceResponse GetGroupById(int groupId)
+        {
+            ServiceResponse res = new ServiceResponse();
+
+            var data = _userGrpRepository.GetSingleById(groupId);
+
+            if (data != null)
+            {
+                res.OnSuccess(data);
+            }
+            else
+            {
+                res.OnError("Không có dữ liệu");
+            }
+            return res;
+        }
+
+        public ServiceResponse DeleteGroup(int groupId)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (groupId == null || groupId == 0)
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+
+
+            var data = _userGrpRepository.Delete(groupId);
+            this.Save();
+            res.OnSuccess(data);
+
+            return res;
+        }
+
+        public ServiceResponse GetPagingUserAddGroup(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<UserGroupDetail> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
+
+
+
+            var userGroupId = 0;
+            if (paging.ExtraCondition != null)
+            {
+                userGroupId = paging.ExtraCondition.UserGroupId;
+            }
+
+            includes = new string[1] { "User" };
+            
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+                var listUsr = _userGrpDetailRepository.GetMulti(x => x.UserGroupId == userGroupId, includes);
+                var listUsrId = listUsr.Select(x => x.User.UserId);
+
+                query = _userGrpDetailRepository.GetMulti(x => x.UserGroupId != userGroupId && 
+                (listUsrId != null && !listUsrId.Contains(x.User.UserId) || listUsrId == null)
+                && x.User.FullName.ToUpper().Contains(paging.FilterString.ToUpper())
+                || x.User.Email.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
+
        
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+                var listUsr = _userGrpDetailRepository.GetMulti(x => x.UserGroupId == userGroupId, includes);
+                var listUsrId = listUsr.Select(x => x.User.UserId);
+
+                query = _userGrpDetailRepository.GetMulti(x => x.UserGroupId != userGroupId
+                && (listUsrId != null && !listUsrId.Contains(x.User.UserId) || listUsrId == null), includes);
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+
+            var query1 = query.Select(x => x.User).DistinctBy(x => x.UserId);
+
+            data.TotalRecord = query1.Count();
+
+            var listResult = query1.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+            if (listResult != null)
+            {
+                foreach (var item in listResult)
+                {
+                    item.UserGroupDetails = null;
+                    
+                }
+            }
+            data.PageData = listResult;
+            res.OnSuccess(data);
+            return res;
+        }
+
+        public ServiceResponse AddUserToGroup(List<UserGroupDetail> listUserGroupDetail, int currentUserID, string currentUsername)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (listUserGroupDetail == null || (listUserGroupDetail != null && listUserGroupDetail.Count == 0))
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+            var userGrp = _userGrpRepository.GetSingleById((int)listUserGroupDetail.First().UserGroupId);
+            if (userGrp == null)
+            {
+
+                res.OnError("Group does not exist");
+                return res;
+            }
+
+            _userGrpDetailRepository.AddMulti(listUserGroupDetail);
+            res.OnSuccess(listUserGroupDetail);
+            this.Save();
+            return res;
+        }
+
+        public ServiceResponse RemoveFromGroup(UserGroupDetail userGrpDetail)
+        {
+            ServiceResponse res = new ServiceResponse();
+
+            var userGrp = _userGrpRepository.GetSingleById((int)userGrpDetail.UserGroupId);
+
+            if (userGrp == null)
+            {
+                res.OnError("Group does not exist");
+                return res;
+
+            }
+
+            var user = _userRepository.GetSingleById((int)userGrpDetail.UserId);
+
+            if (user == null)
+            {
+                res.OnError("User does not exist");
+                return res;
+
+            }
+
+            var userGroupDetail = _userGrpDetailRepository.GetSingleByCondition(x => x.UserGroupId == userGrp.UserGroupId && x.UserId == user.UserId);
+            if (userGroupDetail == null)
+            {
+                res.OnError("Group or User does not exist");
+                return res;
+
+            }
+            _userGrpDetailRepository.Delete(userGroupDetail.Id);
+            res.OnSuccess(userGroupDetail);
+            this.Save();
+            return res;
+        }
+
+        #endregion
     }
 }

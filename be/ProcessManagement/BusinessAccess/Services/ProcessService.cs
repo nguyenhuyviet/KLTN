@@ -36,7 +36,14 @@ namespace BusinessAccess.Services
         ServiceResponse DeleteStep(int stepId);
 
         ServiceResponse GetMultiPaging(Paging paging, string[] includes = null);
-
+        ServiceResponse GetPagingProcessAddGroup(Paging paging, string[] includes = null);
+        ServiceResponse GetMultiPagingGroup(Paging paging, string[] includes = null);
+        ServiceResponse AddGroup(ProcessGroup user, int currentUserID, string currentUsername);
+        ServiceResponse UpdateGroup(ProcessGroup user, int currentUserID, string currentUsername);
+        ServiceResponse AddProcessToGroup(ProcessGroup user, int currentUserID, string currentUsername);
+        ServiceResponse GetGroupById(int groupId);
+        ServiceResponse RemoveFromGroup(int processId);
+        ServiceResponse DeleteGroup(int groupId);
 
         void Save();
 
@@ -142,23 +149,26 @@ namespace BusinessAccess.Services
 
 
             var status = 0;
-            if(paging.ExtraCondition != null)
+            if (paging.ExtraCondition != null)
             {
                 status = paging.ExtraCondition.Status;
             }
 
+            var processGroupId = 0;
+            if (paging.ExtraCondition != null)
+            {
+                processGroupId = paging.ExtraCondition.ProcessGroupId;
+            }
+
             if (!String.IsNullOrEmpty(paging.FilterString))
             {
-                if (status == null ||  status == 0)
-                {
-                    query = _processRepository.GetMulti(x => x.ProcessName.ToUpper().Contains(paging.FilterString.ToUpper()) ||
-                    x.Description.ToUpper().Contains(paging.FilterString.ToUpper()) || x.CreatedBy.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
-                }
-                else
-                {
-                    query = _processRepository.GetMulti(x => x.ProcessStatus == status && (x.ProcessName.ToUpper().Contains(paging.FilterString.ToUpper()) ||
-                   x.Description.ToUpper().Contains(paging.FilterString.ToUpper()) || x.CreatedBy.ToUpper().Contains(paging.FilterString.ToUpper())), includes);
-                }
+
+
+                query = _processRepository.GetMulti(x => ((x.ProcessStatus == status && status != null && status != 0) || (status == null || status == 0)) &&
+                ((x.ProcessGroupId == processGroupId && processGroupId != null && processGroupId != 0) || (processGroupId == null || processGroupId == 0))
+                && (x.ProcessName.ToUpper().Contains(paging.FilterString.ToUpper()) ||
+               x.Description.ToUpper().Contains(paging.FilterString.ToUpper()) || x.CreatedBy.ToUpper().Contains(paging.FilterString.ToUpper())), includes);
+
 
 
 
@@ -170,14 +180,11 @@ namespace BusinessAccess.Services
             }
             else
             {
-                if (status == null ||status == 0)
-                {
-                    query = _processRepository.GetAll(includes);
-                }
-                else
-                {
-                    query = _processRepository.GetMulti(x => x.ProcessStatus == status, includes);
-                }
+
+                query = _processRepository.GetMulti(x =>
+                ((x.ProcessStatus == status && status != null && status != 0) || (status == null || status == 0)) &&
+                 ((x.ProcessGroupId == processGroupId && processGroupId != null && processGroupId != 0) || (processGroupId == null || processGroupId == 0)), includes);
+
 
             }
 
@@ -195,7 +202,20 @@ namespace BusinessAccess.Services
                 }
             }
             data.TotalRecord = query.Count();
-            data.PageData = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize);
+
+            var listResult = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+            if (listResult != null)
+            {
+                foreach (var item in listResult)
+                {
+                    if (item.ProcessGroup != null)
+                    {
+
+                        item.ProcessGroup.Processes = null;
+                    }
+                }
+            }
+            data.PageData = listResult;
             res.OnSuccess(data);
             return res;
 
@@ -477,8 +497,274 @@ namespace BusinessAccess.Services
             return res;
         }
 
+        public ServiceResponse GetMultiPagingGroup(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<ProcessGroup> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
 
 
+
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+                // || x.Description.ToUpper().Contains(paging.FilterString.ToUpper())
+                query = _processGroupRepository.GetMulti(x => x.ProcessGroupName.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
+
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+
+                query = _processGroupRepository.GetAll(includes);
+
+
+            }
+
+            if (!String.IsNullOrEmpty(paging.SortBy))
+            {
+                var propertyInfo = typeof(ProcessGroup).GetProperty(paging.SortBy);
+                if (paging.Sort != null && (paging.Sort.ToUpper().Equals("DESC") || paging.Sort.Equals(null)))
+                {
+                    query = query.OrderByDescending(x => propertyInfo.GetValue(x, null));
+                }
+                else
+                {
+
+                    query = query.OrderBy(x => propertyInfo.GetValue(x, null));
+                }
+            }
+            data.TotalRecord = query.Count();
+            data.PageData = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize);
+            res.OnSuccess(data);
+            return res;
+
+        }
+
+        public ServiceResponse AddGroup(ProcessGroup group, int currentUserID, string currentUsername)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (group == null || (group != null && group.ProcessGroupName == null))
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+
+            if (!_processGroupRepository.CheckContains(x => x.ProcessGroupName == group.ProcessGroupName))
+            {
+                TimeZone localZone = TimeZone.CurrentTimeZone;
+                DateTime now = DateTime.Now;
+
+                group.CreatedBy = currentUsername;
+                group.CreatedDate = localZone.ToUniversalTime(now);
+                group.ModifiedBy = currentUsername;
+                group.ModifiedDate = localZone.ToUniversalTime(now);
+
+                var userGrpAdd = _processGroupRepository.Add(group);
+                res.OnSuccess(userGrpAdd);
+
+                this.Save();
+
+            }
+            else
+            {
+                res.OnError("Duplicate group");
+            }
+            return res;
+        }
+
+        public ServiceResponse UpdateGroup(ProcessGroup group, int currentUserID, string currentUsername)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (group == null || (group != null && group.ProcessGroupName == null))
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+            var processGrp = _processGroupRepository.GetSingleById(group.ProcessGroupId);
+            if (processGrp == null)
+            {
+
+                res.OnError("Group not exist");
+                return res;
+            }
+
+            if (!_processGroupRepository.CheckContains(x => x.ProcessGroupName == group.ProcessGroupName))
+            {
+                TimeZone localZone = TimeZone.CurrentTimeZone;
+                DateTime now = DateTime.Now;
+
+                processGrp.ProcessGroupName = group.ProcessGroupName;
+                processGrp.ModifiedBy = currentUsername;
+                processGrp.ModifiedDate = localZone.ToUniversalTime(now);
+
+                _processGroupRepository.Update(processGrp);
+                res.OnSuccess(processGrp);
+                this.Save();
+
+            }
+            else
+            {
+                res.OnError("Duplicate group");
+            }
+            return res;
+        }
+
+
+        public ServiceResponse GetGroupById(int groupId)
+        {
+            ServiceResponse res = new ServiceResponse();
+
+            var data = _processGroupRepository.GetSingleById(groupId);
+
+            if (data != null)
+            {
+                res.OnSuccess(data);
+            }
+            else
+            {
+                res.OnError("Không có dữ liệu");
+            }
+            return res;
+        }
+
+        public ServiceResponse DeleteGroup(int groupId)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (groupId == null || groupId == 0)
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+
+
+            var data = _processGroupRepository.Delete(groupId);
+            this.Save();
+            res.OnSuccess(data);
+
+            return res;
+        }
+
+        public ServiceResponse GetPagingProcessAddGroup(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<Process> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
+
+
+
+            var processGroupId = 0;
+            if (paging.ExtraCondition != null)
+            {
+                processGroupId = paging.ExtraCondition.ProcessGroupId;
+            }
+
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+
+
+                query = _processRepository.GetMulti(x => ((x.ProcessGroupId != processGroupId && processGroupId != null && processGroupId != 0) || (processGroupId == null || processGroupId == 0))
+                && (x.ProcessName.ToUpper().Contains(paging.FilterString.ToUpper()) ||
+               x.Description.ToUpper().Contains(paging.FilterString.ToUpper()) || x.CreatedBy.ToUpper().Contains(paging.FilterString.ToUpper())), includes);
+
+
+
+
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+
+                query = _processRepository.GetMulti(x =>
+                 ((x.ProcessGroupId != processGroupId && processGroupId != null && processGroupId != 0) || (processGroupId == null || processGroupId == 0)), includes);
+
+
+            }
+            data.TotalRecord = query.Count();
+
+            var listResult = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+            if (listResult != null)
+            {
+                foreach (var item in listResult)
+                {
+                    if (item.ProcessGroup != null)
+                    {
+
+                        item.ProcessGroup.Processes = null;
+                    }
+                }
+            }
+            data.PageData = listResult;
+            res.OnSuccess(data);
+            return res;
+        }
+
+        public ServiceResponse AddProcessToGroup(ProcessGroup group, int currentUserID, string currentUsername)
+        {
+            ServiceResponse res = new ServiceResponse();
+            if (group == null || (group != null && group.ProcessGroupName == null))
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+            var processGrp = _processGroupRepository.GetSingleById(group.ProcessGroupId);
+            if (processGrp == null)
+            {
+
+                res.OnError("Group not exist");
+                return res;
+            }
+
+            processGrp.Processes = group.Processes;
+
+            _processGroupRepository.Update(processGrp);
+            res.OnSuccess(processGrp);
+            this.Save();
+            return res;
+        }
+
+        public ServiceResponse RemoveFromGroup(int processId)
+        {
+            ServiceResponse res = new ServiceResponse();
+
+            var data = _processRepository.GetSingleById(processId);
+
+           
+
+            if (data == null)
+            {
+                res.OnError("Không có dữ liệu");
+                return res;
+                
+            }
+          
+
+            data.ProcessGroupId = null;
+
+            _processRepository.Update(data);
+            res.OnSuccess(data);
+            this.Save();
+            return res;
+        }
         #endregion
 
     }

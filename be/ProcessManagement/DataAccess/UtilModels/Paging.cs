@@ -24,8 +24,9 @@ namespace DataAccess.UtilModels
     {
         public int Status { set; get; }
         public int ProcessRelatedType { set; get; } // 0 => all, 1 toi tham gia, 2 toi tao
-     
 
+        public int ProcessGroupId { set; get; }
+        public int UserGroupId { set; get; }
     }
     public class Page
     {

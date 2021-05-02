@@ -18,7 +18,7 @@ const routes: Routes = [{
       path: 'process',
       loadChildren: () => import('./process-setting/process.module')
         .then(m => m.ProcessModule),
-    },  
+    },
     {
       path: 'process-execution',
       component: ProcessExecutionComponent
@@ -27,12 +27,26 @@ const routes: Routes = [{
       path: 'process-related',
       loadChildren: () => import('./process-related-me/process-related-me.module')
         .then(m => m.ProcessRelatedMeModule),
-    }, 
+    },
     {
       path: 'process-done',
       loadChildren: () => import('./process-done/process-done.module')
         .then(m => m.ProcessDoneModule),
-    },  
+    }, {
+      path: 'process-group',
+      loadChildren: () => import('./process-group/process-group.module')
+        .then(m => m.ProcessGroupModule),
+    },
+    {
+      path: 'user-group',
+      loadChildren: () => import('./user-group/user-group.module')
+        .then(m => m.UserGroupModule),
+    },
+    {
+      path: 'process-done',
+      loadChildren: () => import('./process-done/process-done.module')
+        .then(m => m.ProcessDoneModule),
+    },
     {
       path: 'layout',
       loadChildren: () => import('./layout/layout.module')

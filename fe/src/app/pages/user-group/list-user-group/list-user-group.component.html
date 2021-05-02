@@ -1,0 +1,82 @@
+<nb-card>
+  <nb-card-header class="container-fluid">
+    <div class="row align-items-center">
+
+
+      <div class="col-md-6 mb-1 mt-1 ">
+        <div>
+          Danh sách nhóm người dùng
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+
+          <div class="col-12 col-md-8 mb-1 mt-1 ">
+            <nb-form-field>
+              <input type="text" nbInput fullWidth [value]="paging.FilterString" placeholder="Tìm kiếm"
+                (keyup)="searchProcess($event)">
+              <button nbSuffix nbButton ghost (click)="clearSearch()">
+                <nb-icon [icon]="'close-circle-outline'" pack="eva">
+                </nb-icon>
+              </button>
+            </nb-form-field>
+          </div>
+          <div class="col-12 col-md-4 mb-1 mt-1  ">
+            <button nbButton fullWidth [status]="'primary'"  (click)="showDialogAddGroup(dialogAddGroup)">
+               Tạo nhóm mới
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- <ng2-smart-table  [settings]="settings" [source]="source" (edit)="onEditItem($event)">
+    </ng2-smart-table> -->
+
+    <ngx-datatable class="material fullscreen" [rows]="listGroup" [columns]="colummSetting"
+      [columnMode]="columnMode.force" [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading"
+      [footerHeight]="50" [rowHeight]="'auto'" [scrollbarH]="true" [externalPaging]="true" [externalSorting]="true"
+      [count]="totalRecord" [offset]="paging.CurrentPage - 1" [limit]="paging.PageSize" (page)="setPage($event)"
+      (sort)="setSort($event)" (select)="onSelectRow($event)"  [selectionType]="selectionType.single" >
+
+      <!-- <ngx-datatable-column name="Trạng thái" prop="ProcessStatus">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <div *ngIf="value === processStatusEnum.Active">Đang hoạt động</div>
+          <div *ngIf="value === processStatusEnum.InActive">Ngưng hoạt động</div>
+          <div *ngIf="value === processStatusEnum.Draf">Phác thảo</div>
+          <div *ngIf="value === processStatusEnum.Stop">Ngừng sử dụng</div>
+        </ng-template>
+      </ngx-datatable-column> -->
+
+    </ngx-datatable>
+  </nb-card-body>
+</nb-card>
+
+
+<ng-template #dialogAddGroup let-data let-ref="dialogRef">
+  <nb-card accent="danger" [nbSpinner]="loadingUpdate" nbSpinnerStatus="danger" nbSpinnerSize="large"
+  nbSpinnerMessage="" style="width: 400px; max-height: calc(100vh - 60px);">
+      <ng-container >
+          <nb-card-header>Thêm nhóm mới</nb-card-header>
+          <nb-card-body>
+            <div class="field-name mb-3" >
+              <label for="field-group-name" class="label required">Tên nhóm người dùng
+      
+              </label>
+              <input [class.border-error]="newGroup.Empty" type="text" nbInput fullWidth id="field-group-name" placeholder="Nhập tên nhóm người dùng"
+                   [(ngModel)]="newGroup.UserGroupName" (ngModelChange)="resetError()">
+          </div>
+          </nb-card-body>
+          <nb-card-footer>
+              <div class="btn-group dis-flex justify-content-end">
+                <button nbButton class="mr-2" (click)="addNewUserGroup(ref)">Thêm</button>
+                  <button nbButton (click)="ref.close()">Đóng</button>
+
+              </div>
+          </nb-card-footer>
+      </ng-container>
+  </nb-card>
+
+</ng-template>

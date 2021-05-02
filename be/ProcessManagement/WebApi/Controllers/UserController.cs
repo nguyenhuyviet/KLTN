@@ -168,6 +168,183 @@ namespace WebApi.Controllers
 
             return result;
         }
+        #region group
 
+        [HttpPost("GetMultiPagingGroup")]
+        public ServiceResponse GetMultiPagingGroup(Paging paging)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+               // string[] includes = new string[1] { "" };
+                result = _userService.GetMultiPagingGroup(paging);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+            return result;
+        }
+
+  
+        [HttpPost("AddGroup")]
+        public ServiceResponse AddGroup(UserGroup userGrp)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                var currentUsername = User.Identity.Name;
+                result = _userService.AddGroup(userGrp, currentUserID, currentUsername);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }  
+        
+
+        [HttpPost("UpdateGroup")]
+        public ServiceResponse UpdateGroup(UserGroup userGrp)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                var currentUsername = User.Identity.Name;
+                result = _userService.UpdateGroup(userGrp, currentUserID, currentUsername);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+
+        [HttpPost("AddUserToGroup")]
+        public ServiceResponse AddUserToGroup(List<UserGroupDetail> listUserGroupDetail)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                var currentUsername = User.Identity.Name;
+                result = _userService.AddUserToGroup(listUserGroupDetail, currentUserID, currentUsername);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+        [HttpPost("RemoveFromGroup")]
+        public ServiceResponse RemoveFromGroup(UserGroupDetail userGrpDetail)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+
+                result = _userService.RemoveFromGroup(userGrpDetail);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+        [HttpGet("GetGroupById/{userGroupId}")]
+        public ServiceResponse GetGroupById(int userGroupId)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                var currentUsername = User.Identity.Name;
+                result = _userService.GetGroupById(userGroupId);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+        [HttpGet("DeleteGroup/{userGroupId}")]
+        public ServiceResponse DeleteGroup(int userGroupId)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                var currentUsername = User.Identity.Name;
+                result = _userService.DeleteGroup(userGroupId);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+        [HttpPost("GetPagingUserAddGroup")]
+        public ServiceResponse GetPagingUserAddGroup(Paging paging)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                string[] includes = new string[1] { "ProcessGroup" };
+                result = _userService.GetPagingUserAddGroup(paging, includes);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+            return result;
+        }
+        
+        [HttpPost("GetMultiPagingInGroup")]
+        public ServiceResponse GetMultiPagingInGroup(Paging paging)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                string[] includes = new string[1] { "ProcessGroup" };
+                result = _userService.GetMultiPagingInGroup(paging, includes);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

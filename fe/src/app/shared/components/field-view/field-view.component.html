@@ -58,16 +58,16 @@
     </div>
     <!-- dropdown -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Dropdown">
-        <label for="field-{{fieldData.StepFieldId}}" class="label ">{{fieldData.FieldName}}</label>
+        <label for="field-{{fieldData.StepFieldId}}" class="label " [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}</label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <nb-select status="{{fieldValue.Empty? 'danger' : 'basic'}}" id="field-{{fieldData.StepFieldId}}" class="" style="min-width: 300px;" [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()">
+        <nb-select status="{{fieldData.IsRequired && fieldValue.Empty? 'danger' : 'basic'}}" id="field-{{fieldData.StepFieldId}}" class="" style="min-width: 300px;" [(ngModel)]="fieldValue.Value" (ngModelChange)="resetError()">
             <nb-option [value]="option.OptionId" *ngFor="let option of fieldData.DataSettingObj?.ListOption">{{option.OptionName}}
             </nb-option>
         </nb-select>
     </div>
     <!-- checkbox -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.Checkbox">
-        <label for="field-{{fieldData.StepFieldId}}" class="label">{{fieldData.FieldName}}</label>
+        <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}</label>
         <div class="field-des">{{fieldData.Description}}</div>
         <div style="display: flex;flex-direction: column;">
 

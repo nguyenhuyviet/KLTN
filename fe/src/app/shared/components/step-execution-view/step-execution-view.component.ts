@@ -4,6 +4,7 @@ import { FieldType } from '../../../enums/field-type.enum';
 import { ProcessExecution } from '../../../models/process-exe';
 import { ProcessExecutionService } from '../../../services/process-exe.service';
 import { ProcessService } from '../../../services/process.service';
+import { ConvertMinutes, GetDiffDayMinute } from '../../fn/common.fn';
 
 @Component({
   selector: 'ngx-step-execution-view',
@@ -77,6 +78,10 @@ export class StepExecutionViewComponent implements OnInit {
       if (data && data.Data) {
         this.step = data.Data.CurrentStep;
         this.listPrevStep = data.Data.ListStep;
+
+        if(this.step.HasDeadline && this.step.DeadLine){
+          this.BuildDeadline();
+        }
         if (this.step && this.step.StepFields) {
           this.step.StepFields.forEach(x => {
             x.DataSettingObj = JSON.parse(x.DataSetting);
@@ -85,6 +90,24 @@ export class StepExecutionViewComponent implements OnInit {
       }
       this.isLoading = false;
     });
+  }
+
+  BuildDeadline() {
+    const dateDealine = new Date(this.step.CreatedDate);
+    const now = new Date();
+    const diff = GetDiffDayMinute(dateDealine, now);
+
+    const remain = this.step.DeadLine - diff;
+    
+    if(remain <= 0){
+      this.step.OverDeadline = true;
+      return;
+    }
+
+    const deadline = ConvertMinutes(remain);
+    this.step.Day = deadline.day;
+    this.step.Hour = deadline.hour;
+    this.step.Minute = deadline.minute;
   }
 
   backToProcess() {

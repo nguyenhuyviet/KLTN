@@ -1,5 +1,56 @@
 :host {
+  .pointer-none{
+    pointer-events: none;
+  }
+  .cancel-p{
+    
+    position: absolute;
+    top: 38px;
+    right: 9px;
+    font-size: 12px;
+    color: #ff3d71;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  ::ng-deep{
 
+  
+  .draf {
+    width: 8px;
+    height: 8px;
+    background: #e5e503;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .active {
+    width: 8px;
+    height: 8px;
+    background: #39a50e;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .stop {
+    width: 8px;
+    height: 8px;
+    background: #d52727;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  .inactive {
+      width: 8px;
+      height: 8px;
+      background: #ff7300;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+  }
   .step-setting-container {
     font-size: 14px;
 

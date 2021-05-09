@@ -23,6 +23,9 @@ import {
 } from '@nebular/theme';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ListStepDoneComponent } from './list-step-done/list-step-done.component';
+import { LoginModule } from './pages/login/login.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor, JwtInterceptor } from './_helpers';
 
 @NgModule({
   declarations: [AppComponent, ListStepDoneComponent],
@@ -50,8 +53,16 @@ import { ListStepDoneComponent } from './list-step-done/list-step-done.component
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
     NbTimepickerModule.forRoot(),
+    LoginModule,
   ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+
+  
+],
   bootstrap: [AppComponent],
+  
 })
 export class AppModule {
 }

@@ -3,6 +3,7 @@ import { FormMode } from '../../../enums/form-mode.enum';
 import { ProcessService } from '../../../services/process.service';
 import * as _ from "lodash"
 import { listProcessStatus } from '../../../enums/process-status.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-process-setup',
@@ -30,7 +31,8 @@ export class ProcessSetupComponent implements OnInit {
   @Output() eventUpdate = new EventEmitter();
 
   constructor(
-    private processSV: ProcessService
+    private processSV: ProcessService,
+    private router :Router
   ) { }
 
   ngOnInit(): void {
@@ -98,7 +100,8 @@ export class ProcessSetupComponent implements OnInit {
     this.isLoadingBtn = true;
     this.processSV.addProcess(process).subscribe(data => {
       if (data && data.Data) {
-        console.log(data.Data);
+        this.router.navigateByUrl(`pages/process/stepSetting/${data.Data.ProcessId}`);
+
       }
       this.isLoadingBtn = false;
 

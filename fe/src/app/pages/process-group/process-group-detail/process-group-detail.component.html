@@ -1,4 +1,4 @@
-<nb-card >
+<nb-card *ngIf="processGroup">
     <nb-card-header class="container-fluid">
         <div class="row align-items-center">
 
@@ -91,11 +91,12 @@
                 <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     {{value}}
                 </ng-template>
-                <ngx-datatable-column name="Ngày tạo" prop="CreatedDate" width="100">
-                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                        {{value | date:'yyyy/MM/dd hh:mm'}}
-                    </ng-template>
-                </ngx-datatable-column>
+             
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Ngày tạo" prop="CreatedDate" width="100">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{value | date:'yyyy/MM/dd hh:mm'}}
+                </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column name="Người sửa" prop="ModifiedBy" width="100">
                 <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>

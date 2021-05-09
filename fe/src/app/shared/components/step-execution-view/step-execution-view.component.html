@@ -11,7 +11,7 @@
                         {{step.ProcessStepName}}
                     </div>
                 </div>
-                <div class="col-4 btn-group row justify-content-end">
+                <div class="col-4 btn-group row justify-content-end" *ngIf="!step.OverDeadline">
                     <button class="mr-2" status="primary" size="small" nbButton
                         (click)="openSelectAssignee(dialogSelectAssignee)">
                         Chuyển tiếp
@@ -64,6 +64,19 @@
                     </nb-accordion>
                 </div>
                 <div class="right">
+                    <div class="step-item-view task-view mb-3" *ngIf="step.HasDeadline && !fistStep">
+                        <ng-container *ngIf="!step.OverDeadline">
+                            <div class="section-title mb-2">Hạn hoàn thành</div>
+                            <div class="dis-flex-a">
+                                <div> {{step.Day}} ngày,</div>
+                                <div>&nbsp;{{step.Hour}} giờ,</div>
+                                <div>&nbsp;{{step.Minute}} phút</div>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="step.OverDeadline" class="section-title mb-2 over-deadline">
+                            Hết thời gian xử lý
+                        </div>
+                    </div>
                     <div class="step-item-view task-view mb-3" *ngIf="step.HasTask">
                         <div class="section-title mb-2">Công việc</div>
                         <div class="task-item" *ngFor="let task of step.StepTasks">

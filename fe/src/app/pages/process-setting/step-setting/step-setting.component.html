@@ -1,10 +1,14 @@
 <nb-card class="step-setting-container" *ngIf="currentProcess">
     <nb-card-header class="container-fluid">
-        <div class="row align-items-center">
-            <div class="mb-1 mt-1 ">
+        <div class="row align-items-center justify-content-between">
+            <div class="mb-1 mt-1 dis-flex-a " style="position: relative;">
+                <nb-icon class="mr-2 cursor-pointer" [icon]="'arrow-back-outline'" pack="eva"
+                    (click)="backToListProcess()">
+                </nb-icon>
                 <nb-form-field>
-                    <input type="text" class="input-process-name" [class.is-view]="!isEditInput" nbInput fullWidth
-                        [(ngModel)]="currentProcess.ProcessName" placeholder="Tên quy trình" #inputProcessNameElm >
+                    <input type="text" class="input-process-name {{!isEditInput ? 'is-view pointer-none' : ''}}"  nbInput fullWidth
+                        [(ngModel)]="newProcess.ProcessName" placeholder="Tên quy trình" #inputProcessNameElm>
+                <span class="cancel-p cursor-pointer" (click)="hideInputProcessName($event)" *ngIf="isEditInput">Hủy</span>
                     <button nbSuffix nbButton ghost (click)="showEditProcessName()" *ngIf="!isEditInput">
                         <nb-icon [icon]="'edit-2-outline'" pack="eva">
                         </nb-icon>
@@ -14,6 +18,16 @@
                         </nb-icon>
                     </button>
                 </nb-form-field>
+            </div>
+            <div class="form-group " style="margin-right: 29px; min-width: 170px" >
+                <nb-select  id="process-group" class="col-md-6 padding-0" fullWidth
+                 [(ngModel)]="newProcess.ProcessStatus" (ngModelChange)="updateProcessStatus()" placeholder="Chọn nhóm quy trình" [ngModelOptions]="{standalone: true}">
+                    <nb-option [value]="status.ProcessStatus" *ngFor="let status of listProcessStatus">
+                       <div [class]="status.Class">
+                       
+                       </div> {{status.Text}}
+                    </nb-option>
+                </nb-select>
             </div>
         </div>
     </nb-card-header>
@@ -69,8 +83,8 @@
                     (click)="showUpdateStep()">
                 </nb-icon>
 
-                <nb-icon class="del-step" [icon]="'trash-2-outline'" *ngIf="!isUpdateStep" pack="eva"
-                    (click)="openConfirmDelStep(dialogConfirmDelStep)">
+                <nb-icon class="del-step" [icon]="'trash-2-outline'" *ngIf="!isUpdateStep && currentStep.SortOrder != 1"
+                    pack="eva" (click)="openConfirmDelStep(dialogConfirmDelStep)">
                 </nb-icon>
             </div>
         </div>
@@ -86,7 +100,7 @@
         <nb-card-footer>
             <div class="btn-group dis-flex justify-content-end">
                 <button class="mr-2" nbButton (click)="delStep(ref)" status="danger">Đồng ý</button>
-                <button nbButton (click)="ref.close()" >Hủy bỏ</button>
+                <button nbButton (click)="ref.close()">Hủy bỏ</button>
             </div>
         </nb-card-footer>
     </nb-card>

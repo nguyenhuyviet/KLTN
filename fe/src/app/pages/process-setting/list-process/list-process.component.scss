@@ -6,4 +6,39 @@
       box-shadow: none;
     }
   }
+
+  .draf {
+    width: 8px;
+    height: 8px;
+    background: #e5e503;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .active {
+    width: 8px;
+    height: 8px;
+    background: #39a50e;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .stop {
+    width: 8px;
+    height: 8px;
+    background: #d52727;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  .inactive {
+      width: 8px;
+      height: 8px;
+      background: #ff7300;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
 }

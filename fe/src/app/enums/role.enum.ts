@@ -1,6 +1,6 @@
 
 export enum Role {
-    QTHT = 1, 
-    CBQL = 2,
-    Employee = 3,
+    QTHT = "sys_admin", 
+    CBQL = "manager",
+    Employee = "employee",
 }

@@ -5,10 +5,15 @@ import { PagesComponent } from './pages.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 import { ProcessExecutionComponent } from './process-execution/process-execution.component';
+import { AuthGuard } from '../_helpers';
+import { Role } from '../enums/role.enum';
+import { UserSettingComponent } from './user-setting/user-setting.component';
 
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
+  canActivate: [AuthGuard],
+
   children: [
     {
       path: 'dashboard',
@@ -18,6 +23,8 @@ const routes: Routes = [{
       path: 'process',
       loadChildren: () => import('./process-setting/process.module')
         .then(m => m.ProcessModule),
+      data: { roles: [Role.CBQL] }
+
     },
     {
       path: 'process-execution',
@@ -36,11 +43,17 @@ const routes: Routes = [{
       path: 'process-group',
       loadChildren: () => import('./process-group/process-group.module')
         .then(m => m.ProcessGroupModule),
+      canActivate: [AuthGuard],
+      data: { roles: [Role.CBQL] }
     },
     {
       path: 'user-group',
       loadChildren: () => import('./user-group/user-group.module')
         .then(m => m.UserGroupModule),
+    },
+    {
+      path: 'user-setting',
+      component: UserSettingComponent
     },
     {
       path: 'process-done',
@@ -99,7 +112,7 @@ const routes: Routes = [{
     },
     {
       path: '',
-      redirectTo: 'dashboard',
+      redirectTo: 'process-execution',
       pathMatch: 'full',
     },
     {

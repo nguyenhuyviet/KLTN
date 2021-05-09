@@ -12,6 +12,11 @@ export function ConvertMinutes(num) {
 
 }
 
+export function GetDiffDayMinute(dayOne, dayTwo) {
+    var diffMs = (dayTwo - dayOne); // milliseconds between now & Christmas
+    return Math.floor(diffMs / 60000)
+}
+
 export function showToast(toastSV, msg, status) {
     toastSV.show(
         '', msg,

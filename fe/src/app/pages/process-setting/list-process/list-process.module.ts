@@ -4,6 +4,7 @@ import { ListProcessComponent } from './list-process.component';
 import { NbButtonModule, NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule } from '@nebular/theme';
 import { ThemeModule } from '../../../@theme/theme.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ProcessSetupModule } from '../../../shared/components/process-setup/process-setup.module';
 
 
 
@@ -17,7 +18,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     ThemeModule,
     NbButtonModule,
     NgxDatatableModule,
-    NbFormFieldModule
+    NbFormFieldModule,
+    ProcessSetupModule
   ],
 })
 export class ListProcessModule { }

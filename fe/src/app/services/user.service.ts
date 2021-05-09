@@ -21,7 +21,24 @@ export class UserService {
     constructor(
         private http: HttpClient,) { }
 
-    
+
+    getPaging(paging) {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/GetMultiPaging`, paging, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    //#region  auth
+    authenticate(userLogin) {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/authenticate`, userLogin, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    //#endregion
+
     //#region user in step
     getInStepSetting(paging) {
         return this.http.post<ServiceResponse>(`${this.processUrl}/GetInStepSetting`, paging, this.httpOptions)
@@ -39,17 +56,20 @@ export class UserService {
 
     //#endregion
 
-     //#region  group
-    
-     getPagingUserGroup(paging) {
+    //#region  group
+
+    getPagingUserGroup(paging) {
         return this.http.post<ServiceResponse>(`${this.processUrl}/GetMultiPagingGroup`, paging, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
 
+
+
+
     addUserGroup(group): Observable<ServiceResponse> {
-        return this.http.post<ServiceResponse>(`${this.processUrl}/addGroup`,group,this.httpOptions)
+        return this.http.post<ServiceResponse>(`${this.processUrl}/addGroup`, group, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
@@ -59,7 +79,7 @@ export class UserService {
      * lấy về danh sách group
      * @returns 
      */
-     deleteUserGroup(groupId): Observable<ServiceResponse> {
+    deleteUserGroup(groupId): Observable<ServiceResponse> {
         return this.http.get<ServiceResponse>(`${this.processUrl}/deleteGroup/${groupId}`)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
@@ -76,15 +96,15 @@ export class UserService {
      * lấy về danh sách group
      * @returns 
      */
-     updateUserGroup(group): Observable<ServiceResponse> {
-        return this.http.post<ServiceResponse>(`${this.processUrl}/updateGroup`,group,this.httpOptions)
+    updateUserGroup(group): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/updateGroup`, group, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
 
     removeFromGroup(usr): Observable<ServiceResponse> {
-        return this.http.post<ServiceResponse>(`${this.processUrl}/RemoveFromGroup/`,usr, this.httpOptions)
+        return this.http.post<ServiceResponse>(`${this.processUrl}/RemoveFromGroup/`, usr, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
@@ -109,7 +129,7 @@ export class UserService {
             );
     }
 
-    
+
 
     //#endregion
 
@@ -120,7 +140,7 @@ export class UserService {
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
-    
+
     addProcess(process): Observable<ServiceResponse> {
         return this.http.post<ServiceResponse>(`${this.processUrl}/AddProcess`, process, this.httpOptions)
             .pipe(

@@ -23,7 +23,7 @@
           </div>
           <div class="col-12 col-md-4 mb-1 mt-1  ">
             <button nbButton fullWidth [status]="'primary'" (click)="onCreateProcess()">
-               Tạo quy trình
+              Tạo quy trình
             </button>
           </div>
         </div>
@@ -39,17 +39,77 @@
       [columnMode]="columnMode.force" [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading"
       [footerHeight]="50" [rowHeight]="'auto'" [scrollbarH]="true" [externalPaging]="true" [externalSorting]="true"
       [count]="totalRecord" [offset]="paging.CurrentPage - 1" [limit]="paging.PageSize" (page)="setPage($event)"
-      (sort)="setSort($event)">
-
-      <!-- <ngx-datatable-column name="Trạng thái" prop="ProcessStatus">
-        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-          <div *ngIf="value === processStatusEnum.Active">Đang hoạt động</div>
-          <div *ngIf="value === processStatusEnum.InActive">Ngưng hoạt động</div>
-          <div *ngIf="value === processStatusEnum.Draf">Phác thảo</div>
-          <div *ngIf="value === processStatusEnum.Stop">Ngừng sử dụng</div>
+      (sort)="setSort($event)" (select)="onSelectRow($event)" [selectionType]="selectionType.single" >
+      <ngx-datatable-column name="" prop="" width="50" [sortable]="false">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <nb-icon [icon]="'edit-outline'" class="cursor-pointer" pack="eva"
+            (click)="showDialogEditProcess(dialogEditProcess,row)">
+          </nb-icon>
         </ng-template>
-      </ngx-datatable-column> -->
+      </ngx-datatable-column>
+      <ngx-datatable-column  [cellClass]="'cursor-pointer'" name="Tên quy trình" prop="ProcessName" width="250">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column   [cellClass]="'cursor-pointer'" name="Mô tả" prop="Description" width="400">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column   [cellClass]="'cursor-pointer'" name="Trạng thái" prop="ProcessStatus" width="150" >
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template >
+          <div *ngIf="value === processStatusEnum.Active">
+            <div class="active"></div> Đang sử dụng
+          </div>
+          <div *ngIf="value === processStatusEnum.Draf">
+            <div class="draf"></div> Phác thảo
+          </div>
+          <div *ngIf="value === processStatusEnum.InActive">
+            <div class="inactive"></div> Tạm dừng
+          </div>
+          <div *ngIf="value === processStatusEnum.Stop">
+            <div class="stop"></div> Ngừng sử dụng
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column  [cellClass]="'cursor-pointer'" name="Nhóm quy trình" prop="ProcessGroup.ProcessGroupName" width="150">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
 
+      <ngx-datatable-column  [cellClass]="'cursor-pointer'" name="Người tạo" prop="CreatedBy" width="100">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+
+      </ngx-datatable-column>
+      <ngx-datatable-column  [cellClass]="'cursor-pointer'" name="Ngày tạo" prop="CreatedDate" width="100">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value | date:'yyyy/MM/dd hh:mm'}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column  [cellClass]="'cursor-pointer'" name="Người sửa" prop="ModifiedBy" width="100">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column  [cellClass]="'cursor-pointer'" name="Ngày sửa" prop="ModifiedDate" width="100">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value | date:'yyyy/MM/dd hh:mm'}}
+        </ng-template>
+      </ngx-datatable-column>
     </ngx-datatable>
   </nb-card-body>
 </nb-card>
+
+
+
+<ng-template #dialogEditProcess let-data let-ref="dialogRef">
+    <div style="min-width: 700px;">
+
+      <ngx-process-setup [formMode]="formMode.Update" [processData]="currentProcessUpdate" (eventUpdate)="submit($event,ref)"></ngx-process-setup> 
+      
+    </div>
+</ng-template>  

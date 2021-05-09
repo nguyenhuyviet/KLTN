@@ -23,7 +23,7 @@ namespace WebApi.Controllers
             this._userService = userService;
         }
 
-
+        [Authorize]
         [HttpGet("GetAllUser")]
         public ServiceResponse GetAllUser()
         {
@@ -31,6 +31,24 @@ namespace WebApi.Controllers
             try
             {
                 result = _userService.GetAll();
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+            return result;
+        }
+
+        [HttpPost("GetMultiPaging")]
+        public ServiceResponse GetMultiPaging(Paging paging)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                // string[] includes = new string[1] { "" };
+                result = _userService.GetMultiPaging(paging);
 
             }
             catch (Exception ex)

@@ -132,7 +132,6 @@ namespace BusinessAccess.Services
         }
         public ServiceResponse InitProcessExe(DataInitProcessExe data, int currentUserID)
         {
-            currentUserID = 1;
             DateTime now = DateTime.Now;
             TimeZone localZone = TimeZone.CurrentTimeZone;
 
@@ -215,7 +214,6 @@ namespace BusinessAccess.Services
 
         public ServiceResponse GetStepExecution(int processExeId, int currentUserID)
         {
-            currentUserID = 29;
             ServiceResponse res = new ServiceResponse();
 
             string[] includes = new string[4] { "StepExecutions.CurrentAssignee", "CurrentStep.StepFields", "CurrentStep.StepTasks", "StepExecutions.ProcessStep" };
@@ -268,7 +266,6 @@ namespace BusinessAccess.Services
 
         public ServiceResponse NextStep(DataInitProcessExe data, int currentUserID)
         {
-            currentUserID = 29;
             DateTime now = DateTime.Now;
             TimeZone localZone = TimeZone.CurrentTimeZone;
 
@@ -324,7 +321,6 @@ namespace BusinessAccess.Services
 
         public ServiceResponse GetProcessNeedMyApproval(Paging paging, int currentUserID)
         {
-            currentUserID = 29;
             ServiceResponse res = new ServiceResponse();
             string[] includes = new string[3] { "ProcessExecution.CurrentStep", "ProcessStep", "ProcessExecution.Owner" };
 

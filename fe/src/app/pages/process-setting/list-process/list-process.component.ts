@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
-import { ColumnMode } from '@swimlane/ngx-datatable';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
+import { FormMode } from '../../../enums/form-mode.enum';
 import { ProcessStatusEnum } from '../../../enums/process-status.enum';
 import { Paging } from '../../../models/paging';
 import { ProcessService } from '../../../services/process.service';
@@ -47,12 +48,15 @@ export class ListProcessComponent implements OnInit {
   }
 
   processStatusEnum = ProcessStatusEnum;
-
+  selectionType = SelectionType;
   timeOut;
 
+  currentProcessUpdate;
+  formMode= FormMode;
   constructor(
     private router: Router,
     private processSV: ProcessService,
+    private dialogService: NbDialogService,
   ) {
     this.paging.CurrentPage = 1;
     this.paging.PageSize = 10;
@@ -85,7 +89,10 @@ export class ListProcessComponent implements OnInit {
       this.getProcess();
     }
   }
-
+  onSelectRow(e){
+    let currentProcess = e.selected[0];
+    this.router.navigateByUrl(`pages/process/stepSetting/${currentProcess.ProcessId}`);
+  }
   setPage(pageInfo) {
 
     this.paging.CurrentPage = pageInfo.offset + 1;
@@ -108,5 +115,20 @@ export class ListProcessComponent implements OnInit {
     this.paging.Sort = event.sorts[0]?.dir;
     this.paging.SortBy = event.sorts[0]?.prop;
     this.getProcess();
+  }
+
+  showDialogEditProcess(dialog, row){
+    this.currentProcessUpdate = row;
+    this.dialogService.open(dialog);
+
+  }
+
+  submit( e, ref){
+    let index =  this.listProcess.findIndex(x => x.ProcessId == e.ProcessId);
+    if(index >= 0){
+      this.listProcess[index] = e;
+    }
+
+    ref.close();
   }
 }

@@ -6,6 +6,7 @@ using BusinessAccess.Helpers;
 using BusinessAccess.Services;
 using DataAccess.Models;
 using DataAccess.UtilModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,7 @@ namespace WebApi.Controllers
 
         #region process
 
+        [Authorize(Roles = "sys_admin,manager")]
         [HttpGet("GetAll")]
         public ServiceResponse GetAll()
         {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json;
 using MoreLinq;
+using System.Threading.Tasks;
 
 namespace BusinessAccess.Services
 {
@@ -93,6 +94,20 @@ namespace BusinessAccess.Services
             process.CreatedDate = localZone.ToUniversalTime(now);
             process.ModifiedBy = currentUsername;
             process.ModifiedDate = localZone.ToUniversalTime(now);
+
+
+            var firstStep = new ProcessStep();
+
+
+            firstStep.ProcessStepName = "Bước thức nhất";
+            firstStep.SortOrder = 1;
+            firstStep.CreatedBy = currentUsername;
+            firstStep.CreatedDate = localZone.ToUniversalTime(now);
+            firstStep.ModifiedBy = currentUsername;
+            firstStep.ModifiedDate = localZone.ToUniversalTime(now);
+            firstStep.StepSortOrder = 1;
+
+            process.ProcessSteps.Add(firstStep);
 
             var processRes = _processRepository.Add(process);
             this.Save();
@@ -314,14 +329,24 @@ namespace BusinessAccess.Services
             TimeZone localZone = TimeZone.CurrentTimeZone;
             DateTime now = DateTime.Now;
 
+            processStep.StepSortOrder = 2;
             processStep.CreatedBy = currentUsername;
             processStep.CreatedDate = localZone.ToUniversalTime(now);
             processStep.ModifiedBy = currentUsername;
             processStep.ModifiedDate = localZone.ToUniversalTime(now);
 
+            // cập nhật lại StepSortOrder thằng khác
+            var step = _stepRepository.GetSingleByCondition(x => x.SortOrder > 1 && x.StepSortOrder == 2 && x.ProcessId == processStep.ProcessId);
+            if (step != null)
+            {
+                step.StepSortOrder = 3;
+                _stepRepository.Update(step);
+            }
+
             var processRes = _stepRepository.Add(processStep);
             this.Save();
             res.OnSuccess(processRes);
+      
 
             return res;
         }
@@ -748,15 +773,15 @@ namespace BusinessAccess.Services
 
             var data = _processRepository.GetSingleById(processId);
 
-           
+
 
             if (data == null)
             {
                 res.OnError("Không có dữ liệu");
                 return res;
-                
+
             }
-          
+
 
             data.ProcessGroupId = null;
 

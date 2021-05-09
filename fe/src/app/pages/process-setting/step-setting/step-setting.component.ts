@@ -2,6 +2,7 @@ import { Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } f
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbComponentStatus, NbDialogService, NbToastrService } from '@nebular/theme';
 import { FormMode } from '../../../enums/form-mode.enum';
+import { listProcessStatus } from '../../../enums/process-status.enum';
 import { Step } from '../../../models/step';
 import { ProcessService } from '../../../services/process.service';
 import { showToast } from '../../../shared/fn/common.fn';
@@ -17,12 +18,17 @@ export class StepSettingComponent implements OnInit {
   isLoadingStep = false;
   processID = -1;
   currentProcess;
+  newProcess = {
+    ProcessName: '',
+    ProcessStatus: 1,
+  };
   isEditInput = false;
   isShowInputStepName = false;
   stepAddSidebarName = "";
   currentStep;
   formMode = FormMode;
 
+  listProcessStatus = listProcessStatus;
 
   isUpdateStep = false;
 
@@ -66,6 +72,8 @@ export class StepSettingComponent implements OnInit {
     this.processSV.getAllStepByProcessID(this.processID).subscribe(data => {
       if (data && data.Data) {
         this.currentProcess = data.Data;
+        this.newProcess.ProcessName = this.currentProcess.ProcessName;
+        this.newProcess.ProcessStatus = this.currentProcess.ProcessStatus;
         if (this.currentProcess.ProcessSteps && this.currentProcess.ProcessSteps.length > 0) {
           this.currentStep = this.currentProcess.ProcessSteps[0];
         }
@@ -84,9 +92,11 @@ export class StepSettingComponent implements OnInit {
     }, 300);
   }
   updateProcessName() {
-    if (!this.currentProcess.ProcessName && !this.currentProcess.ProcessName.trim()) {
+    if (!this.newProcess.ProcessName && !this.newProcess.ProcessName.trim()) {
       return;
     }
+    this.currentProcess.ProcessName = this.newProcess.ProcessName;
+
     this.processSV.updateProcess(this.currentProcess).subscribe(data => {
       if (data && data.Data) {
         showToast(this.toastrService,"Cập nhật thành công", "success");
@@ -97,7 +107,20 @@ export class StepSettingComponent implements OnInit {
     });
 
   }
+  updateProcessStatus(){
+    if (!this.newProcess.ProcessStatus) {
+      return;
+    }
+    this.currentProcess.ProcessStatus = this.newProcess.ProcessStatus;
 
+    this.processSV.updateProcess(this.currentProcess).subscribe(data => {
+      if (data && data.Data) {
+        showToast(this.toastrService,"Cập nhật thành công", "success");
+      } else {
+        showToast(this.toastrService,"Cập nhật thất bại", "danger");
+      }
+    });
+  }
   addSidebarStep() {
     if (!this.stepAddSidebarName && !this.stepAddSidebarName.trim()) {
       return;
@@ -153,7 +176,10 @@ export class StepSettingComponent implements OnInit {
 
     }, 300);
   }
-
+  hideInputProcessName(){
+    this.isEditInput = false;
+    this.newProcess.ProcessName = this.currentProcess.ProcessName;
+  }
   hideInputStepName() {
     this.isShowInputStepName = false;
     this.stepAddSidebarName = "";
@@ -224,5 +250,9 @@ export class StepSettingComponent implements OnInit {
         showToast(this.toastrService,"Xóa bước thất bại", "danger");
       }
     });
+  }
+
+  backToListProcess(){
+    this.router.navigateByUrl(`pages/process`);
   }
 }

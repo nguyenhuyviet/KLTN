@@ -22,6 +22,7 @@ namespace BusinessAccess.Services
         ServiceResponse Delete(int id);
         ServiceResponse GetUserLoginById(int id);
         ServiceResponse GetMultiPagingInGroup(Paging paging, string[] includes = null);
+        ServiceResponse GetMultiPaging(Paging paging, string[] includes = null);
 
         ServiceResponse GetAll();
         string GetToken(UserInfor userInfor);
@@ -608,18 +609,18 @@ namespace BusinessAccess.Services
             }
 
             includes = new string[1] { "User" };
-            
+
             if (!String.IsNullOrEmpty(paging.FilterString))
             {
                 var listUsr = _userGrpDetailRepository.GetMulti(x => x.UserGroupId == userGroupId, includes);
                 var listUsrId = listUsr.Select(x => x.User.UserId);
 
-                query = _userGrpDetailRepository.GetMulti(x => x.UserGroupId != userGroupId && 
+                query = _userGrpDetailRepository.GetMulti(x => x.UserGroupId != userGroupId &&
                 (listUsrId != null && !listUsrId.Contains(x.User.UserId) || listUsrId == null)
                 && x.User.FullName.ToUpper().Contains(paging.FilterString.ToUpper())
                 || x.User.Email.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
 
-       
+
                 if (query == null)
                 {
                     res.OnSuccess(data);
@@ -650,7 +651,7 @@ namespace BusinessAccess.Services
                 foreach (var item in listResult)
                 {
                     item.UserGroupDetails = null;
-                    
+
                 }
             }
             data.PageData = listResult;
@@ -712,6 +713,88 @@ namespace BusinessAccess.Services
             _userGrpDetailRepository.Delete(userGroupDetail.Id);
             res.OnSuccess(userGroupDetail);
             this.Save();
+            return res;
+        }
+
+        public ServiceResponse GetMultiPaging(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<UserInfor> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
+
+            includes = new string[2] { "Role", "UserGroupDetails.UserGroup" };
+
+
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+
+
+                query = _userRepository.GetMulti(x => x.FullName.ToUpper().Contains(paging.FilterString.ToUpper())
+                || x.Email.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
+
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+                query = _userRepository.GetAll(includes);
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+
+
+
+            if (!String.IsNullOrEmpty(paging.SortBy))
+            {
+                var propertyInfo = typeof(UserInfor).GetProperty(paging.SortBy);
+                if (paging.Sort != null && (paging.Sort.ToUpper().Equals("DESC") || paging.Sort.Equals(null)))
+                {
+                    query = query.OrderByDescending(x => propertyInfo.GetValue(x, null));
+                }
+                else
+                {
+
+                    query = query.OrderBy(x => propertyInfo.GetValue(x, null));
+                }
+            }
+            data.TotalRecord = query.Count();
+            var listResult = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+            if (listResult != null)
+            {
+                foreach (var item in listResult)
+                {
+
+                    if (item.Role != null)
+                    {
+                        item.Role.UserInfors = null;
+                    }
+                    if (item.UserGroupDetails != null)
+                    {
+                        foreach (var groupDetail in item.UserGroupDetails)
+                        {
+                            if (groupDetail.UserGroup != null)
+                            {
+
+                                groupDetail.UserGroup.UserGroupDetails = null;
+                            }
+                        }
+                    }
+                }
+            }
+            data.PageData = listResult;
+            res.OnSuccess(data);
             return res;
         }
 

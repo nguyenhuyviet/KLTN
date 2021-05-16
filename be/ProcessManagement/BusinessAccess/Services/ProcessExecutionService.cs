@@ -122,7 +122,7 @@ namespace BusinessAccess.Services
                         ProcessName = processExe.ProcessExecution.ProcessExecutionName,
                         OwnerName = processExe.ProcessExecution.Owner.FullName,
                         OwnerId = processExe.ProcessExecution.OwnerId,
-                        StepDescription = processExe.ProcessStep.Description,
+                        StepDescription = processExe.ProcessExecution.CurrentStep != null ? processExe.ProcessExecution.CurrentStep.Description : "Đã hoàn thành",
                         ProcessExecutionId = processExe.ProcessExecutionId,
                         Status = processExe.ProcessExecution.Status,
                         CreatedDate = processExe.ProcessExecution.CreatedDate

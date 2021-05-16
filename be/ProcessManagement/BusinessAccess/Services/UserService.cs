@@ -73,23 +73,54 @@ namespace BusinessAccess.Services
         /// <returns></returns>
         public ServiceResponse Add(UserLogin user, int currentUserID, string currentUsername)
         {
+            var now = DateTime.Now;
             ServiceResponse res = new ServiceResponse();
-            if (user == null || (user != null && user.User == null) || (user != null && user.User != null && user.User.Role == null))
+            if (user == null || (user != null && user.User == null) || (user != null && user.User != null && user.User.UserLogin == null))
             {
                 res.OnError("Data empty");
                 return res;
             }
-
-            if (!_userLoginRepository.CheckContains(x => x.Username == user.Username))
+            if (user.UserId != 0)
             {
+                var userUpdate = _userRepository.GetSingleById(user.UserId);
+                if (userUpdate != null)
+                {
+                    userUpdate.FullName = user.User.FullName;
+                    userUpdate.Email = user.User.Email;
+                    userUpdate.DateOfBirth = user.User.DateOfBirth;
+                    userUpdate.Phone = user.User.Phone;
+                    userUpdate.Address = user.User.Address;
+                    userUpdate.RoleId = user.User.RoleId;
 
-                var userInforAdd = _userRepository.Add(user.User);
-                this.Save();
-
+                    userUpdate.ModifiedBy = currentUsername;
+                    userUpdate.ModifiedDate = now;
+                    _userRepository.AddOrUpdate(userUpdate);
+                    res.OnSuccess(userUpdate);
+                    this.Save();
+                }
+                else
+                {
+                    res.OnError("Không tìm thấy tài khoản");
+                }
             }
             else
             {
-                res.OnError("Duplicate account");
+
+                if (!_userLoginRepository.CheckContains(x => x.Username == user.Username))
+                {
+                    user.User.CreatedBy = currentUsername;
+                    user.User.CreatedDate = now;
+                    user.User.ModifiedBy = currentUsername;
+                    user.User.ModifiedDate = now;
+                    var userInforAdd = _userRepository.Add(user.User);
+                    this.Save();
+                    res.OnSuccess(userInforAdd);
+
+                }
+                else
+                {
+                    res.OnError("Duplicate account");
+                }
             }
             return res;
         }
@@ -104,6 +135,7 @@ namespace BusinessAccess.Services
         public ServiceResponse AddMulti(List<UserLogin> listUser, int currentUserID, string currentUsername)
         {
             ServiceResponse res = new ServiceResponse();
+            var now = DateTime.Now;
             if (listUser == null || (listUser != null && listUser.Count == 0))
             {
                 res.OnError("Data empty");
@@ -120,7 +152,7 @@ namespace BusinessAccess.Services
 
             listUser.ForEach(user =>
             {
-                if (user == null || (user != null && user.User == null) || (user != null && user.User != null && user.User.Role == null))
+                if (user == null || (user != null && user.User == null) || (user != null && user.User != null && user.User.UserLogin == null))
                 {
                     listFailed.Add(user.User);
                 }
@@ -130,6 +162,10 @@ namespace BusinessAccess.Services
                 }
                 else
                 {
+                    user.User.CreatedBy = currentUsername;
+                    user.User.CreatedDate = now;
+                    user.User.ModifiedBy = currentUsername;
+                    user.User.ModifiedDate = now;
                     listSuccess.Add(user.User);
                 }
             });
@@ -150,7 +186,11 @@ namespace BusinessAccess.Services
 
         public ServiceResponse Delete(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse res = new ServiceResponse();
+            var data = _userRepository.Delete(id);
+            this.Save();
+            res.OnSuccess(data);
+            return res;
         }
 
         public ServiceResponse GetAll()
@@ -416,7 +456,7 @@ namespace BusinessAccess.Services
 
             if (!_userGrpRepository.CheckContains(x => x.UserGroupName == user.UserGroupName))
             {
-                 
+
                 DateTime now = DateTime.Now;
 
                 user.CreatedBy = currentUsername;
@@ -455,7 +495,7 @@ namespace BusinessAccess.Services
 
             if (!_userGrpRepository.CheckContains(x => x.UserGroupName == user.UserGroupName))
             {
-                 
+
                 DateTime now = DateTime.Now;
 
                 userGrp.UserGroupName = user.UserGroupName;

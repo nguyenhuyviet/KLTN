@@ -130,6 +130,27 @@ namespace WebApi.Controllers
             return result;
         }
 
+        [Authorize]
+        [HttpGet("DeleteUser/{userId}")]
+        public ServiceResponse DeleteUser(int userId)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                var currentUsername = User.Identity.Name;
+                result = _userService.Delete(userId);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
 
         [Authorize]
         [HttpPost("AddMultiUser")]

@@ -7,5 +7,7 @@ export class Paging {
     ExtraCondition: any;
     constructor(){
         this.FilterString = "";
+        this.CurrentPage = 1;
+        this.PageSize = 10;
     }
 }

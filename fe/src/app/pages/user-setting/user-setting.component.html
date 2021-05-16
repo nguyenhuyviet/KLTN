@@ -29,9 +29,9 @@
                             (click)="showDialogAddProcess(dialogAddProcess)">
                             Thêm
                         </button>
-                        <button title="Thêm" class="mr-2" nbButton [status]="'success'"
-                            (click)="showDialogAddProcess(dialogAddProcess)">
-                            Thêm từ file
+                        <button title="Thêm người dùng" class="mr-2" nbButton [status]="'success'"
+                            (click)="showDialog(dialogAddUser)">
+                            Thêm nhiều
                         </button>
                     </div>
                 </div>
@@ -50,12 +50,12 @@
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="dis-flex-a">
                         <nb-icon [icon]="'edit-outline'" class="cursor-pointer mr-3" pack="eva"
-                        (click)="showDialogAddProcess(dialogAddProcess,row)">
-                    </nb-icon>
-                        <nb-icon [icon]="'trash-2-outline'" class="cursor-pointer " pack="eva"
-                            (click)="showDialogRemoveProcess(dialogConfirmRemoveProcess,row)">
+                            (click)="showDialogAddProcess(dialogAddProcess,row)">
                         </nb-icon>
-                       
+                        <nb-icon [icon]="'trash-2-outline'" class="cursor-pointer " pack="eva"
+                            (click)="showDialogRemoveProcess(dialogConfirmRemoveUser,row)">
+                        </nb-icon>
+
                     </div>
                 </ng-template>
             </ngx-datatable-column>
@@ -149,27 +149,297 @@
 
 </ng-template>
 
-<!-- <ng-template #dialogConfirmDelGroup let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>Xóa nhóm</nb-card-header>
-        <nb-card-body>Bạn có chắc muốn xóa nhóm này không?</nb-card-body>
+<ng-template #dialogAddUser let-data let-ref="dialogRef">
+    <nb-card accent="danger" [nbSpinner]="loadingUpdate" nbSpinnerStatus="danger" nbSpinnerSize="large"
+        nbSpinnerMessage="" style="width: 60vw; max-height: calc(100vh - 60px);">
+        <ng-container>
+            <nb-card-header>Thêm từ file</nb-card-header>
+            <nb-card-body>
+                <div class="mb-3">
+                    File phải có định dạng như sau
+                </div>
+                <img class="mb-3" src="../../../assets/images/user.png">
+                <input type="file" (change)="previewFiles($event,dialogListUserAdd, ref)" nbInput fullWidth>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="btn-group dis-flex justify-content-end">
+                    <button nbButton (click)="ref.close()">Đóng</button>
+                </div>
+            </nb-card-footer>
+        </ng-container>
+    </nb-card>
+
+</ng-template>
+
+
+<ng-template #dialogListUserAdd let-data let-ref="dialogRef">
+    <nb-card style="min-width: 80vw;max-height: 90vh;">
+        <nb-card-header>Danh sách </nb-card-header>
+        <nb-card-body>
+            <div *ngIf="listUserErr && listUserErr.length > 0">
+                <div style="color: #ff3d71;">
+
+                    Danh sách người dùng lỗi:
+                </div>
+                <ngx-datatable class="material fullscreen" [rows]="listUserErr" [columnMode]="columnMode.force"
+                    [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading" [footerHeight]="50"
+                    [rowHeight]="'auto'" [scrollbarH]="true" [count]="listUserErr?.length"
+                    [offset]="pagingError.CurrentPage - 1" [limit]="pagingError.PageSize">
+                    <ngx-datatable-column name="" prop="" width="100" [sortable]="false">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div class="dis-flex-a">
+                                <nb-icon [icon]="'trash-2-outline'" class="cursor-pointer " pack="eva"
+                                    (click)="showDialogRemoveUser(dialogConfirmRemoveUser,row,listUserErr)">
+                                </nb-icon>
+
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Tên đầy đủ" prop="FullName" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Ngày sinh" prop="DateOfBirth" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value | date:'yyyy/MM/dd hh:mm'}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Email" prop="Email" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Điện thoại" prop="Phone" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Địa chỉ" prop="Address" width="200">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Vai trò" prop="Role.RoleName" width="150" [sortable]="false">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <div *ngIf="value === 1">
+                                sys_admin
+                            </div>
+                            <div *ngIf="value === 2">
+                                manager
+                            </div>
+                            <div *ngIf="value === 3">
+                                employee
+                            </div>
+
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div *ngIf="listUserAdd && listUserAdd.length > 0">
+                Danh sách người dùng:
+                <ngx-datatable class="material fullscreen" [rows]="listUserAdd" [columnMode]="columnMode.force"
+                    [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading" [footerHeight]="50"
+                    [rowHeight]="'auto'" [scrollbarH]="true" [count]="listUserAdd?.length"
+                    [offset]="pagingAdd.CurrentPage - 1" [limit]="pagingAdd.PageSize">
+                    <ngx-datatable-column name="" prop="" width="100" [sortable]="false">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div class="dis-flex-a">
+                                <nb-icon [icon]="'trash-2-outline'" class="cursor-pointer " pack="eva"
+                                    (click)="showDialogRemoveUser(dialogConfirmRemoveUser,row,listUserAdd)">
+                                </nb-icon>
+
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Tên đầy đủ" prop="FullName" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Ngày sinh" prop="DateOfBirth" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value | date:'yyyy/MM/dd hh:mm'}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Email" prop="Email" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Điện thoại" prop="Phone" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Địa chỉ" prop="Address" width="200">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Vai trò" prop="Role.RoleName" width="150" [sortable]="false">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <div *ngIf="value === 1">
+                                sys_admin
+                            </div>
+                            <div *ngIf="value === 2">
+                                manager
+                            </div>
+                            <div *ngIf="value === 3">
+                                employee
+                            </div>
+
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </nb-card-body>
         <nb-card-footer>
             <div class="btn-group dis-flex justify-content-end">
-                <button class="mr-2" nbButton (click)="deleteGroup(ref)" status="danger">Đồng ý</button>
-                <button nbButton (click)="ref.close()" >Hủy bỏ</button>
+                <button class="mr-2" nbButton (click)="addMultiUser(ref,dialogListUserAddRes)" status="danger">Đồng
+                    ý</button>
+                <button nbButton (click)="ref.close()">Hủy bỏ</button>
             </div>
         </nb-card-footer>
     </nb-card>
-</ng-template>   -->
+</ng-template>
 
-<ng-template #dialogConfirmRemoveProcess let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>Xóa người dùng</nb-card-header>
-        <nb-card-body>Bạn có chắc muốn xóa người dùng này không?</nb-card-body>
+<ng-template #dialogListUserAddRes let-data let-ref="dialogRef">
+    <nb-card style="min-width: 80vw;max-height: 90vh;">
+        <nb-card-header>Danh sách </nb-card-header>
+        <nb-card-body>
+            <div *ngIf="DataFailed && DataFailed.length > 0">
+                <div style="color: #ff3d71;">
+
+                    Danh sách người dùng lỗi khi thêm:
+                </div>
+                <ngx-datatable class="material fullscreen" [rows]="DataFailed" [columnMode]="columnMode.force"
+                    [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading" [footerHeight]="50"
+                    [rowHeight]="'auto'" [scrollbarH]="true" [count]="DataFailed?.length"
+                    [offset]="pagingError.CurrentPage - 1" [limit]="pagingError.PageSize">
+
+                    <ngx-datatable-column name="Tên đầy đủ" prop="FullName" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Ngày sinh" prop="DateOfBirth" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value | date:'yyyy/MM/dd hh:mm'}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Email" prop="Email" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Điện thoại" prop="Phone" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Địa chỉ" prop="Address" width="200">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Vai trò" prop="Role.RoleName" width="150" [sortable]="false">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <div *ngIf="value === 1">
+                                sys_admin
+                            </div>
+                            <div *ngIf="value === 2">
+                                manager
+                            </div>
+                            <div *ngIf="value === 3">
+                                employee
+                            </div>
+
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+            <div *ngIf="DataSuccess && DataSuccess.length > 0">
+                <div style="color: #00d68f;">
+
+                    Danh sách người dùng thêm thành công:
+                </div>
+                <ngx-datatable class="material fullscreen" [rows]="DataSuccess" [columnMode]="columnMode.force"
+                    [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading" [footerHeight]="50"
+                    [rowHeight]="'auto'" [scrollbarH]="true" [count]="DataSuccess?.length"
+                    [offset]="pagingAdd.CurrentPage - 1" [limit]="pagingAdd.PageSize">
+
+                    <ngx-datatable-column name="Tên đầy đủ" prop="FullName" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Ngày sinh" prop="DateOfBirth" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value | date:'yyyy/MM/dd hh:mm'}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Email" prop="Email" width="150">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Điện thoại" prop="Phone" width="100">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Địa chỉ" prop="Address" width="200">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            {{value}}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Vai trò" prop="Role.RoleName" width="150" [sortable]="false">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <div *ngIf="value === 1">
+                                sys_admin
+                            </div>
+                            <div *ngIf="value === 2">
+                                manager
+                            </div>
+                            <div *ngIf="value === 3">
+                                employee
+                            </div>
+
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </nb-card-body>
         <nb-card-footer>
             <div class="btn-group dis-flex justify-content-end">
-                <button class="mr-2" nbButton (click)="removeProcess(ref)" status="danger">Đồng ý</button>
+
+                <button nbButton (click)="ref.close()">Đóng</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+
+
+<ng-template #dialogConfirmRemoveUser let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Xóa người dùng</nb-card-header>
+        <nb-card-body>
+            <div class="mb-2">Bạn có chắc muốn xóa người dùng này không?
+            </div> 
+             <div *ngIf="deleteError" style="color: #ff3d71;">
+                 Không thể xóa người dùng đã có dữ liệu quy trình.
+            </div>
+
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="btn-group dis-flex justify-content-end"  *ngIf="!deleteError">
+                <button class="mr-2" nbButton (click)="removeUser(ref)" status="danger">Đồng ý</button>
                 <button nbButton (click)="ref.close()">Hủy bỏ</button>
+            </div>
+
+            <div class="btn-group dis-flex justify-content-end"  *ngIf="deleteError">
+                <button nbButton (click)="ref.close()">Đóng</button>
             </div>
         </nb-card-footer>
     </nb-card>
@@ -177,87 +447,76 @@
 
 <ng-template #dialogAddProcess let-data let-ref="dialogRef">
     <nb-card style="width: 600px; max-height: calc(100vh - 60px);min-height: 550px">
-        <nb-card-header>{{ formMode == formModeEnum.Insert ? 'Thêm người dùng' : 'Cập nhật người dùng'}}</nb-card-header>
+        <nb-card-header>{{ formMode == formModeEnum.Insert ? 'Thêm người dùng' : 'Cập nhật người dùng'}}
+        </nb-card-header>
         <nb-card-body>
             <div class="form-user">
                 <!-- tên-->
-                <div class="field-name mb-3" >
-                    <label for="field-fullname" class="label"
-                        [class.required]="true">Tên người dùng
+                <div class="field-name mb-3">
+                    <label for="field-fullname" class="label" [class.required]="true">Tên người dùng
 
                     </label>
-                   
-                    <input [class.border-error]="error.FullName.Empty" type="text" nbInput fullWidth
-                        id="field-fullname" placeholder="Nhập tên người dùng"
-                        [(ngModel)]="newUser.FullName" (ngModelChange)="resetError()">
+
+                    <input [class.border-error]="error.FullName.Empty" type="text" nbInput fullWidth id="field-fullname"
+                        placeholder="Nhập tên người dùng" [(ngModel)]="newUser.FullName" (ngModelChange)="resetError()">
                 </div>
                 <!-- ngày sinh -->
-                <div class="field-des mb-3" >
-                    <label for="field-datebirth" class="label"
-                        [class.required]="true">Ngày sinh
+                <div class="field-des mb-3">
+                    <label for="field-datebirth" class="label" [class.required]="true">Ngày sinh
                     </label>
-                   
-                    <input [class.border-error]="error.DateOfBirth.Empty" id="field-datebirth" nbInput
-                        type="text" [nbDatepicker]="dateTimePicker"  fullWidth
-                        placeholder="Chọn ngày sinh" [(ngModel)]="newUser.DateOfBirth"
-                        (ngModelChange)="resetError()">
+
+                    <input [class.border-error]="error.DateOfBirth.Empty" id="field-datebirth" nbInput type="text"
+                        [nbDatepicker]="dateTimePicker" fullWidth placeholder="Chọn ngày sinh"
+                        [(ngModel)]="newUser.DateOfBirth" (ngModelChange)="resetError()">
                     <nb-datepicker #dateTimePicker></nb-datepicker>
                 </div>
                 <!-- email -->
-                <div class="field-name mb-3" >
-                    <label for="field-email" class="label"
-                        [class.required]="true">Email
+                <div class="field-name mb-3">
+                    <label for="field-email" class="label" [class.required]="true">Email
 
                     </label>
-                   
-                    <input [class.border-error]="error.Email.Empty" type="text" nbInput fullWidth
-                        id="field-email" placeholder="Nhập địa chỉ email"
-                        [(ngModel)]="newUser.Email" (ngModelChange)="resetError()">
-                </div> 
+
+                    <input [class.border-error]="error.Email.Empty" type="text" nbInput fullWidth id="field-email"
+                        placeholder="Nhập địa chỉ email" [(ngModel)]="newUser.Email" (ngModelChange)="resetError()">
+                </div>
                 <!-- đth -->
-                <div class="field-name mb-3" >
-                    <label for="field-dth" class="label"
-                        [class.required]="false">Điện thoại
+                <div class="field-name mb-3">
+                    <label for="field-dth" class="label" [class.required]="false">Điện thoại
 
                     </label>
-                   
-                    <input [class.border-error]="error.Phone.Empty" type="text" nbInput fullWidth
-                        id="field-dth" placeholder="Nhập số điện thoại"
-                        [(ngModel)]="newUser.Phone" (ngModelChange)="resetError()">
-                </div> 
+
+                    <input [class.border-error]="error.Phone.Empty" type="text" nbInput fullWidth id="field-dth"
+                        placeholder="Nhập số điện thoại" [(ngModel)]="newUser.Phone" (ngModelChange)="resetError()">
+                </div>
                 <!-- dchi -->
-                <div class="field-name mb-3" >
-                    <label for="field-dc" class="label"
-                        [class.required]="false">Địa chỉ
+                <div class="field-name mb-3">
+                    <label for="field-dc" class="label" [class.required]="false">Địa chỉ
 
                     </label>
-                   
-                    <input [class.border-error]="error.Address.Empty" type="text" nbInput fullWidth
-                        id="field-dc" placeholder="Nhập địa chỉ"
-                        [(ngModel)]="newUser.Address" (ngModelChange)="resetError()">
-                </div> 
-                  <!-- tk -->
-                  <div class="field-name mb-3" *ngIf="formMode == formModeEnum.Insert" >
-                    <label for="field-tk" class="label"
-                        [class.required]="true">Tài khoản đăng nhập
+
+                    <input [class.border-error]="error.Address.Empty" type="text" nbInput fullWidth id="field-dc"
+                        placeholder="Nhập địa chỉ" [(ngModel)]="newUser.Address" (ngModelChange)="resetError()">
+                </div>
+                <!-- tk -->
+                <div class="field-name mb-3" *ngIf="formMode == formModeEnum.Insert">
+                    <label for="field-tk" class="label" [class.required]="true">Tài khoản đăng nhập
 
                     </label>
-                   
+
                     <input [class.border-error]="error.UserLogin.Username.Empty" type="text" nbInput fullWidth
-                        id="field-tk" placeholder="Nhập tài khoản"
-                        [(ngModel)]="newUser.UserLogin.Username" (ngModelChange)="resetError()">
-                </div> 
-                  <!-- mk -->
-                  <div class="field-name mb-3"  *ngIf="formMode == formModeEnum.Insert">
-                    <label for="field-mk" class="label"
-                        [class.required]="true">Mật khẩu
+                        id="field-tk" placeholder="Nhập tài khoản" [(ngModel)]="newUser.UserLogin.Username"
+                        (ngModelChange)="resetError()">
+                </div>
+                <!-- mk -->
+                <div class="field-name mb-3" *ngIf="formMode == formModeEnum.Insert">
+                    <label for="field-mk" class="label" [class.required]="true">Mật khẩu
 
                     </label>
-                   
+
                     <input [class.border-error]="error.UserLogin.Password.Empty" type="text" nbInput fullWidth
-                        id="field-mk" placeholder="Nhập mật khẩu"
-                        [(ngModel)]="newUser.UserLogin.Password" (ngModelChange)="resetError()">
-                </div> 
+                        id="field-mk" placeholder="Nhập mật khẩu" [(ngModel)]="newUser.UserLogin.Password"
+                        (ngModelChange)="resetError()">
+                </div>
                 <!-- vaitro -->
                 <!-- <div class="field-des mb-3" >
                     <label for="field-" class="label ">{{fieldData.FieldName}}</label>
@@ -274,7 +533,7 @@
         </nb-card-body>
         <nb-card-footer>
             <div class="btn-group dis-flex justify-content-end">
-                <button class="mr-2" nbButton (click)="addUserToGroup(ref)" status="danger">Lưu lại</button>
+                <button class="mr-2" nbButton (click)="addUser(ref)" status="danger">Lưu lại</button>
                 <button nbButton (click)="ref.close()">Hủy bỏ</button>
             </div>
         </nb-card-footer>

@@ -74,7 +74,24 @@ export class UserService {
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
-
+    addMultiUser(listUser): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/AddMultiUser`, listUser, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+    addUser(User): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/AddUser`, User, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+    delete(UserId): Observable<ServiceResponse> {
+        return this.http.get<ServiceResponse>(`${this.processUrl}/DeleteUser/${UserId}`)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
     /**
      * lấy về danh sách group
      * @returns 

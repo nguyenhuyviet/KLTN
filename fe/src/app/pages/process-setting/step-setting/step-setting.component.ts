@@ -6,6 +6,8 @@ import { listProcessStatus } from '../../../enums/process-status.enum';
 import { Step } from '../../../models/step';
 import { ProcessService } from '../../../services/process.service';
 import { showToast } from '../../../shared/fn/common.fn';
+import * as _ from "lodash";
+
 
 @Component({
   selector: 'app-step-setting',
@@ -99,15 +101,15 @@ export class StepSettingComponent implements OnInit {
 
     this.processSV.updateProcess(this.currentProcess).subscribe(data => {
       if (data && data.Data) {
-        showToast(this.toastrService,"Cập nhật thành công", "success");
+        showToast(this.toastrService, "Cập nhật thành công", "success");
       } else {
-        showToast(this.toastrService,"Cập nhật thất bại", "danger");
+        showToast(this.toastrService, "Cập nhật thất bại", "danger");
       }
       this.isEditInput = false;
     });
 
   }
-  updateProcessStatus(){
+  updateProcessStatus() {
     if (!this.newProcess.ProcessStatus) {
       return;
     }
@@ -115,9 +117,9 @@ export class StepSettingComponent implements OnInit {
 
     this.processSV.updateProcess(this.currentProcess).subscribe(data => {
       if (data && data.Data) {
-        showToast(this.toastrService,"Cập nhật thành công", "success");
+        showToast(this.toastrService, "Cập nhật thành công", "success");
       } else {
-        showToast(this.toastrService,"Cập nhật thất bại", "danger");
+        showToast(this.toastrService, "Cập nhật thất bại", "danger");
       }
     });
   }
@@ -176,7 +178,7 @@ export class StepSettingComponent implements OnInit {
 
     }, 300);
   }
-  hideInputProcessName(){
+  hideInputProcessName() {
     this.isEditInput = false;
     this.newProcess.ProcessName = this.currentProcess.ProcessName;
   }
@@ -215,9 +217,13 @@ export class StepSettingComponent implements OnInit {
     this.processSV.updateStep(e).subscribe(data => {
       if (data && data.Data) {
         this.currentStep = data.Data;
-        showToast(this.toastrService,"Cập nhật thành công", "success");
-      }else{
-        showToast(this.toastrService,"Cập nhật thất bại", "danger");
+        let index = this.currentProcess.ProcessSteps.findIndex(x => x.ProcessStepId == this.currentStep.ProcessStepId);
+        if (index != -1) {
+          this.currentProcess.ProcessSteps[index] = _.cloneDeep(this.currentStep);
+        }
+        showToast(this.toastrService, "Cập nhật thành công", "success");
+      } else {
+        showToast(this.toastrService, "Cập nhật thất bại", "danger");
       }
       this.isLoadingStep = false;
       this.isUpdateStep = false;
@@ -245,14 +251,14 @@ export class StepSettingComponent implements OnInit {
         }
         // showToast(this.toastrService,"Xóa bước thành công", "success");
         ref.close();
-        this.toastrService.show("","ádasdasd",{"destroyByClick": true})
-      }else{
-        showToast(this.toastrService,"Xóa bước thất bại", "danger");
+        this.toastrService.show("", "ádasdasd", { "destroyByClick": true })
+      } else {
+        showToast(this.toastrService, "Xóa bước thất bại", "danger");
       }
     });
   }
 
-  backToListProcess(){
+  backToListProcess() {
     this.router.navigateByUrl(`pages/process`);
   }
 }

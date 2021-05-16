@@ -316,6 +316,26 @@ namespace WebApi.Controllers
         }
 
 
+        [HttpPost("RejectStep")]
+        public ServiceResponse RejectStep(DataInitProcessExe data)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                result = _processExeService.RejectStep(data, currentUserID);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+
         [HttpPost("GetProcessRelated")]
         public ServiceResponse GetProcessRelated(Paging paging)
         {

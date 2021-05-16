@@ -25,9 +25,9 @@
             <div class="list-assignee" *ngIf="visibleListAssignee">
                 <div class="list-assignee-display">
                     <div class="tab dis-flex mb-3">
-                        <div class="tab-user cursor-pointer mr-3" [class.active]="filterType == 1"
+                        <div class="tab-user cursor-pointer mr-3" [class.active-tab]="filterType == 1"
                             (click)="setFilterType()">Người dùng</div>
-                        <div class="tab-grp cursor-pointer" [class.active]="filterType == 2"
+                        <div class="tab-grp cursor-pointer" [class.active-tab]="filterType == 2"
                             (click)="setFilterType(true)">
                             Nhóm</div>
                     </div>

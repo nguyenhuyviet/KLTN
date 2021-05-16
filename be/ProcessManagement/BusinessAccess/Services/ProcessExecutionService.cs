@@ -18,6 +18,7 @@ namespace BusinessAccess.Services
 
         ServiceResponse InitProcessExe(DataInitProcessExe data, int currentUserID);
         ServiceResponse NextStep(DataInitProcessExe data, int currentUserID);
+        ServiceResponse RejectStep(DataInitProcessExe data, int currentUserID);
         ServiceResponse GetProcessRelated(Paging paging, int currentUserID);
         ServiceResponse GetProcessNeedMyApproval(Paging paging, int currentUserID);
         ServiceResponse GetStepExecution(int processExeId, int currentUserID);
@@ -50,7 +51,6 @@ namespace BusinessAccess.Services
 
         public ServiceResponse GetProcessRelated(Paging paging, int currentUserID)
         {
-            currentUserID = 29;
             ServiceResponse res = new ServiceResponse();
             string[] includes = new string[3] { "ProcessExecution.CurrentStep", "ProcessStep", "ProcessExecution.Owner" };
 
@@ -95,8 +95,10 @@ namespace BusinessAccess.Services
                 {
                     query = _stepExeRepository.GetMulti(x => x.CurrentAssigneeId == currentUserID || x.ProcessExecution.OwnerId == currentUserID, includes);
                 }
-              
+
             }
+
+            query = query.OrderByDescending(x => x.CreatedDate).DistinctBy(x => x.ProcessExecutionId);
 
             data.TotalRecord = query.Count();
             var listProcessExe = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
@@ -116,7 +118,7 @@ namespace BusinessAccess.Services
 
                     ProcessRelate pE = new ProcessRelate
                     {
-                        CurrentStepName = processExe.ProcessStep.ProcessStepName,
+                        CurrentStepName = processExe.ProcessExecution.CurrentStep != null ? processExe.ProcessExecution.CurrentStep.ProcessStepName : "Đã hoàn thành",
                         ProcessName = processExe.ProcessExecution.ProcessExecutionName,
                         OwnerName = processExe.ProcessExecution.Owner.FullName,
                         OwnerId = processExe.ProcessExecution.OwnerId,
@@ -133,7 +135,7 @@ namespace BusinessAccess.Services
         public ServiceResponse InitProcessExe(DataInitProcessExe data, int currentUserID)
         {
             DateTime now = DateTime.Now;
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+
 
             ServiceResponse res = new ServiceResponse();
             if (data == null)
@@ -147,12 +149,12 @@ namespace BusinessAccess.Services
             stepExe.StepExecutionData = data.StepExecutionData;
             stepExe.NextAssigneeId = data.AssigneeId;
             stepExe.CurrentAssigneeId = currentUserID;
-            stepExe.CreatedDate = localZone.ToUniversalTime(now);
+            stepExe.CreatedDate = now;
             stepExe.ProcessStepId = data.ProcessStepId;
 
             var nextStepExe = new StepExecution();
             nextStepExe.CurrentAssigneeId = data.AssigneeId;
-            nextStepExe.CreatedDate = localZone.ToUniversalTime(now);
+            nextStepExe.CreatedDate = now;
 
 
             var processExe = new ProcessExecution();
@@ -160,7 +162,8 @@ namespace BusinessAccess.Services
             processExe.ProcessSettingId = process.ProcessId;
             processExe.CurrentStepId = data.ProcessStepId;
             processExe.OwnerId = currentUserID;
-            processExe.CreatedDate = localZone.ToUniversalTime(now);
+            processExe.Status = 1;
+            processExe.CreatedDate = now;
             processExe.StepExecutions = new List<StepExecution>() { stepExe };
 
             var nextStep = GetNextStep(data.ProcessStepId, process.ProcessId);
@@ -220,6 +223,73 @@ namespace BusinessAccess.Services
             var processExe = _processExeRepository.GetSingleByCondition(x => x.ProcessExecutionId == processExeId, includes);
 
             // kiem tra xem dung nguoi nay duoc giao hay khong
+
+
+            // neeus chua done
+            if (processExe.Status == 1)
+            {
+
+                res = GetStepExecutionForHandle(processExe, currentUserID);
+                return res;
+            }
+            else
+            {
+                res = GetStepExecutionForView(processExe, currentUserID);
+                return res;
+            }
+
+
+        }
+
+        private ServiceResponse GetStepExecutionForView(ProcessExecution processExe, int currentUserID)
+        {
+            ServiceResponse res = new ServiceResponse();
+            var stepExe = processExe.StepExecutions.Where(x => x.CurrentAssigneeId == currentUserID).First();
+
+            if (stepExe != null)
+            {
+                if (processExe.CurrentStep != null)
+                {
+                    processExe.CurrentStep.ProcessExecutions = null;
+
+                }
+
+                var listStepExe = new List<StepExecution>();
+
+                foreach (var item in processExe.StepExecutions)
+                {
+                    item.ProcessExecution = null;
+                    if (item.CurrentAssignee != null)
+                    {
+
+                        item.CurrentAssignee.ProcessExecutions = null;
+                    }
+
+                    if (item.NextAssigneeId != null && item.NextAssigneeId != -999)
+                    {
+                        listStepExe.Add(item);
+                    }
+                }
+                var result = new StepExecutionHandel()
+                {
+                    CurrentStep = stepExe.ProcessStep,
+                    ListStep = listStepExe,
+                    IsHandle = false
+                };
+
+                res.OnSuccess(result);
+                return res;
+            }
+            else
+            {
+                res.OnError("Not permittion");
+                return res;
+            }
+        }
+        private ServiceResponse GetStepExecutionForHandle(ProcessExecution processExe, int currentUserID)
+        {
+            ServiceResponse res = new ServiceResponse();
+            // kiem tra xem dung nguoi nay duoc giao hay khong
             var lastProcess = processExe.StepExecutions.OrderByDescending(x => x.ProcessStep.SortOrder).First();
 
             if (lastProcess.CurrentAssigneeId == currentUserID)
@@ -249,7 +319,8 @@ namespace BusinessAccess.Services
                 var result = new StepExecutionHandel()
                 {
                     CurrentStep = processExe.CurrentStep,
-                    ListStep = listStepExe
+                    ListStep = listStepExe,
+                    IsHandle = true
                 };
 
                 res.OnSuccess(result);
@@ -257,9 +328,11 @@ namespace BusinessAccess.Services
             }
             else
             {
-                res.OnError("Not permittion");
+                res = GetStepExecutionForView(processExe, currentUserID);
                 return res;
             }
+
+
 
 
         }
@@ -267,7 +340,7 @@ namespace BusinessAccess.Services
         public ServiceResponse NextStep(DataInitProcessExe data, int currentUserID)
         {
             DateTime now = DateTime.Now;
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+
 
             ServiceResponse res = new ServiceResponse();
             if (data == null)
@@ -287,7 +360,7 @@ namespace BusinessAccess.Services
 
             var nextStepExe = new StepExecution();
             nextStepExe.CurrentAssigneeId = data.AssigneeId;
-            nextStepExe.CreatedDate = localZone.ToUniversalTime(now);
+            nextStepExe.CreatedDate = now;
 
             var process = _processRepository.GetSingleById(data.ProcessSettingId);
             var processExe = _processExeRepository.GetSingleById(data.ProcessExeId);
@@ -298,18 +371,22 @@ namespace BusinessAccess.Services
                 processExe.CurrentStepId = nextStep.ProcessStepId;
 
                 stepExe.NextAssigneeId = data.AssigneeId;
+                stepExe.CurrentAssigneeId = currentUserID;
 
                 nextStepExe.ProcessStepId = nextStep.ProcessStepId;
-                nextStepExe.CurrentAssigneeId = currentUserID;
+                nextStepExe.ProcessExecutionId = data.ProcessExeId;
+                nextStepExe.CurrentAssigneeId = data.AssigneeId;
+
                 _stepExeRepository.Add(nextStepExe);
-                _stepExeRepository.Update(stepExe);
+                _stepExeRepository.AddOrUpdate(stepExe);
+                _processExeRepository.Update(processExe);
             }
             else
             {
                 processExe.CurrentStepId = null;
                 stepExe.NextAssigneeId = null;
 
-                processExe.Status = 3;
+                processExe.Status = 2;
                 _processExeRepository.Update(processExe);
             }
 
@@ -333,14 +410,78 @@ namespace BusinessAccess.Services
                 return res;
             }
 
-            query = _stepExeRepository.GetMulti(x => x.NextAssigneeId == null && x.CurrentAssigneeId == currentUserID, includes);
+            query = _stepExeRepository.GetMulti(x => x.NextAssigneeId == null && x.CurrentAssigneeId == currentUserID && x.ProcessExecution.Status != 3, includes);
+            query = query.OrderByDescending(x => x.CreatedDate);
 
 
 
             data.TotalRecord = query.Count();
             var listProcessExe = query.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+
+            foreach (var item in listProcessExe)
+            {
+
+                if (item.ProcessExecution.Status != 4 && item.ProcessExecution.CurrentStep != null)
+                {
+                    var step = _stepRepository.GetSingleById(item.ProcessExecution.CurrentStep.ProcessStepId);
+                    if (step != null && step.HasDeadline == 1 && step.DeadLine != null)
+                    {
+
+                        DateTime now = DateTime.Now;
+                        var diff = GetDiffDayMinute(item.CreatedDate ?? now, now);
+
+                        var remain = step.DeadLine - diff;
+
+                        if (remain <= 0)
+                        {
+                            var processExe = _processExeRepository.GetSingleByCondition(x => x.ProcessExecutionId == item.ProcessExecutionId);
+                            processExe.Status = 4;
+                            _processExeRepository.Update(processExe);
+                        }
+                    }
+                }
+            }
+            this.Save();
             data.PageData = ConvertData(listProcessExe);
             res.OnSuccess(data);
+            return res;
+        }
+        private double GetDiffDayMinute(DateTime dayOne, DateTime dayTwo)
+        {
+            TimeSpan diffMs = dayTwo - dayOne; // milliseconds between now & Christmas
+            return Math.Floor(diffMs.TotalMinutes);
+        }
+        public ServiceResponse RejectStep(DataInitProcessExe data, int currentUserID)
+        {
+
+            ServiceResponse res = new ServiceResponse();
+            if (data == null)
+            {
+                res.OnError("Data empty");
+                return res;
+            }
+
+            var stepExe = _stepExeRepository.GetSingleByCondition(x => x.NextAssigneeId == null
+                          && x.CurrentAssigneeId == currentUserID && x.ProcessStepId == data.ProcessStepId);
+            if (stepExe == null)
+            {
+                res.OnError("Some error happen");
+                return res;
+            }
+            stepExe.IsReject = 1;
+            stepExe.RejectReason = data.RejectReason;
+
+            _stepExeRepository.Update(stepExe);
+
+            var processExe = _processExeRepository.GetSingleById(data.ProcessExeId);
+            if (processExe != null)
+            {
+                processExe.Status = 3;
+                _processExeRepository.Update(processExe);
+            }
+
+            this.Save();
+            res.OnSuccess(processExe);
             return res;
         }
     }

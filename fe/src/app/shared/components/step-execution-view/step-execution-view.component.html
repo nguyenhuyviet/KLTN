@@ -11,12 +11,13 @@
                         {{step.ProcessStepName}}
                     </div>
                 </div>
-                <div class="col-4 btn-group row justify-content-end" *ngIf="!step.OverDeadline">
+                <div class="col-4 btn-group row justify-content-end" *ngIf="!step.OverDeadline && isHandle">
                     <button class="mr-2" status="primary" size="small" nbButton
                         (click)="openSelectAssignee(dialogSelectAssignee)">
                         Chuyển tiếp
                     </button>
-                    <button status="danger" nbButton size="small" (click)="refuseStep()">
+                    <button status="danger" nbButton size="small" (click)="openRefuseStep(dialogRefuseStep)"
+                        *ngIf="!fistStep">
                         Từ chối
                     </button>
                 </div>
@@ -24,14 +25,17 @@
         </nb-card-header>
 
         <nb-card-body>
+            <!-- neu la xu ly  -->
             <div class="dis-flex">
-                <div class="left" *ngIf="!fistStep">
+                <div class="left" *ngIf="!fistStep && (!isHandle && listPrevStep?.length > 1) || (isHandle && listPrevStep?.length > 0)">
                     <nb-accordion>
+
                         <nb-accordion-item *ngFor="let item of listPrevStep ; index as i">
-                            <nb-accordion-item-header>
+
+                            <nb-accordion-item-header *ngIf="item.ProcessStep?.ProcessStepId != step.ProcessStepId">
                                 Bước {{i + 1}}: {{item.ProcessStep?.ProcessStepName}}
                             </nb-accordion-item-header>
-                            <nb-accordion-item-body>
+                            <nb-accordion-item-body *ngIf="item.ProcessStep?.ProcessStepId != step.ProcessStepId">
                                 <div class="item-body-custom">
                                     <div class="section mb-3">
 
@@ -44,10 +48,18 @@
                                     </div>
                                     <div class="section mb-3">
                                         <div class="title-acc">
-                                            Nguời giao việc
+                                            Nguời tạo
                                         </div>
                                         <div>
                                             {{item.CurrentAssignee?.FullName}} - {{item.CurrentAssignee?.Email}}
+                                        </div>
+                                    </div>
+                                    <div class="section mb-3">
+                                        <div class="title-acc">
+                                            Hoàn thành lúc
+                                        </div>
+                                        <div>
+                                            {{item.CreatedDate | date:'yyyy/MM/dd hh:mm'}}
                                         </div>
                                     </div>
 
@@ -64,7 +76,18 @@
                     </nb-accordion>
                 </div>
                 <div class="right">
-                    <div class="step-item-view task-view mb-3" *ngIf="step.HasDeadline && !fistStep">
+                    <div class="step-item-view task-view mb-3" *ngIf="step.StepExecutions[0]?.IsReject && !fistStep">
+                        <ng-container *ngIf="!step.OverDeadline">
+                            <div class="section-title mb-2 reject">Quy trình đã bị từ chối. Lý do:</div>
+                            <div>
+                                {{step.StepExecutions[0]?.RejectReason}}
+                            </div>
+                        </ng-container>
+                       
+                    </div>
+
+
+                    <div class="step-item-view task-view mb-3" *ngIf="step.HasDeadline && !fistStep && !isHandle">
                         <ng-container *ngIf="!step.OverDeadline">
                             <div class="section-title mb-2">Hạn hoàn thành</div>
                             <div class="dis-flex-a">
@@ -98,6 +121,8 @@
     </nb-card>
 
 </div>
+
+<!-- chọn ng thực hiện -->
 <ng-template #dialogSelectAssignee let-data let-ref="dialogRef">
     <nb-card accent="danger" size="tiny" [nbSpinner]="isLoadingAssignee" nbSpinnerStatus="danger" nbSpinnerSize="large"
         nbSpinnerMessage="" style="width: 400px" *ngIf="step && step.StepSortOrder != 2">
@@ -115,7 +140,9 @@
         </nb-card-body>
         <nb-card-footer>
             <div class="btn-group dis-flex justify-content-end">
-                <button class="mr-2" nbButton (click)="nextStep(ref)" status="danger">Đồng ý</button>
+                <button class="mr-2" nbButton (click)="nextStep(ref)" status="danger" *ngIf="!fistStep">Đồng ý</button>
+                <button class="mr-2" nbButton (click)="initProcessExecution(ref)" status="danger " *ngIf="fistStep">Đồng
+                    ý</button>
                 <button nbButton (click)="ref.close()">Hủy bỏ</button>
             </div>
         </nb-card-footer>
@@ -136,7 +163,28 @@
     </nb-card>
 </ng-template>
 
-
+<!-- từ chối -->
+<ng-template #dialogRefuseStep let-data let-ref="dialogRef">
+    <nb-card accent="danger" size="tiny" style="width: 600px; min-height: 350px;"
+        *ngIf="step && step.StepSortOrder != 1">
+        <nb-card-header>Từ chối</nb-card-header>
+        <nb-card-body>
+            <div class="field-des mb-3">
+                <label for="field-refuse" class="label" [class.required]="true">Lý do từ chối
+                </label>
+                <textarea [class.border-error]="refuseReasonEmpty" id="field-refuse" nbInput fullWidth
+                    [placeholder]="'Nhập lý do từ chối'" [(ngModel)]="refuseReason"
+                    (ngModelChange)="refuseReasonEmpty = false"></textarea>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="btn-group dis-flex justify-content-end">
+                <button class="mr-2" nbButton (click)="refuseStep(ref)" status="danger">Đồng ý</button>
+                <button nbButton (click)="ref.close()">Hủy bỏ</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
 
 <ng-template #dialogStepDetail let-data let-ref="dialogRef">
     <nb-card accent="danger" [nbSpinner]="loadingDetailStep" nbSpinnerStatus="danger" nbSpinnerSize="large"

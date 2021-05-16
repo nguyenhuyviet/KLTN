@@ -10,6 +10,6 @@ namespace DataAccess.UtilModels
         public ProcessStep CurrentStep { get; set; }
         public List<StepExecution> ListStep { get; set; }
 
-
+        public bool IsHandle { get; set; }
     }
 }

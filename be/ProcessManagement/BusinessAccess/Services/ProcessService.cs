@@ -86,14 +86,14 @@ namespace BusinessAccess.Services
                 return res;
             }
 
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+            
             DateTime now = DateTime.Now;
 
             process.ProcessStatus = (int)ProcessStatus.Draf;
             process.CreatedBy = currentUsername;
-            process.CreatedDate = localZone.ToUniversalTime(now);
+            process.CreatedDate = now;
             process.ModifiedBy = currentUsername;
-            process.ModifiedDate = localZone.ToUniversalTime(now);
+            process.ModifiedDate = now;
 
 
             var firstStep = new ProcessStep();
@@ -102,9 +102,9 @@ namespace BusinessAccess.Services
             firstStep.ProcessStepName = "Bước thức nhất";
             firstStep.SortOrder = 1;
             firstStep.CreatedBy = currentUsername;
-            firstStep.CreatedDate = localZone.ToUniversalTime(now);
+            firstStep.CreatedDate = now;
             firstStep.ModifiedBy = currentUsername;
-            firstStep.ModifiedDate = localZone.ToUniversalTime(now);
+            firstStep.ModifiedDate = now;
             firstStep.StepSortOrder = 1;
 
             process.ProcessSteps.Add(firstStep);
@@ -250,12 +250,12 @@ namespace BusinessAccess.Services
                 return res;
             }
 
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+            
             DateTime now = DateTime.Now;
             process.CreatedBy = currentUsername;
-            process.CreatedDate = localZone.ToUniversalTime(now);
+            process.CreatedDate = now;
             process.ModifiedBy = currentUsername;
-            process.ModifiedDate = localZone.ToUniversalTime(now);
+            process.ModifiedDate = now;
 
             process.ProcessGroup = null;
             process.ProcessExecutions = null;
@@ -326,14 +326,14 @@ namespace BusinessAccess.Services
                 return res;
             }
 
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+            
             DateTime now = DateTime.Now;
 
             processStep.StepSortOrder = 2;
             processStep.CreatedBy = currentUsername;
-            processStep.CreatedDate = localZone.ToUniversalTime(now);
+            processStep.CreatedDate = now;
             processStep.ModifiedBy = currentUsername;
-            processStep.ModifiedDate = localZone.ToUniversalTime(now);
+            processStep.ModifiedDate = now;
 
             // cập nhật lại StepSortOrder thằng khác
             var step = _stepRepository.GetSingleByCondition(x => x.SortOrder > 1 && x.StepSortOrder == 2 && x.ProcessId == processStep.ProcessId);
@@ -360,12 +360,12 @@ namespace BusinessAccess.Services
                 return res;
             }
 
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+            
             DateTime now = DateTime.Now;
             processStep.CreatedBy = currentUsername;
-            processStep.CreatedDate = localZone.ToUniversalTime(now);
+            processStep.CreatedDate = now;
             processStep.ModifiedBy = currentUsername;
-            processStep.ModifiedDate = localZone.ToUniversalTime(now);
+            processStep.ModifiedDate = now;
 
 
 
@@ -586,13 +586,13 @@ namespace BusinessAccess.Services
 
             if (!_processGroupRepository.CheckContains(x => x.ProcessGroupName == group.ProcessGroupName))
             {
-                TimeZone localZone = TimeZone.CurrentTimeZone;
+                
                 DateTime now = DateTime.Now;
 
                 group.CreatedBy = currentUsername;
-                group.CreatedDate = localZone.ToUniversalTime(now);
+                group.CreatedDate = now;
                 group.ModifiedBy = currentUsername;
-                group.ModifiedDate = localZone.ToUniversalTime(now);
+                group.ModifiedDate = now;
 
                 var userGrpAdd = _processGroupRepository.Add(group);
                 res.OnSuccess(userGrpAdd);
@@ -625,12 +625,12 @@ namespace BusinessAccess.Services
 
             if (!_processGroupRepository.CheckContains(x => x.ProcessGroupName == group.ProcessGroupName))
             {
-                TimeZone localZone = TimeZone.CurrentTimeZone;
+                
                 DateTime now = DateTime.Now;
 
                 processGrp.ProcessGroupName = group.ProcessGroupName;
                 processGrp.ModifiedBy = currentUsername;
-                processGrp.ModifiedDate = localZone.ToUniversalTime(now);
+                processGrp.ModifiedDate = now;
 
                 _processGroupRepository.Update(processGrp);
                 res.OnSuccess(processGrp);

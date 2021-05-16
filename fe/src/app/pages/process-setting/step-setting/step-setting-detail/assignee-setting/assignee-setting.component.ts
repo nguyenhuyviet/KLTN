@@ -227,7 +227,7 @@ export class AssigneeSettingComponent implements OnInit {
     }
 
 
-    if (this.listAssigneeData && this.listAssigneeData.length > 0) {
+    if (this.listAssigneeData && this.listAssigneeData.length >= 0) {
       if (isGroup) {
         if (user.IsChecked) {
           const newAssigne = {

@@ -145,6 +145,8 @@ export class ListProcessDoneComponent implements OnInit {
     } else {
       this.paging.ExtraCondition.ProcessRelatedType = type;
     }
+    // console.log( this.paging.ExtraCondition.ProcessRelatedType);
+    
     this.getProcess();
   }
 }

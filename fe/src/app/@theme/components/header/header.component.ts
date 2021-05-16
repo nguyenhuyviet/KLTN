@@ -6,6 +6,8 @@ import { LayoutService } from '../../../@core/utils';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { UserActionNav } from '../../../enums/user-action.enum';
+import { AuthenticationService } from '../../../_services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-header',
@@ -46,7 +48,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private themeService: NbThemeService,
               private userService: UserData,
               private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService) {
+              private breakpointService: NbMediaBreakpointsService,
+              private authenticationService: AuthenticationService,
+              private router: Router
+              ) {
   }
 
   ngOnInit() {
@@ -77,7 +82,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         filter(({ tag }) => tag === 'my-context-menu'),
         map(item => item.item)
       )
-      .subscribe(title => console.log(title));
+      .subscribe(title => 
+          {
+            if(title[`value`] == 3){
+              this.authenticationService.logout();
+              this.router.navigateByUrl('auth');
+            }
+          }
+        );
       ;
   }
 

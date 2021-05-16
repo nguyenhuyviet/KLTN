@@ -5,8 +5,8 @@
 
       <div class="col-md-6 mb-1 mt-1 ">
         <nb-button-group shape="rectangle">
-          <button nbButtonToggle (pressedChange)="setFilter(1)">Tôi đã tham gia</button>
-          <button nbButtonToggle (pressedChange)="setFilter(2)">Tôi đã tạo</button>
+          <button nbButtonToggle (click)="setFilter(1)">Tôi đã tham gia</button>
+          <button nbButtonToggle (click)="setFilter(2)">Tôi đã tạo</button>
         </nb-button-group>
       </div>
       <div class="col-md-6">
@@ -75,6 +75,9 @@
           </div>
           <div *ngIf="value === processExeStatusEnum.Reject">
             <div class="rejected"></div> Bị từ chối
+          </div>
+          <div *ngIf="value === processExeStatusEnum.Expire">
+            <div class="exprire"></div> Hết thời hạn
           </div>
         </ng-template>
       </ngx-datatable-column>

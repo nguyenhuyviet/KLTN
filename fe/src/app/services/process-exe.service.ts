@@ -34,6 +34,12 @@ export class ProcessExecutionService {
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
+    refuseStep(fieldData): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/rejectStep`, fieldData, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
     //#region 
     getProcessRelated(paging) {
         return this.http.post<ServiceResponse>(`${this.processUrl}/getProcessRelated`, paging, this.httpOptions)

@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { NbDialogService } from '@nebular/theme';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FieldType } from '../../../enums/field-type.enum';
 import { ProcessExecution } from '../../../models/process-exe';
 import { ProcessExecutionService } from '../../../services/process-exe.service';
 import { ProcessService } from '../../../services/process.service';
-import { ConvertMinutes, GetDiffDayMinute } from '../../fn/common.fn';
+import { ConvertMinutes, GetDiffDayMinute, showToast } from '../../fn/common.fn';
 
 @Component({
   selector: 'ngx-step-execution-view',
   templateUrl: './step-execution-view.component.html',
   styleUrls: ['./step-execution-view.component.scss'],
 })
-export class StepExecutionViewComponent implements OnInit {
+export class StepExecutionViewComponent implements OnInit, OnDestroy {
 
   @Input() processId;
 
@@ -38,12 +39,22 @@ export class StepExecutionViewComponent implements OnInit {
   stepExeData = {
 
   };
-
+  intervalRedirect;
+  refuseReasonEmpty = false;
+  refuseReason = '';
+  isHandle;
   constructor(
     private processSV: ProcessService,
     private processExeSV: ProcessExecutionService,
     private dialogService: NbDialogService,
+    private toastrService: NbToastrService,
+    private router: Router
   ) { }
+  ngOnDestroy(): void {
+    if (this.intervalRedirect) {
+      clearTimeout(this.intervalRedirect)
+    }
+  }
 
   ngOnInit(): void {
     if (this.fistStep) {
@@ -61,6 +72,7 @@ export class StepExecutionViewComponent implements OnInit {
     this.processSV.getFirstStep(this.processId).subscribe(data => {
       if (data && data.Data) {
         this.step = data.Data;
+        this.isHandle = true;
         if (this.step.StepFields) {
           this.step.StepFields.forEach(x => {
             x.DataSettingObj = JSON.parse(x.DataSetting);
@@ -78,14 +90,16 @@ export class StepExecutionViewComponent implements OnInit {
       if (data && data.Data) {
         this.step = data.Data.CurrentStep;
         this.listPrevStep = data.Data.ListStep;
-
-        if(this.step.HasDeadline && this.step.DeadLine){
-          this.BuildDeadline();
-        }
-        if (this.step && this.step.StepFields) {
-          this.step.StepFields.forEach(x => {
-            x.DataSettingObj = JSON.parse(x.DataSetting);
-          })
+        this.isHandle = data.Data.IsHandle;
+        if (this.step) {
+          if (this.step.HasDeadline && this.step.DeadLine) {
+            this.BuildDeadline();
+          }
+          if (this.step.StepFields) {
+            this.step.StepFields.forEach(x => {
+              x.DataSettingObj = JSON.parse(x.DataSetting);
+            })
+          }
         }
       }
       this.isLoading = false;
@@ -93,13 +107,13 @@ export class StepExecutionViewComponent implements OnInit {
   }
 
   BuildDeadline() {
-    const dateDealine = new Date(this.step.CreatedDate);
+    const dateDealine = new Date(this.step.StepExecutions[0]?.CreatedDate);
     const now = new Date();
     const diff = GetDiffDayMinute(dateDealine, now);
 
     const remain = this.step.DeadLine - diff;
-    
-    if(remain <= 0){
+
+    if (remain <= 0) {
       this.step.OverDeadline = true;
       return;
     }
@@ -119,11 +133,46 @@ export class StepExecutionViewComponent implements OnInit {
     this.errAssignee = false;
   }
   openSelectAssignee(dialog: TemplateRef<any>) {
-    if(this.validateRequiredField()){
+    if (this.validateRequiredField()) {
       return;
     }
     this.dialogService.open(dialog);
     this.getAssigne();
+
+  }
+  openRefuseStep(dialog: TemplateRef<any>) {
+    this.dialogService.open(dialog);
+  }
+
+  initProcessExecution(ref) {
+    if (!this.assingeeID) {
+      this.errAssignee = true;
+      return;
+    }
+    let data = [];
+
+    this.step.StepFields?.forEach(field => {
+      data.push(field.FieldValue)
+    });
+
+    const dataReq = {
+      ProcessSettingId: this.step.ProcessId,
+      ProcessStepId: this.step.ProcessStepId,
+      AssigneeId: this.assingeeID,
+      StepExecutionData: JSON.stringify(data),
+    }
+
+    this.processExeSV.initProcessExe(dataReq).subscribe(data => {
+      if (data && data.Data) {
+        showToast(this.toastrService, "Xử lý thành công", "success");
+        ref.close();
+        this.intervalRedirect = setTimeout(() => {
+          this.router.navigateByUrl(`pages/process-done`);
+        }, 2000);
+      } else {
+        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+      }
+    });
 
   }
 
@@ -142,23 +191,52 @@ export class StepExecutionViewComponent implements OnInit {
       ProcessSettingId: this.step.ProcessId,
       ProcessStepId: this.step.ProcessStepId,
       AssigneeId: this.assingeeID,
-      StepExecutionData: JSON.stringify(data)
+      StepExecutionData: JSON.stringify(data),
+      ProcessExeId: this.step.StepExecutions[0]?.ProcessExecutionId,
     }
 
-    this.processExeSV.initProcessExe(dataReq).subscribe(data => {
+    this.processExeSV.nextStep(dataReq).subscribe(data => {
       if (data && data.Data) {
+        showToast(this.toastrService, "Xử lý thành công", "success");
         ref.close();
+        this.intervalRedirect = setTimeout(() => {
+          this.router.navigateByUrl(`pages/process-done`);
+        }, 2000);
+      } else {
+        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
       }
     });
 
   }
 
-  refuseStep() {
+  refuseStep(ref) {
+    if (!this.refuseReason?.trim()) {
+      this.refuseReasonEmpty = true;
+      return;
+    }
 
+    const dataReq = {
+      ProcessSettingId: this.step.ProcessId,
+      ProcessStepId: this.step.ProcessStepId,
+      RejectReason: this.refuseReason,
+      ProcessExeId: this.step.StepExecutions[0]?.ProcessExecutionId,
+    }
+
+    this.processExeSV.refuseStep(dataReq).subscribe(data => {
+      if (data && data.Data) {
+        showToast(this.toastrService, "Xử lý thành công", "success");
+        ref.close();
+        this.intervalRedirect = setTimeout(() => {
+          this.router.navigateByUrl(`pages/process-done`);
+        }, 2000);
+      } else {
+        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+      }
+    });
   }
 
 
-  doneProcess(ref){
+  doneProcess(ref) {
     let data = [];
 
     this.step.StepFields?.forEach(field => {
@@ -175,7 +253,13 @@ export class StepExecutionViewComponent implements OnInit {
 
     this.processExeSV.nextStep(dataReq).subscribe(data => {
       if (data && data.Data) {
+        showToast(this.toastrService, "Xử lý thành công", "success");
         ref.close();
+        this.intervalRedirect = setTimeout(() => {
+          this.router.navigateByUrl(`pages/process-done`);
+        }, 2000);
+      } else {
+        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
       }
     });
   }
@@ -194,7 +278,7 @@ export class StepExecutionViewComponent implements OnInit {
   }
 
 
-  showDetailStepPrev(dialog, item){
+  showDetailStepPrev(dialog, item) {
     this.dialogService.open(dialog);
     this.loadingDetailStep = true;
     this.processSV.getStepById(item.ProcessStepId).subscribe(data => {
@@ -209,27 +293,27 @@ export class StepExecutionViewComponent implements OnInit {
         }
       }
 
-    this.loadingDetailStep = false;
+      this.loadingDetailStep = false;
 
     });
   }
 
 
 
-  validateRequiredField(){
+  validateRequiredField() {
     let invalid = false;
-    
+
     if (this.step && this.step.StepFields) {
       this.step.StepFields.forEach(x => {
-          if(x.Type == FieldType.ShortText || x.Type == FieldType.LongText 
-            || x.Type == FieldType.Number || x.Type == FieldType.DateTime 
-            || x.Type == FieldType.Hour ||x.Type == FieldType.Date || x.Type == FieldType.Dropdown){
-            
-              if(x.IsRequired && ( !x.FieldValue.Value || (x.Type == !FieldType.Dropdown && x.FieldValue.Value && !x.FieldValue.Value.trim()))){
-                x.FieldValue.Empty = true;
-                invalid = true;
-              }
+        if (x.Type == FieldType.ShortText || x.Type == FieldType.LongText
+          || x.Type == FieldType.Number || x.Type == FieldType.DateTime
+          || x.Type == FieldType.Hour || x.Type == FieldType.Date || x.Type == FieldType.Dropdown) {
+
+          if (x.IsRequired && (!x.FieldValue.Value || (x.Type == !FieldType.Dropdown && x.FieldValue.Value && !x.FieldValue.Value.trim()))) {
+            x.FieldValue.Empty = true;
+            invalid = true;
           }
+        }
       })
     }
 

@@ -11,5 +11,6 @@ namespace DataAccess.UtilModels
         public int ProcessStepId { get; set; }
         public int AssigneeId { get; set; }
         public string StepExecutionData { get; set; }
+        public string RejectReason { get; set; }
     }
 }

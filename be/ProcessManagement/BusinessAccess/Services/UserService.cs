@@ -416,13 +416,13 @@ namespace BusinessAccess.Services
 
             if (!_userGrpRepository.CheckContains(x => x.UserGroupName == user.UserGroupName))
             {
-                TimeZone localZone = TimeZone.CurrentTimeZone;
+                 
                 DateTime now = DateTime.Now;
 
                 user.CreatedBy = currentUsername;
-                user.CreatedDate = localZone.ToUniversalTime(now);
+                user.CreatedDate = now;
                 user.ModifiedBy = currentUsername;
-                user.ModifiedDate = localZone.ToUniversalTime(now);
+                user.ModifiedDate = now;
 
                 var userGrpAdd = _userGrpRepository.Add(user);
                 res.OnSuccess(userGrpAdd);
@@ -455,12 +455,12 @@ namespace BusinessAccess.Services
 
             if (!_userGrpRepository.CheckContains(x => x.UserGroupName == user.UserGroupName))
             {
-                TimeZone localZone = TimeZone.CurrentTimeZone;
+                 
                 DateTime now = DateTime.Now;
 
                 userGrp.UserGroupName = user.UserGroupName;
                 userGrp.ModifiedBy = currentUsername;
-                userGrp.ModifiedDate = localZone.ToUniversalTime(now);
+                userGrp.ModifiedDate = now;
 
                 _userGrpRepository.Update(userGrp);
                 res.OnSuccess(userGrp);

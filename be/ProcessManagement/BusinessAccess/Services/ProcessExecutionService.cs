@@ -244,7 +244,9 @@ namespace BusinessAccess.Services
         private ServiceResponse GetStepExecutionForView(ProcessExecution processExe, int currentUserID)
         {
             ServiceResponse res = new ServiceResponse();
-            var stepExe = processExe.StepExecutions.Where(x => x.CurrentAssigneeId == currentUserID).First();
+
+
+            var stepExe = processExe.StepExecutions.OrderByDescending(x => x.ProcessStep.SortOrder).First();
 
             if (stepExe != null)
             {
@@ -274,7 +276,10 @@ namespace BusinessAccess.Services
                 {
                     CurrentStep = stepExe.ProcessStep,
                     ListStep = listStepExe,
-                    IsHandle = false
+                    IsHandle = false,
+                    Status = processExe.Status,
+                    ProcessName = processExe.ProcessExecutionName
+
                 };
 
                 res.OnSuccess(result);
@@ -320,7 +325,9 @@ namespace BusinessAccess.Services
                 {
                     CurrentStep = processExe.CurrentStep,
                     ListStep = listStepExe,
-                    IsHandle = true
+                    IsHandle = true,
+                    Status = processExe.Status,
+                    ProcessName = processExe.ProcessExecutionName
                 };
 
                 res.OnSuccess(result);
@@ -345,7 +352,7 @@ namespace BusinessAccess.Services
             ServiceResponse res = new ServiceResponse();
             if (data == null)
             {
-                res.OnError("Data empty");
+                res.OnError("Data truyền lên rỗng");
                 return res;
             }
 
@@ -353,7 +360,7 @@ namespace BusinessAccess.Services
                           && x.CurrentAssigneeId == currentUserID && x.ProcessStepId == data.ProcessStepId);
             if (stepExe == null)
             {
-                res.OnError("Some error happen");
+                res.OnError("Không có dữ liệu");
                 return res;
             }
             stepExe.StepExecutionData = data.StepExecutionData;
@@ -368,6 +375,11 @@ namespace BusinessAccess.Services
             var nextStep = GetNextStep(data.ProcessStepId, process.ProcessId);
             if (nextStep != null)
             {
+                if ( data.AssigneeId == 0 || data.AssigneeId == null)
+                {
+                    res.OnError("Lỗi người thực hiện");
+                    return res;
+                }
                 processExe.CurrentStepId = nextStep.ProcessStepId;
 
                 stepExe.NextAssigneeId = data.AssigneeId;
@@ -462,7 +474,7 @@ namespace BusinessAccess.Services
             }
 
             var stepExe = _stepExeRepository.GetSingleByCondition(x => x.NextAssigneeId == null
-                          && x.CurrentAssigneeId == currentUserID && x.ProcessStepId == data.ProcessStepId);
+                          && x.CurrentAssigneeId == currentUserID && x.ProcessStepId == data.ProcessStepId && x.ProcessExecutionId == data.ProcessExeId);
             if (stepExe == null)
             {
                 res.OnError("Some error happen");

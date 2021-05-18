@@ -430,8 +430,8 @@ export class UserSettingComponent implements OnInit {
     let fileReader = new FileReader();
     fileReader.readAsArrayBuffer(file);
     fileReader.onload = (e) => {
-      var arrayBuffer = fileReader.result;
-      var data = new Uint8Array(arrayBuffer);
+      let arrayBuffer = fileReader.result;
+      var data = new Uint8Array(<ArrayBuffer>arrayBuffer);
       var arr = new Array();
       for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
       var bstr = arr.join("");

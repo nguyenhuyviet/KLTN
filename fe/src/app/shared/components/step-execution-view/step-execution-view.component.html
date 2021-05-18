@@ -22,12 +22,19 @@
                     </button>
                 </div>
             </div>
+            <div style="margin-left: 26px; font-size: 13px;">
+                <div *ngIf="processName">
+                    {{processName}}
+                </div>
+                <div>Người xử lý: {{step.StepExecutions[0]?.CurrentAssignee?.FullName}}</div>
+            </div>
         </nb-card-header>
 
         <nb-card-body>
             <!-- neu la xu ly  -->
             <div class="dis-flex">
-                <div class="left" *ngIf="!fistStep && (!isHandle && listPrevStep?.length > 1) || (isHandle && listPrevStep?.length > 0)">
+                <!-- <div class="left" *ngIf="!fistStep && (!isHandle && listPrevStep?.length > 1) || (isHandle && listPrevStep?.length > 0)"> -->
+                <div class="left" *ngIf="!fistStep">
                     <nb-accordion>
 
                         <nb-accordion-item *ngFor="let item of listPrevStep ; index as i">
@@ -48,7 +55,7 @@
                                     </div>
                                     <div class="section mb-3">
                                         <div class="title-acc">
-                                            Nguời tạo
+                                            Người thực hiện
                                         </div>
                                         <div>
                                             {{item.CurrentAssignee?.FullName}} - {{item.CurrentAssignee?.Email}}
@@ -76,45 +83,56 @@
                     </nb-accordion>
                 </div>
                 <div class="right">
+                    <div class="step-item-view task-view mb-3"
+                        *ngIf="!fistStep && !step.OverDeadline && !step.StepExecutions[0]?.IsReject && !IsHandle ">
+                        <div class="section-title mb-2 in-progress"
+                            *ngIf="processExeStatus != processExeStatusEnum.Done">Đang chờ xử lý</div>
+                        <div class="section-title mb-2 in-progress"
+                            *ngIf="processExeStatus == processExeStatusEnum.Done">Đã hoàn thành</div>
+                    </div>
+
                     <div class="step-item-view task-view mb-3" *ngIf="step.StepExecutions[0]?.IsReject && !fistStep">
                         <ng-container *ngIf="!step.OverDeadline">
-                            <div class="section-title mb-2 reject">Quy trình đã bị từ chối. Lý do:</div>
-                            <div>
+                            <div class="section-title mb-2 ">Quy trình đã bị từ chối. Lý do:</div>
+                            <div class="reject">
                                 {{step.StepExecutions[0]?.RejectReason}}
                             </div>
                         </ng-container>
-                       
+
                     </div>
 
-
-                    <div class="step-item-view task-view mb-3" *ngIf="step.HasDeadline && !fistStep && !isHandle">
-                        <ng-container *ngIf="!step.OverDeadline">
-                            <div class="section-title mb-2">Hạn hoàn thành</div>
-                            <div class="dis-flex-a">
-                                <div> {{step.Day}} ngày,</div>
-                                <div>&nbsp;{{step.Hour}} giờ,</div>
-                                <div>&nbsp;{{step.Minute}} phút</div>
+                    <ng-container *ngIf="!step.StepExecutions[0]?.IsReject">
+                        <div class="step-item-view task-view mb-3"
+                            *ngIf="step.HasDeadline && !fistStep && !isHandle && processExeStatus != processExeStatusEnum.Done">
+                            <ng-container *ngIf="!step.OverDeadline">
+                                <div class="section-title mb-2">Hạn hoàn thành</div>
+                                <div class="dis-flex-a">
+                                    <div> {{step.Day}} ngày,</div>
+                                    <div>&nbsp;{{step.Hour}} giờ,</div>
+                                    <div>&nbsp;{{step.Minute}} phút</div>
+                                </div>
+                            </ng-container>
+                            <div *ngIf="step.OverDeadline" class="section-title mb-2 over-deadline">
+                                Hết thời gian xử lý
                             </div>
-                        </ng-container>
-                        <div *ngIf="step.OverDeadline" class="section-title mb-2 over-deadline">
-                            Hết thời gian xử lý
                         </div>
-                    </div>
-                    <div class="step-item-view task-view mb-3" *ngIf="step.HasTask">
-                        <div class="section-title mb-2">Công việc</div>
-                        <div class="task-item" *ngFor="let task of step.StepTasks">
-                            {{task.TaskName}}
+                        <div class="step-item-view task-view mb-3" *ngIf="step.HasTask">
+                            <div class="section-title mb-2">Công việc</div>
+                            <div class="task-item" *ngFor="let task of step.StepTasks">
+                                {{task.TaskName}}
+                            </div>
+                            <div class="no-data"
+                                *ngIf="!step.StepTasks || (step.StepTasks && step.StepTasks.length == 0)">
+                                Không có công việc nào
+                            </div>
                         </div>
-                        <div class="no-data" *ngIf="!step.StepTasks || (step.StepTasks && step.StepTasks.length == 0)">
-                            Không có công việc nào
+                        <div class="step-item-view field-view">
+                            <div class="section-title  mb-2">Thông tin cần hoàn thành</div>
+                            <div *ngFor="let field of step.StepFields">
+                                <ngx-field-view [fieldData]="field"></ngx-field-view>
+                            </div>
                         </div>
-                    </div>
-                    <div class="step-item-view field-view">
-                        <div class="section-title  mb-2">Thông tin cần hoàn thành</div>
-                        <div *ngFor="let field of step.StepFields">
-                            <ngx-field-view [fieldData]="field"></ngx-field-view>
-                        </div>
-                    </div>
+                    </ng-container>
                 </div>
             </div>
         </nb-card-body>
@@ -193,6 +211,26 @@
             <nb-card-header>{{currentDetailStep.ProcessStepName}}</nb-card-header>
             <nb-card-body>
                 <div class="right">
+                    <div class="item-body-custom"> 
+                        <div class="section mb-3">
+                            <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                                Người thực hiện
+                            </div>
+                            <div>
+                                {{currentDetailStep.StepExe?.CurrentAssignee?.FullName}} - {{currentDetailStep.StepExe?.CurrentAssignee?.Email}}
+                            </div>
+                        </div>
+                        <div class="section mb-3">
+                            <div  style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                                Hoàn thành lúc
+                            </div>
+                            <div>
+                                {{currentDetailStep.StepExe?.CreatedDate | date:'yyyy/MM/dd hh:mm'}}
+                            </div>
+                        </div> 
+                    </div>
+
+
                     <div class="step-item-view task-view mb-3" *ngIf="currentDetailStep.HasTask">
                         <div class="section-title mb-2">Công việc</div>
                         <div class="task-item" *ngFor="let task of currentDetailStep.StepTasks">
@@ -204,7 +242,7 @@
                         </div>
                     </div>
                     <div class="step-item-view field-view">
-                        <div class="section-title  mb-2">Thông tin cần hoàn thành</div>
+                        <div class="section-title  mb-2">Thông tin đã hoàn thành</div>
                         <div *ngFor="let field of currentDetailStep.StepFields">
                             <ngx-field-view [fieldData]="field"></ngx-field-view>
                         </div>

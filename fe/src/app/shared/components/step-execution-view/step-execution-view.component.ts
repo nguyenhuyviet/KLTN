@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FieldType } from '../../../enums/field-type.enum';
+import { ProcessExeStatusEnum } from '../../../enums/process-exe.enum';
 import { ProcessExecution } from '../../../models/process-exe';
 import { ProcessExecutionService } from '../../../services/process-exe.service';
 import { ProcessService } from '../../../services/process.service';
@@ -26,6 +27,10 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
   isLoadingAssignee = false;
   step;
 
+  processName;
+
+  processExeStatus;
+
   listAssignee;
 
   assingeeID;
@@ -35,6 +40,8 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
   currentDetailStep;
 
   newProcessExe = new ProcessExecution();
+
+  processExeStatusEnum = ProcessExeStatusEnum;
 
   stepExeData = {
 
@@ -88,6 +95,8 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
 
     this.processExeSV.getStepExecution(this.processId).subscribe(data => {
       if (data && data.Data) {
+        this.processName = data.Data.ProcessName;
+        this.processExeStatus = data.Data.Status;
         this.step = data.Data.CurrentStep;
         this.listPrevStep = data.Data.ListStep;
         this.isHandle = data.Data.IsHandle;
@@ -203,7 +212,11 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(`pages/process-done`);
         }, 2000);
       } else {
-        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+        if (data.Code == 2) {
+          showToast(this.toastrService, data.Message, "danger");
+        } else {
+          showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+        }
       }
     });
 
@@ -230,7 +243,11 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(`pages/process-done`);
         }, 2000);
       } else {
-        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+        if (data.Code == 2) {
+          showToast(this.toastrService, data.Message, "danger");
+        } else {
+          showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+        }
       }
     });
   }
@@ -259,7 +276,11 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(`pages/process-done`);
         }, 2000);
       } else {
-        showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+        if (data.Code == 2) {
+          showToast(this.toastrService, data.Message, "danger");
+        } else {
+          showToast(this.toastrService, "Đã có lỗi xảy ra", "danger");
+        }
       }
     });
   }
@@ -284,6 +305,7 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
     this.processSV.getStepById(item.ProcessStepId).subscribe(data => {
       if (data && data.Data) {
         this.currentDetailStep = data.Data;
+        this.currentDetailStep.StepExe = item;
         if (this.currentDetailStep.StepFields) {
           const fieldVal = JSON.parse(item.StepExecutionData);
           this.currentDetailStep.StepFields.forEach(x => {

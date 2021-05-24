@@ -53,7 +53,7 @@ export class StepSettingComponent implements OnInit {
       if (this.processID && !isNaN(this.processID)) {
         this.getAllStepByProcessID()
       } else {
-        this.router.navigateByUrl("not-found");
+         this.router.navigateByUrl("pages/not-found");
       }
     });
 
@@ -79,6 +79,8 @@ export class StepSettingComponent implements OnInit {
         if (this.currentProcess.ProcessSteps && this.currentProcess.ProcessSteps.length > 0) {
           this.currentStep = this.currentProcess.ProcessSteps[0];
         }
+      }else{
+         this.router.navigateByUrl("pages/not-found");
       }
       this.isLoading = false;
     });
@@ -198,7 +200,7 @@ export class StepSettingComponent implements OnInit {
       if (data && data.Data) {
         this.currentStep = data.Data;
       } else {
-        this.router.navigateByUrl("not-found");
+         this.router.navigateByUrl("pages/not-found");
 
       }
       this.isLoadingStep = false;

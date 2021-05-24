@@ -20,6 +20,7 @@ namespace DataAccess.Models
         public int? Status { get; set; }
         public int? Priority { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public DateTime? CompletedDate { get; set; }
 
         public virtual ProcessStep CurrentStep { get; set; }
         public virtual UserInfor Owner { get; set; }

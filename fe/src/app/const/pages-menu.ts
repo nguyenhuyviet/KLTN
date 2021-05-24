@@ -45,6 +45,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
     data: { roles: [ Role.CBQL] }
   },
   {
+    title: 'Thống kê',
+    icon: 'pie-chart-outline',
+    link: '/pages/process-statistic',
+    data: { roles: [ Role.CBQL] }
+  },
+  {
     title: 'Người dùng',
     group: true,
     data: { roles: [ Role.CBQL, Role.QTHT] }

@@ -83,7 +83,7 @@ export class UserGroupDetailComponent implements OnInit {
         this.getGroupDetail();
         this.setPage({ offset: 0 });
       } else {
-        this.router.navigateByUrl("not-found");
+         this.router.navigateByUrl("pages/not-found");
       }
     });
 

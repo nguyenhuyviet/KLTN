@@ -150,6 +150,7 @@ namespace BusinessAccess.Services
             stepExe.NextAssigneeId = data.AssigneeId;
             stepExe.CurrentAssigneeId = currentUserID;
             stepExe.CreatedDate = now;
+            stepExe.CompletedDate = now;
             stepExe.ProcessStepId = data.ProcessStepId;
 
             var nextStepExe = new StepExecution();
@@ -384,6 +385,7 @@ namespace BusinessAccess.Services
 
                 stepExe.NextAssigneeId = data.AssigneeId;
                 stepExe.CurrentAssigneeId = currentUserID;
+                stepExe.CompletedDate = now;
 
                 nextStepExe.ProcessStepId = nextStep.ProcessStepId;
                 nextStepExe.ProcessExecutionId = data.ProcessExeId;
@@ -397,7 +399,9 @@ namespace BusinessAccess.Services
             {
                 processExe.CurrentStepId = null;
                 stepExe.NextAssigneeId = null;
+                stepExe.CompletedDate = now;
 
+                processExe.CompletedDate = now;
                 processExe.Status = 2;
                 _processExeRepository.Update(processExe);
             }
@@ -436,7 +440,7 @@ namespace BusinessAccess.Services
                 if (item.ProcessExecution.Status != 4 && item.ProcessExecution.CurrentStep != null)
                 {
                     var step = _stepRepository.GetSingleById(item.ProcessExecution.CurrentStep.ProcessStepId);
-                    if (step != null && step.HasDeadline == 1 && step.DeadLine != null)
+                    if (step != null && step.HasDeadline.HasValue && step.HasDeadline.Value && step.DeadLine != null)
                     {
 
                         DateTime now = DateTime.Now;
@@ -480,7 +484,7 @@ namespace BusinessAccess.Services
                 res.OnError("Some error happen");
                 return res;
             }
-            stepExe.IsReject = 1;
+            stepExe.IsReject = true;
             stepExe.RejectReason = data.RejectReason;
 
             _stepExeRepository.Update(stepExe);

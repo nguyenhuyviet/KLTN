@@ -38,7 +38,7 @@ export class ProcessService {
      * @returns 
      */
     addProcessGroup(group): Observable<ServiceResponse> {
-        return this.http.post<ServiceResponse>(`${this.processUrl}/addGroup`,group,this.httpOptions)
+        return this.http.post<ServiceResponse>(`${this.processUrl}/addGroup`, group, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
@@ -48,7 +48,7 @@ export class ProcessService {
      * lấy về danh sách group
      * @returns 
      */
-     deleteProcessGroup(groupId): Observable<ServiceResponse> {
+    deleteProcessGroup(groupId): Observable<ServiceResponse> {
         return this.http.get<ServiceResponse>(`${this.processUrl}/deleteGroup/${groupId}`)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
@@ -65,8 +65,8 @@ export class ProcessService {
      * lấy về danh sách group
      * @returns 
      */
-     updateProcessGroup(group): Observable<ServiceResponse> {
-        return this.http.post<ServiceResponse>(`${this.processUrl}/updateGroup`,group,this.httpOptions)
+    updateProcessGroup(group): Observable<ServiceResponse> {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/updateGroup`, group, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
@@ -99,6 +99,23 @@ export class ProcessService {
     }
     //#endregion
 
+    //#region statistic
+
+    getPagingProcessStatistic(paging) {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/GetPagingProcessStatistic`, paging, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    getDetailProcessStatistic(processId) {
+        return this.http.get<ServiceResponse>(`${this.processUrl}/GetDetailProcessStatistic/${processId}`)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+    //#endregion
+
     //#region process
     getPagingProcess(paging) {
         return this.http.post<ServiceResponse>(`${this.processUrl}/GetMultiPaging`, paging, this.httpOptions)
@@ -106,7 +123,7 @@ export class ProcessService {
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
-    
+
     addProcess(process): Observable<ServiceResponse> {
         return this.http.post<ServiceResponse>(`${this.processUrl}/AddProcess`, process, this.httpOptions)
             .pipe(
@@ -150,22 +167,22 @@ export class ProcessService {
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
-    }    
-    
+    }
+
     getListAssignee(processStep): Observable<ServiceResponse> {
         return this.http.post<ServiceResponse>(`${this.processUrl}/getListAssignee`, processStep, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
-    } 
-    
+    }
+
     initProcessExe(fieldData): Observable<ServiceResponse> {
         return this.http.post<ServiceResponse>(`${this.processUrl}/initProcessExe`, fieldData, this.httpOptions)
             .pipe(
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
-    
+
     addStep(step): Observable<ServiceResponse> {
         return this.http.post<ServiceResponse>(`${this.processUrl}/AddStep`, step, this.httpOptions)
             .pipe(
@@ -191,7 +208,7 @@ export class ProcessService {
 
 
     //#region  group
-    
+
 
     //#endregion
     /**

@@ -145,6 +145,8 @@ namespace DataAccess
                     .HasColumnType("int(11)")
                     .HasColumnName("ProcessExecutionID");
 
+                entity.Property(e => e.CompletedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.CurrentStepId)
@@ -237,12 +239,6 @@ namespace DataAccess
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_bin");
-
-                entity.Property(e => e.HasDeadline).HasColumnType("bit(1)");
-
-                entity.Property(e => e.HasField).HasColumnType("bit(1)");
-
-                entity.Property(e => e.HasTask).HasColumnType("bit(1)");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnType("varchar(255)")
@@ -345,13 +341,13 @@ namespace DataAccess
                     .HasColumnType("int(11)")
                     .HasColumnName("StepExecutionID");
 
+                entity.Property(e => e.CompletedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.CurrentAssigneeId)
                     .HasColumnType("int(11)")
                     .HasColumnName("CurrentAssigneeID");
-
-                entity.Property(e => e.IsReject).HasColumnType("bit(1)");
 
                 entity.Property(e => e.NextAssigneeId)
                     .HasColumnType("int(11)")
@@ -426,8 +422,6 @@ namespace DataAccess
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_bin");
-
-                entity.Property(e => e.IsRequired).HasColumnType("bit(1)");
 
                 entity.Property(e => e.ProcessStepId)
                     .HasColumnType("int(11)")

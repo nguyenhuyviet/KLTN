@@ -39,6 +39,8 @@ namespace BusinessAccess.Services
         ServiceResponse GetMultiPaging(Paging paging, string[] includes = null);
         ServiceResponse GetPagingProcessAddGroup(Paging paging, string[] includes = null);
         ServiceResponse GetMultiPagingGroup(Paging paging, string[] includes = null);
+        ServiceResponse GetPagingProcessStatistic(Paging paging, string[] includes = null);
+        ServiceResponse GetDetailProcessStatistic(int processId);
         ServiceResponse AddGroup(ProcessGroup user, int currentUserID, string currentUsername);
         ServiceResponse UpdateGroup(ProcessGroup user, int currentUserID, string currentUsername);
         ServiceResponse AddProcessToGroup(ProcessGroup user, int currentUserID, string currentUsername);
@@ -792,6 +794,88 @@ namespace BusinessAccess.Services
         }
         #endregion
 
+        public ServiceResponse GetPagingProcessStatistic(Paging paging, string[] includes = null)
+        {
+            ServiceResponse res = new ServiceResponse();
+            IEnumerable<Process> query = null;
+            PagingResult data = new PagingResult();
+
+            if (paging == null)
+            {
+                res.OnError("Data truyền lên rỗng");
+                return res;
+            }
+
+            includes = new string[1] { "ProcessExecutions" };
+
+            if (!String.IsNullOrEmpty(paging.FilterString))
+            {
+                // || x.Description.ToUpper().Contains(paging.FilterString.ToUpper())
+                query = _processRepository.GetMulti(x => x.ProcessName.ToUpper().Contains(paging.FilterString.ToUpper()) 
+                || x.CreatedBy.ToUpper().Contains(paging.FilterString.ToUpper()) || x.Description.ToUpper().Contains(paging.FilterString.ToUpper()), includes);
+
+                if (query == null)
+                {
+                    res.OnSuccess(data);
+                    return res;
+                }
+            }
+            else
+            {
+
+                query = _processRepository.GetAll(includes);
+
+            }
+
+            data.TotalRecord = query.Count();
+            data.PageData = ConverDataStatistic(query.ToList(), paging);
+            res.OnSuccess(data);
+            return res;
+
+        }
+
+
+        public ServiceResponse GetDetailProcessStatistic(int processId)
+        {
+            ServiceResponse res = new ServiceResponse();
+            
+            var includes = new string[2] { "ProcessExecutions","ProcessSteps.StepExecutions" };
+            var process = _processRepository.GetSingleByCondition(x => x.ProcessId == processId, includes);
+            if(process == null)
+            {
+                res.OnError("Not found process");
+                return res;
+            }
+            res.Data = new ReportStatisticDetail(process);
+            return res;
+
+        }
+
+        private List<ReportStatistic> ConverDataStatistic(List<Process> listProcess, Paging paging)
+        {
+            List<ReportStatistic> result = new List<ReportStatistic>();
+            foreach (var item in listProcess)
+            {
+                var newStatistic = new ReportStatistic(item);
+                result.Add(newStatistic);
+            }
+
+            if (!String.IsNullOrEmpty(paging.SortBy))
+            {
+                var propertyInfo = typeof(ReportStatistic).GetProperty(paging.SortBy);
+                if (paging.Sort != null && (paging.Sort.ToUpper().Equals("DESC") || paging.Sort.Equals(null)))
+                {
+                    result = result.OrderByDescending(x => propertyInfo.GetValue(x, null)).ToList();
+                }
+                else
+                {
+
+                    result = result.OrderBy(x => propertyInfo.GetValue(x, null)).ToList();
+                }
+            }
+            result = result.Skip((paging.CurrentPage - 1) * paging.PageSize).Take(paging.PageSize).ToList();
+            return result;
+        }
     }
 
 }

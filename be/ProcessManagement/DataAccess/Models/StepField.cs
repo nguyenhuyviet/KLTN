@@ -12,13 +12,12 @@ namespace DataAccess.Models
         public string FieldName { get; set; }
         public int? SortOrder { get; set; }
         public string Description { get; set; }
-        public ulong? IsRequired { get; set; }
+        public bool? IsRequired { get; set; }
         public int? Type { get; set; }
         public string DataSetting { get; set; }
         public int? ProcessStepId { get; set; }
 
         public virtual ProcessStep ProcessStep { get; set; }
-
         [NotMapped]
         public int State { get; set; }
     }

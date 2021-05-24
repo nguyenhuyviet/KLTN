@@ -430,6 +430,47 @@ namespace WebApi.Controllers
 
             return result;
         }
+        
+        /// <summary>
+        /// statistic
+        /// </summary>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpPost("GetPagingProcessStatistic")]
+        public ServiceResponse GetPagingProcessStatistic(Paging paging)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+           
+                result = _processService.GetPagingProcessStatistic(paging);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+            return result;
+        } 
+        
+        [HttpGet("GetDetailProcessStatistic/{processId}")]
+        public ServiceResponse GetDetailProcessStatistic(int processId)
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+           
+                result = _processService.GetDetailProcessStatistic(processId);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+            return result;
+        }
 
   
         [HttpPost("AddGroup")]

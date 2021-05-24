@@ -20,11 +20,11 @@ namespace DataAccess.Models
         public string ProcessStepName { get; set; }
         public int? SortOrder { get; set; }
         public string Description { get; set; }
-        public ulong? HasTask { get; set; }
+        public bool? HasTask { get; set; }
         public int? AssigneeType { get; set; }
-        public ulong? HasField { get; set; }
+        public bool? HasField { get; set; }
         public int? ProcessId { get; set; }
-        public ulong? HasDeadline { get; set; }
+        public bool? HasDeadline { get; set; }
         public int? DeadLine { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

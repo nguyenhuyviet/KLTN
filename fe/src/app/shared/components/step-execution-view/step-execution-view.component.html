@@ -4,11 +4,11 @@
             <div class="row align-items-center header-view">
 
                 <div class="col-8 mb-1 mt-1 row">
-                    <nb-icon class="mr-2 cursor-pointer" [icon]="'arrow-back-outline'" pack="eva"
+                    <!-- <nb-icon class="mr-2 cursor-pointer" [icon]="'arrow-back-outline'" pack="eva"
                         (click)="backToProcess()">
-                    </nb-icon>
+                    </nb-icon> -->
                     <div class="title">
-                        {{step.ProcessStepName}}
+                        Bước: {{step.ProcessStepName}}
                     </div>
                 </div>
                 <div class="col-4 btn-group row justify-content-end" *ngIf="!step.OverDeadline && isHandle">
@@ -22,7 +22,7 @@
                     </button>
                 </div>
             </div>
-            <div style="margin-left: 26px; font-size: 13px;">
+            <div style="font-size: 13px;">
                 <div *ngIf="processName">
                     {{processName}}
                 </div>
@@ -66,7 +66,7 @@
                                             Hoàn thành lúc
                                         </div>
                                         <div>
-                                            {{item.CreatedDate | date:'yyyy/MM/dd hh:mm'}}
+                                            {{item.CompletedDate | date:'yyyy/MM/dd hh:mm'}}
                                         </div>
                                     </div>
 
@@ -84,7 +84,7 @@
                 </div>
                 <div class="right">
                     <div class="step-item-view task-view mb-3"
-                        *ngIf="!fistStep && !step.OverDeadline && !step.StepExecutions[0]?.IsReject && !IsHandle ">
+                        *ngIf="!fistStep && !step.OverDeadline && !step.StepExecutions[0]?.IsReject && !isHandle ">
                         <div class="section-title mb-2 in-progress"
                             *ngIf="processExeStatus != processExeStatusEnum.Done">Đang chờ xử lý</div>
                         <div class="section-title mb-2 in-progress"

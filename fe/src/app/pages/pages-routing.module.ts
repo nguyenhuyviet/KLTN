@@ -39,10 +39,18 @@ const routes: Routes = [{
       path: 'process-done',
       loadChildren: () => import('./process-done/process-done.module')
         .then(m => m.ProcessDoneModule),
-    }, {
+    }, 
+    {
       path: 'process-group',
       loadChildren: () => import('./process-group/process-group.module')
         .then(m => m.ProcessGroupModule),
+      canActivate: [AuthGuard],
+      data: { roles: [Role.CBQL] }
+    },
+    {
+      path: 'process-statistic',
+      loadChildren: () => import('./report-statistic/report-statistic.module')
+        .then(m => m.ReportStatisticModule),
       canActivate: [AuthGuard],
       data: { roles: [Role.CBQL] }
     },

@@ -10,13 +10,15 @@ namespace DataAccess.Models
         public int StepExecutionId { get; set; }
         public string StepExecutionData { get; set; }
         public int? ProcessExecutionId { get; set; }
-        public ulong? IsReject { get; set; }
+        public bool? IsReject { get; set; }
         public string RejectReason { get; set; }
         public int? NextAssigneeId { get; set; }
         public int? PrevAssigneeId { get; set; }
         public int? CurrentAssigneeId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? ProcessStepId { get; set; }
+        public bool? IsExpire { get; set; }
+        public DateTime? CompletedDate { get; set; }
 
         public virtual UserInfor CurrentAssignee { get; set; }
         public virtual UserInfor NextAssignee { get; set; }

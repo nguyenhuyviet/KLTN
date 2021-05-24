@@ -134,7 +134,14 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
   }
 
   backToProcess() {
-    this.onBack.emit();
+    let link = location.pathname;
+    if (link.includes('process-done')) {
+      this.router.navigateByUrl("pages/process-done");
+
+    } else if (link.includes("process-related")) {
+      this.router.navigateByUrl("pages/process-related");
+
+    }
   }
 
 

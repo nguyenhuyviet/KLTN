@@ -31,7 +31,7 @@ export class StepHandleComponent implements OnInit {
       if (this.processExeID && !isNaN(this.processExeID)) {
           
       } else {
-        this.router.navigateByUrl("not-found");
+         this.router.navigateByUrl("pages/not-found");
       }
     });
   }

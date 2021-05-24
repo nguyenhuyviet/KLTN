@@ -1,0 +1,163 @@
+<nb-card>
+  <nb-card-header class="container-fluid">
+    <div class="row align-items-center">
+
+
+      <div class="col-md-6 mb-1 mt-1 ">
+        <div>
+          Thống kê quy trình
+        </div>
+      </div>
+      <div class="col-md-6">
+
+        <nb-form-field>
+          <input type="text" nbInput fullWidth [value]="paging.FilterString" placeholder="Tìm kiếm"
+            (keyup)="searchProcess($event)">
+          <button nbSuffix nbButton ghost (click)="clearSearch()">
+            <nb-icon [icon]="'close-circle-outline'" pack="eva">
+            </nb-icon>
+          </button>
+        </nb-form-field>
+
+      </div>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- <ng2-smart-table  [settings]="settings" [source]="source" (edit)="onEditItem($event)">
+      </ng2-smart-table> -->
+
+    <ngx-datatable class="material fullscreen" [rows]="listProcess" [columns]="colummSetting"
+      [columnMode]="columnMode.force" [messages]="messages" [headerHeight]="50" [loadingIndicator]="isLoading"
+      [footerHeight]="50" [rowHeight]="'auto'" [scrollbarH]="true" [externalPaging]="true" [externalSorting]="true"
+      [count]="totalRecord" [offset]="paging.CurrentPage - 1" [limit]="paging.PageSize" (page)="setPage($event)"
+      (sort)="setSort($event)">
+
+      <ngx-datatable-column name="" prop="" width="100" [sortable]="false">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div class="text-detail" (click)="showDialogDetail(dialogDetail,row)">
+
+            Chi tiết
+          </div>
+
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Tên quy trình" prop="ProcessName" width="250">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Mô tả" prop="Description" width="400" [sortable]="false">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Người tạo" prop="CreatedBy" width="150" [sortable]="false">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Số lượng đã chạy" prop="NumberExecution" width="150">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Tỉ lệ hoàn thành" prop="CompletionRate" width="150">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          {{value}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Tổng thời gian chạy" prop="TotalTimeExecution" minWidth="200" width="200">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <div class="dis-flex-a">
+            <div> {{row.Day}} ngày,</div>
+            <div>&nbsp;{{row.Hour}} giờ,</div>
+            <div>&nbsp;{{row.Minute}} phút</div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ngx-datatable>
+  </nb-card-body>
+</nb-card>
+
+
+<ng-template #dialogDetail let-data let-ref="dialogRef">
+  <nb-card accent="danger" [nbSpinner]="isLoading" nbSpinnerStatus="danger" nbSpinnerSize="large" nbSpinnerMessage=""
+    style="width: 800px; max-height: calc(100vh - 60px);">
+    <ng-container *ngIf="currentProcessStatisticDetail">
+      <nb-card-header>Thống kê {{currentProcessStatisticDetail.ProcessName}}</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-6">
+            <div class="mb-3">
+              <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                Số lần thực hiện
+              </div>
+              <div>
+                {{currentProcessStatisticDetail.NumberExecution}}
+              </div>
+            </div>
+            <div class="mb-3">
+              <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                Tổng thời gian đã hoàn thành
+              </div>
+
+              <div class="dis-flex-a">
+                <div> {{currentProcessStatisticDetail.Day}} ngày,</div>
+                <div>&nbsp;{{currentProcessStatisticDetail.Hour}} giờ,</div>
+                <div>&nbsp;{{currentProcessStatisticDetail.Minute}} phút</div>
+
+              </div>
+            </div>
+            <div class="mb-3">
+              <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                Tỉ lệ hoàn thành
+              </div>
+              <div>
+                {{currentProcessStatisticDetail.CompletionRate}}
+              </div>
+            </div>
+            <div class="mb-3">
+              <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                Số lần bị từ chối
+              </div>
+              <div>
+                {{currentProcessStatisticDetail.NumberReject}}
+              </div>
+            </div>
+            <div class="mb-3">
+              <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                Số lần quá hạn
+              </div>
+              <div>
+                {{currentProcessStatisticDetail.NumberExprire}}
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+
+            <div class="mb-3">
+              <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">
+                Thống kê bước
+              </div>
+              <div class="mb-3" *ngFor="let step of currentProcessStatisticDetail.ListStep">
+                <div style="font-size: 14px;font-weight: 700;" class="title-acc mb-2">{{step.ProcessStepName}}</div>
+                <div>Số lần bị từ chối: {{step.NumberReject}}</div>
+                <div>Số lần hết hạn: {{step.NumberExprire}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <div class="btn-group dis-flex justify-content-end">
+
+          <button nbButton (click)="ref.close()">Đóng</button>
+
+        </div>
+      </nb-card-footer>
+    </ng-container>
+  </nb-card>
+
+</ng-template>

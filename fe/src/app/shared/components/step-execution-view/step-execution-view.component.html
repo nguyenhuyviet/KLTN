@@ -129,7 +129,7 @@
                         <div class="step-item-view field-view">
                             <div class="section-title  mb-2">Thông tin cần hoàn thành</div>
                             <div *ngFor="let field of step.StepFields">
-                                <ngx-field-view [fieldData]="field"></ngx-field-view>
+                                <ngx-field-view [fieldData]="field" (onUpload)="upload($event, field)"></ngx-field-view>
                             </div>
                         </div>
                     </ng-container>
@@ -244,7 +244,7 @@
                     <div class="step-item-view field-view">
                         <div class="section-title  mb-2">Thông tin đã hoàn thành</div>
                         <div *ngFor="let field of currentDetailStep.StepFields">
-                            <ngx-field-view [fieldData]="field"></ngx-field-view>
+                            <ngx-field-view [fieldData]="field"  (onDownload)="download($event)"></ngx-field-view>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,1274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Devart (www.devart.com), the Database Diagram File -->
+<!-- Modifying this generated file will probably render it invalid -->
+<DevartDatabaseDiagram>
+  <SchemaVersion>1.2</SchemaVersion>
+  <DatabaseProvider>59f90733-4d68-4fdf-82a7-f0fcbf5460aa</DatabaseProvider>
+  <Connection>
+    <Name>localhost</Name>
+    <Category>00000000-0000-0000-0000-000000000000</Category>
+    <ConnectionString>User Id=root;Host=localhost;Character Set=utf8</ConnectionString>
+  </Connection>
+  <Settings>
+    <DbDiagramOptions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <CustomProperties />
+    </DbDiagramOptions>
+    <Options xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PageOptions">
+      <TopLeftMargins>
+        <Width>39.3700787401575 in/100</Width>
+        <Height>39.3700787401575 in/100</Height>
+      </TopLeftMargins>
+      <BottomRightMargins>
+        <Width>39.3700787401575 in/100</Width>
+        <Height>39.3700787401575 in/100</Height>
+      </BottomRightMargins>
+      <PaperSize>
+        <Width>827 in/100</Width>
+        <Height>1169 in/100</Height>
+      </PaperSize>
+    </Options>
+    <Options xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrintOptions" />
+    <Options xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ViewOptions">
+      <ShadowOffset>
+        <X>4 px</X>
+        <Y>4 px</Y>
+      </ShadowOffset>
+      <CustomProperties />
+    </Options>
+  </Settings>
+  <VirtualRelations>
+    <RelationCount>0</RelationCount>
+  </VirtualRelations>
+  <Diagram Version="1.22.1.0">
+    <DiagramModel>
+      <Model xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="DDRootModel">
+        <CustomProperties>
+          <OID>0</OID>
+        </CustomProperties>
+        <Children>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>1</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>-720 px</X>
+              <Y>-330 px</Y>
+            </Location>
+            <Size>
+              <Width>172 px</Width>
+              <Height>107 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.role</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>2</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>90 px</X>
+              <Y>-340 px</Y>
+            </Location>
+            <Size>
+              <Width>172 px</Width>
+              <Height>127 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.user_login</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>3</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>-430 px</X>
+              <Y>-340 px</Y>
+            </Location>
+            <Size>
+              <Width>142 px</Width>
+              <Height>127 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.user_role</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>4</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>-200 px</X>
+              <Y>-230 px</Y>
+            </Location>
+            <Size>
+              <Width>181 px</Width>
+              <Height>229 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.user_infor</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>5</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>-710 px</X>
+              <Y>-100 px</Y>
+            </Location>
+            <Size>
+              <Width>192 px</Width>
+              <Height>144 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.faculty</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>6</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>-470 px</X>
+              <Y>70 px</Y>
+            </Location>
+            <Size>
+              <Width>211 px</Width>
+              <Height>144 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.laboratory</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>7</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>-170 px</X>
+              <Y>290 px</Y>
+            </Location>
+            <Size>
+              <Width>219 px</Width>
+              <Height>263 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.equipment</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>8</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>290 px</X>
+              <Y>410 px</Y>
+            </Location>
+            <Size>
+              <Width>240 px</Width>
+              <Height>107 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.equipment_type</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>9</OID>
+              <Comment>10</Comment>
+              <OutModel>3</OutModel>
+              <InModel>1</InModel>
+              <OutPort>11</OutPort>
+              <InPort>12</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>63.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>11</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>53.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>12</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.user_role.FK_user_role_role_RoleID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>10</OID>
+              <HolderModel>9</HolderModel>
+              <Port>13</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>59 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>13</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>14</OID>
+              <Comment>15</Comment>
+              <OutModel>5</OutModel>
+              <InModel>5</InModel>
+              <OutPort>16</OutPort>
+              <InPort>17</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>72 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>16</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>108 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>17</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-729 px</X>
+                <Y>-28 px</Y>
+              </PointD>
+              <PointD>
+                <X>-729 px</X>
+                <Y>8 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.faculty.FK_faculty_faculty_FalcultyID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>15</OID>
+              <HolderModel>14</HolderModel>
+              <Port>18</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>19 px</X>
+                  <Y>-18 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>18</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>19</OID>
+              <Comment>20</Comment>
+              <OutModel>6</OutModel>
+              <InModel>5</InModel>
+              <OutPort>21</OutPort>
+              <InPort>22</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>-17.0550405286762 px</X>
+                  <Y>80.2759353697293 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>21</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>117 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>22</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-490 px</X>
+                <Y>150.275935369729 px</Y>
+              </PointD>
+              <PointD>
+                <X>-490 px</X>
+                <Y>17 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.laboratory.FK_laboratory_faculty_FalcultyID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>20</OID>
+              <HolderModel>19</HolderModel>
+              <Port>23</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>20 px</X>
+                  <Y>66.6379653990262 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>23</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>24</OID>
+              <Comment>25</Comment>
+              <OutModel>7</OutModel>
+              <InModel>8</InModel>
+              <OutPort>26</OutPort>
+              <InPort>27</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>211.594232111264 px</X>
+                  <Y>184.97929572218 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>26</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>3.84312362473855 px</X>
+                  <Y>63.6375462992361 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>27</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>69 px</X>
+                <Y>474.97929572218 px</Y>
+              </PointD>
+              <PointD>
+                <X>69 px</X>
+                <Y>473.637546299236 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>true</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.equipment.FK_equipment_equipment_type_EquipmentTypeID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>25</OID>
+              <HolderModel>24</HolderModel>
+              <Port>28</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>-130.5 px</X>
+                  <Y>1.34175299757072 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>28</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>29</OID>
+              <Comment>30</Comment>
+              <OutModel>3</OutModel>
+              <InModel>4</InModel>
+              <OutPort>31</OutPort>
+              <InPort>32</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>63.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>31</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>45.25 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>Left Right</Anchors>
+                <Align>Top</Align>
+                <CustomProperties>
+                  <OID>32</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-154.75 px</X>
+                <Y>-276.5 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.user_role.FK_user_role_user_infor_UserID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>30</OID>
+              <HolderModel>29</HolderModel>
+              <Port>33</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>-66.625 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>33</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>34</OID>
+              <Comment>35</Comment>
+              <OutModel>2</OutModel>
+              <InModel>4</InModel>
+              <OutPort>36</OutPort>
+              <InPort>37</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>118.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>36</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>8.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>37</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.user_login.FK_user_login</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>35</OID>
+              <HolderModel>34</HolderModel>
+              <Port>38</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>54.5 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>38</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>39</OID>
+              <Comment>40</Comment>
+              <OutModel>4</OutModel>
+              <InModel>5</InModel>
+              <OutPort>41</OutPort>
+              <InPort>42</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>2.76283482723028 px</X>
+                  <Y>136.077540393919 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>41</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>4.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>42</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-220 px</X>
+                <Y>-93.9224596060808 px</Y>
+              </PointD>
+              <PointD>
+                <X>-220 px</X>
+                <Y>-95.5 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.user_infor.FK_user_infor_faculty_FalcultyID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>40</OID>
+              <HolderModel>39</HolderModel>
+              <Port>43</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>169 px</X>
+                  <Y>1.57754039391921 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>43</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>44</OID>
+              <Comment>45</Comment>
+              <OutModel>4</OutModel>
+              <InModel>6</InModel>
+              <OutPort>46</OutPort>
+              <InPort>47</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>45.25 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>Left Right</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>46</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>72 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>47</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-154.75 px</X>
+                <Y>142 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.user_infor.FK_user_infor_laboratory_LaboratoryID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>45</OID>
+              <HolderModel>44</HolderModel>
+              <Port>48</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>0 px</X>
+                  <Y>-71.5 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>48</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>49</OID>
+              <Comment>50</Comment>
+              <OutModel>7</OutModel>
+              <InModel>6</InModel>
+              <OutPort>51</OutPort>
+              <InPort>52</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>131.5 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>51</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>105.5 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>Left Right</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>52</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-364.5 px</X>
+                <Y>421.5 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.equipment.FK_equipment_laboratory_LaboratoryID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>50</OID>
+              <HolderModel>49</HolderModel>
+              <Port>53</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>194.5 px</X>
+                  <Y>103.75 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Left</Align>
+                <CustomProperties>
+                  <OID>53</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>54</OID>
+              <Comment>55</Comment>
+              <OutModel>7</OutModel>
+              <InModel>4</InModel>
+              <OutPort>56</OutPort>
+              <InPort>57</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>104.254278275743 px</X>
+                  <Y>-2.86562348998149 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Top</Align>
+                <CustomProperties>
+                  <OID>56</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>134.25 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>Left Right</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>57</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>-65.7457217242566 px</X>
+                <Y>144.5 px</Y>
+              </PointD>
+              <PointD>
+                <X>-65.75 px</X>
+                <Y>144.5 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>true</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.equipment.FK_equipment_user_infor_UserID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>55</OID>
+              <HolderModel>54</HolderModel>
+              <Port>58</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>0.00214204527468098 px</X>
+                  <Y>145.5 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Top</Align>
+                <CustomProperties>
+                  <OID>58</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>59</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>160 px</X>
+              <Y>-40 px</Y>
+            </Location>
+            <Size>
+              <Width>185 px</Width>
+              <Height>263 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.equipment_activity</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>60</OID>
+              <Comment>61</Comment>
+              <OutModel>59</OutModel>
+              <InModel>7</InModel>
+              <OutPort>62</OutPort>
+              <InPort>63</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>92.5 px</X>
+                  <Y>0 px</Y>
+                </Location>
+                <Anchors>Left Right</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>62</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>218.302979225984 px</X>
+                  <Y>87.0315878472672 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>63</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>252.5 px</X>
+                <Y>377.031587847267 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.equipment_activity.FK_equipment_activity_equipment_EquipmentID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>61</OID>
+              <HolderModel>60</HolderModel>
+              <Port>64</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>101.75 px</X>
+                  <Y>-154.031585693359 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>64</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>65</OID>
+              <Comment>66</Comment>
+              <OutModel>59</OutModel>
+              <InModel>4</InModel>
+              <OutPort>67</OutPort>
+              <InPort>68</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>90.9071420905302 px</X>
+                  <Y>-9.64472864892843 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Top</Align>
+                <CustomProperties>
+                  <OID>67</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>179.87375865584 px</X>
+                  <Y>138.761039239807 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>68</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>250.907135009766 px</X>
+                <Y>-91.2389602661133 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.equipment_activity.FK_equipment_activity_user_infor_UserID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>66</OID>
+              <HolderModel>65</HolderModel>
+              <Port>69</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>134.953574585647 px</X>
+                  <Y>51.2389602661133 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Top</Align>
+                <CustomProperties>
+                  <OID>69</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+          <Model xsi:type="TableModel">
+            <CustomProperties>
+              <OID>70</OID>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <Location>
+              <X>410 px</X>
+              <Y>-200 px</Y>
+            </Location>
+            <Size>
+              <Width>207 px</Width>
+              <Height>195 px</Height>
+            </Size>
+            <DbOid>
+              <Path>qltb.efficiency</Path>
+              <TypeName>Table</TypeName>
+            </DbOid>
+            <Compartments>
+              <ConstraintsCollapsed>True</ConstraintsCollapsed>
+              <IndexesCollapsed>True</IndexesCollapsed>
+              <TriggersCollapsed>True</TriggersCollapsed>
+            </Compartments>
+          </Model>
+          <Model xsi:type="RelationLinkModel">
+            <CustomProperties>
+              <OID>71</OID>
+              <Comment>72</Comment>
+              <OutModel>70</OutModel>
+              <InModel>59</InModel>
+              <OutPort>73</OutPort>
+              <InPort>74</InPort>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port>
+                <Location>
+                  <X>110.232550151417 px</X>
+                  <Y>188.372093216673 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>73</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+              </Port>
+              <Port>
+                <Location>
+                  <X>0 px</X>
+                  <Y>65.75 px</Y>
+                </Location>
+                <Anchors>Top Bottom</Anchors>
+                <Align>Right</Align>
+                <CustomProperties>
+                  <OID>74</OID>
+                  <PortType>FloatAnchor</PortType>
+                </CustomProperties>
+              </Port>
+            </PortAnchors>
+            <BendPoints>
+              <PointD>
+                <X>520.232550151417 px</X>
+                <Y>25.75 px</Y>
+              </PointD>
+            </BendPoints>
+            <IsManuallyRouted>false</IsManuallyRouted>
+            <DbOid>
+              <Path>qltb.efficiency.FK_efficiency_equipment_activity_ID</Path>
+              <TypeName>ForeignKey</TypeName>
+            </DbOid>
+          </Model>
+          <Model xsi:type="RelationCommentModel">
+            <CustomProperties>
+              <OID>72</OID>
+              <HolderModel>71</HolderModel>
+              <Port>75</Port>
+              <Parent>0</Parent>
+            </CustomProperties>
+            <PortAnchors>
+              <Port xsi:type="LinkPort">
+                <Location>
+                  <X>87.6162781787604 px</X>
+                  <Y>-30.75 px</Y>
+                </Location>
+                <Anchors>None</Anchors>
+                <Align>Bottom</Align>
+                <CustomProperties>
+                  <OID>75</OID>
+                  <PortType>FixedAnchor</PortType>
+                </CustomProperties>
+                <LinkPortAnchor>OutPoint</LinkPortAnchor>
+              </Port>
+            </PortAnchors>
+            <CommentOffset>
+              <X>22 px</X>
+              <Y>2 px</Y>
+            </CommentOffset>
+          </Model>
+        </Children>
+        <ViewPort>
+          <ScaleMode>Free</ScaleMode>
+          <Scale>0.86</Scale>
+          <Location>
+            <X>-1070.93021474444 px</X>
+            <Y>-359.302319657293 px</Y>
+          </Location>
+        </ViewPort>
+      </Model>
+    </DiagramModel>
+  </Diagram>
+</DevartDatabaseDiagram>

@@ -15,10 +15,13 @@ export class FieldViewComponent implements OnInit {
 
 
   fieldValue;
+  fieldFile;
 
 
   fieldType = FieldType;
 
+  @Output() onUpload = new EventEmitter();
+  @Output() onDownload = new EventEmitter();
 
   constructor() { }
 
@@ -42,35 +45,37 @@ export class FieldViewComponent implements OnInit {
           });
         } else {
 
+
           this.fieldData.FieldValue = {
             StepFieldId: this.fieldData.StepFieldId,
             Value: null,
           }
+
         }
 
       } else if (this.fieldData.Type == FieldType.Date || this.fieldData.Type == FieldType.DateTime || this.fieldData.Type == FieldType.Hour) {
         this.fieldData.FieldValue.Value = new Date(this.fieldData.FieldValue.Value ? this.fieldData.FieldValue.Value : null);
-      } else if(this.fieldData.Type == FieldType.Checkbox) {
+      } else if (this.fieldData.Type == FieldType.Checkbox) {
 
         this.fieldData.DataSettingObj?.ListOption?.forEach(option => {
-          let optionData = this.fieldData.FieldValue?.ListOptionValue.find( x => x.OptionId == option.OptionId && x.Value == true)
-          if(optionData){
-            option.Value = true; 
+          let optionData = this.fieldData.FieldValue?.ListOptionValue.find(x => x.OptionId == option.OptionId && x.Value == true)
+          if (optionData) {
+            option.Value = true;
           }
         });
-      }
+      } 
       this.fieldValue = this.fieldData.FieldValue;
 
     }
 
   }
 
-  setValueChecked(option, e){
-    let optionData = this.fieldData.FieldValue?.ListOptionValue.find( x => x.OptionId == option.OptionId)
-    if(optionData){
-      optionData.Value  = e;
+  setValueChecked(option, e) {
+    let optionData = this.fieldData.FieldValue?.ListOptionValue.find(x => x.OptionId == option.OptionId)
+    if (optionData) {
+      optionData.Value = e;
 
-    }else{
+    } else {
       this.fieldData.FieldValue.ListOptionValue.push(
         {
           OptionId: option.OptionId,
@@ -79,12 +84,20 @@ export class FieldViewComponent implements OnInit {
     }
   }
 
-  resetError(){
-    if(!this.fieldValue.Value){
+  resetError() {
+    if (!this.fieldValue.Value) {
       return;
     }
-    
+
     this.fieldValue.Empty = false;
 
+  }
+
+  upload(files) {
+    this.onUpload.emit(files);
+  }
+
+  downloadFile(files) {
+    this.onDownload.emit(files);
   }
 }

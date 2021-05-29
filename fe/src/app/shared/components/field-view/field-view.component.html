@@ -79,7 +79,8 @@
         <label for="field-{{fieldData.StepFieldId}}" class="label" [class.required]="fieldData.IsRequired">{{fieldData.FieldName}}
         </label>
         <div class="field-des">{{fieldData.Description}}</div>
-        <input id="field-{{fieldData.StepFieldId}}" type="file" [(ngModel)]="fieldValue.Value" nbInput fullWidth placeholder="Nhập mô tả" [disabled]="readonly">
+        <input [class.border-error]="fieldValue?.Empty" *ngIf="!fieldValue.Value" #file id="field-{{fieldData.StepFieldId}}" type="file" (change)="upload(file.files)" nbInput fullWidth placeholder="Nhập mô tả" [disabled]="readonly">
+        <div class="download-file" *ngIf="fieldValue.Value" (click)="downloadFile(fieldValue.Value)"> {{fieldValue.Value.fileName}} </div>
     </div>
     <!-- yes/ no -->
     <div class="field-des mb-3" *ngIf="fieldData.Type == fieldType.YesNo">

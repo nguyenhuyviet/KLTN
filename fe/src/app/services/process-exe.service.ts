@@ -22,6 +22,25 @@ export class ProcessExecutionService {
     constructor(
         private http: HttpClient,) { }
 
+    uploadFile(formData) {
+
+        return this.http.post<ServiceResponse>(`${this.processUrl}/upload`, formData)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+
+    downloadFile(fileName, fileExtension) {
+
+        return this.http.post(`${this.processUrl}/download`, fileName, { responseType: "blob" })
+            .pipe(map(
+                (res) => {
+                    var blob = new Blob([res], { type: fileExtension })
+                    return blob;
+                })
+            )
+    }
+
     initProcessExe(fieldData): Observable<ServiceResponse> {
         return this.http.post<ServiceResponse>(`${this.processUrl}/initProcessExe`, fieldData, this.httpOptions)
             .pipe(
@@ -59,7 +78,7 @@ export class ProcessExecutionService {
                 catchError(this.handleError<ServiceResponse>('', null))
             );
     }
-    
+
     //#endregion
     /**
      * Handle Http operation that failed.

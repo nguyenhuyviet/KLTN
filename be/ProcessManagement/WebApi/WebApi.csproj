@@ -19,5 +19,10 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\Upload\" />
+  </ItemGroup>
+
 
 </Project>

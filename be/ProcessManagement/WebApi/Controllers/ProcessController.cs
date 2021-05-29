@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BusinessAccess.Helpers;
 using BusinessAccess.Services;
 using DataAccess.Models;
 using DataAccess.UtilModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +21,13 @@ namespace WebApi.Controllers
     {
         IProcessService _processService;
         IProcessExecutionService _processExeService;
-        public ProcessController(IProcessService processService, IProcessExecutionService processExeService)
+        private IHostingEnvironment _hostingEnvironment;
+        public ProcessController(IProcessService processService, IProcessExecutionService processExeService, IHostingEnvironment hostingEnvironment)
         {
             this._processService = processService;
+
             this._processExeService = processExeService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         #region process
@@ -119,7 +125,7 @@ namespace WebApi.Controllers
             return result;
         }
 
-       
+
 
         #endregion
         #region step
@@ -191,9 +197,9 @@ namespace WebApi.Controllers
 
             return result;
         }
-        
 
-       [HttpPost("GetListAssignee")]
+
+        [HttpPost("GetListAssignee")]
         public ServiceResponse GetListAssignee(ProcessStep processStep)
         {
             ServiceResponse result = new ServiceResponse();
@@ -370,9 +376,9 @@ namespace WebApi.Controllers
 
             return result;
         }
-        
 
-       [HttpGet("GetStepExecution/{processExeId}")]
+
+        [HttpGet("GetStepExecution/{processExeId}")]
         public ServiceResponse GetStepExecution(int processExeId)
         {
             ServiceResponse result = new ServiceResponse();
@@ -419,7 +425,7 @@ namespace WebApi.Controllers
             ServiceResponse result = new ServiceResponse();
             try
             {
-           
+
                 result = _processService.GetMultiPagingGroup(paging);
 
             }
@@ -430,7 +436,7 @@ namespace WebApi.Controllers
 
             return result;
         }
-        
+
         /// <summary>
         /// statistic
         /// </summary>
@@ -442,7 +448,7 @@ namespace WebApi.Controllers
             ServiceResponse result = new ServiceResponse();
             try
             {
-           
+
                 result = _processService.GetPagingProcessStatistic(paging);
 
             }
@@ -452,15 +458,15 @@ namespace WebApi.Controllers
             }
 
             return result;
-        } 
-        
+        }
+
         [HttpGet("GetDetailProcessStatistic/{processId}")]
         public ServiceResponse GetDetailProcessStatistic(int processId)
         {
             ServiceResponse result = new ServiceResponse();
             try
             {
-           
+
                 result = _processService.GetDetailProcessStatistic(processId);
 
             }
@@ -472,7 +478,7 @@ namespace WebApi.Controllers
             return result;
         }
 
-  
+
         [HttpPost("AddGroup")]
         public ServiceResponse AddGroup(ProcessGroup processGroup)
         {
@@ -511,8 +517,8 @@ namespace WebApi.Controllers
 
 
             return result;
-        } 
-        
+        }
+
         [HttpPost("AddProcessToGroup")]
         public ServiceResponse AddProcessToGroup(ProcessGroup processGroup)
         {
@@ -531,8 +537,8 @@ namespace WebApi.Controllers
 
 
             return result;
-        } 
-        
+        }
+
         [HttpGet("RemoveFromGroup/{processId}")]
         public ServiceResponse RemoveFromGroup(int processId)
         {
@@ -551,7 +557,7 @@ namespace WebApi.Controllers
 
             return result;
         }
-        
+
         [HttpGet("GetGroupById/{processGroupId}")]
         public ServiceResponse GetGroupById(int processGroupId)
         {
@@ -570,8 +576,8 @@ namespace WebApi.Controllers
 
 
             return result;
-        } 
-        
+        }
+
         [HttpGet("DeleteGroup/{processGroupId}")]
         public ServiceResponse DeleteGroup(int processGroupId)
         {
@@ -609,7 +615,100 @@ namespace WebApi.Controllers
 
             return result;
         }
-        
+
         #endregion group
+
+        [HttpPost("upload"), DisableRequestSizeLimit]
+        public ServiceResponse UploadFile()
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var file = Request.Form.Files[0];
+                string folderName = "Upload";
+                string newPath = Path.Combine("Resources", folderName);
+                if (!Directory.Exists(newPath))
+                {
+                    Directory.CreateDirectory(newPath);
+                }
+                if (file.Length > 0)
+                {
+                    var fileId = Guid.NewGuid();
+                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fileUpload = new FileUpload(fileId, fileName);
+
+                    string fullPath = Path.Combine(newPath, fileUpload.PathName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    result.OnSuccess(fileUpload);
+                    return result;
+                }
+                result.OnError();
+                return result;
+            }
+            catch (System.Exception ex)
+            {
+                result.OnExeption(ex);
+                return result;
+            }
+        }
+
+
+        [HttpPost("download")]
+        public async Task<IActionResult> Download(FileUpload file)
+        {
+            try
+            {
+                if (file == null)
+                return Content("filename is not availble");
+
+            var filename = file.PathName;
+
+            var path = Path.Combine("Resources", "Upload", filename);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(path), Path.GetFileName(path));
+            }
+            catch (System.Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        // Get content type
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        // Get mime types
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+      {
+        {".txt", "text/plain"},
+        {".pdf", "application/pdf"},
+        {".zip", "application/zip"},
+        {".doc", "application/vnd.ms-word"},
+        {".docx", "application/vnd.ms-word"},
+        {".xls", "application/vnd.ms-excel"},
+        {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+        {".png", "image/png"},
+        {".jpg", "image/jpeg"},
+        {".jpeg", "image/jpeg"},
+        {".gif", "image/gif"},
+        {".csv", "text/csv"}
+    };
+        }
     }
 }

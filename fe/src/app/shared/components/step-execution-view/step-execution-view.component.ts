@@ -6,7 +6,8 @@ import { ProcessExeStatusEnum } from '../../../enums/process-exe.enum';
 import { ProcessExecution } from '../../../models/process-exe';
 import { ProcessExecutionService } from '../../../services/process-exe.service';
 import { ProcessService } from '../../../services/process.service';
-import { ConvertMinutes, GetDiffDayMinute, showToast } from '../../fn/common.fn';
+import { checkFileType, ConvertMinutes, GetDiffDayMinute, showToast } from '../../fn/common.fn';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'ngx-step-execution-view',
@@ -334,7 +335,7 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
 
     if (this.step && this.step.StepFields) {
       this.step.StepFields.forEach(x => {
-        if (x.Type == FieldType.ShortText || x.Type == FieldType.LongText
+        if (x.Type == FieldType.ShortText || x.Type == FieldType.LongText || x.Type == FieldType.File
           || x.Type == FieldType.Number || x.Type == FieldType.DateTime
           || x.Type == FieldType.Hour || x.Type == FieldType.Date || x.Type == FieldType.Dropdown) {
 
@@ -347,5 +348,80 @@ export class StepExecutionViewComponent implements OnInit, OnDestroy {
     }
 
     return invalid;
+  }
+
+
+
+  upload(files, field) {
+    if (files.length === 0)
+      return;
+
+    let fileToUpload = <File>files[0];
+    let msg = this.validateUpload(fileToUpload);
+
+    if (msg) {
+      showToast(this.toastrService, msg, "danger");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+
+
+    this.processExeSV.uploadFile(formData).subscribe(res => {
+
+      if (res && res.Data) {
+        field.FieldValue =
+        {
+          Value: {
+            fileName: fileToUpload.name,
+            fileType: fileToUpload.type,
+            fileId: res.Data.FileId,
+            pathName: res.Data.PathName,
+            
+          },
+          StepFieldId: field.StepFieldId
+        }
+
+        showToast(this.toastrService, "Tải file thành công", "success");
+      } else {
+        showToast(this.toastrService, "Tải file thất bại", "danger");
+      }
+    })
+
+  }
+
+  validateUpload(fileToUpload: File) {
+    // 10mb
+    if (fileToUpload.size > 10240000) {
+      return "File có dung lượng vượt quá 10mb";
+    }
+    if (!checkFileType(fileToUpload.name)) {
+      return "Định dạng file không được cho phép";
+    }
+
+
+    return "";
+  }
+
+  download(file) {
+    if (file.pathName) {
+      var fileUpload = {
+        PathName: file.pathName
+      }
+      let fileExtension = checkFileType(file.pathName);
+
+      this.processExeSV.downloadFile(fileUpload, fileExtension)
+        .subscribe(
+          success => {
+            saveAs(success, file.pathName);
+          },
+          err => {
+            showToast(this.toastrService, "Tải xuống file thất bại", "danger");
+
+          }
+        );
+    }
+
   }
 }

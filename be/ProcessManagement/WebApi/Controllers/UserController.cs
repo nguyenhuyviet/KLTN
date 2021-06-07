@@ -65,26 +65,35 @@ namespace WebApi.Controllers
         {
             ServiceResponse result = new ServiceResponse();
 
-            var userInfor = _userService.GetUserInforLogin(userLogin);
-
-            if (userInfor == null)
+            try
             {
-                result.OnError("Tài khoản hoặc mật khẩu không đúng", (int)ResponseCode.AuthenFail);
+
+                var userInfor = _userService.GetUserInforLogin(userLogin);
+
+                if (userInfor == null)
+                {
+                    result.OnError("Tài khoản hoặc mật khẩu không đúng", (int)ResponseCode.AuthenFail);
+                }
+                else if (userInfor.Role == null || userInfor.UserLogin == null)
+                {
+                    result.OnError("Đã có lỗi xảy ra", (int)ResponseCode.AuthenFail);
+                }
+                else
+                {
+                    var token = _userService.GetToken(userInfor);
+
+                    var authenResult = new AuthenModel(userInfor, token);
+
+
+                    result.OnSuccess(authenResult);
+                }
+
+
             }
-            else if (userInfor.Role == null || userInfor.UserLogin == null)
+            catch (Exception ex)
             {
-                result.OnError("Đã có lỗi xảy ra", (int)ResponseCode.AuthenFail);
+                result.OnExeption(ex);
             }
-            else
-            {
-                var token = _userService.GetToken(userInfor);
-
-                var authenResult = new AuthenModel(userInfor, token);
-
-
-                result.OnSuccess(authenResult);
-            }
-
             return result;
         }
 
@@ -98,6 +107,26 @@ namespace WebApi.Controllers
             {
                 var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
                 result = _userService.UpdatePassword(currentUserID, userLogin.OldPassword, userLogin.NewPassword);
+
+            }
+            catch (Exception ex)
+            {
+                result.OnExeption(ex);
+            }
+
+
+            return result;
+        }
+
+        [Authorize]
+        [HttpGet("UpdateFirstTimeLogin")]
+        public ServiceResponse UpdateFirstTimeLogin()
+        {
+            ServiceResponse result = new ServiceResponse();
+            try
+            {
+                var currentUserID = GetCurrentUser.GetUserID(User.Claims.ToList());
+                result = _userService.UpdateFirstTimeLogin(currentUserID);
 
             }
             catch (Exception ex)
@@ -196,7 +225,7 @@ namespace WebApi.Controllers
             ServiceResponse result = new ServiceResponse();
             try
             {
-               // string[] includes = new string[1] { "" };
+                // string[] includes = new string[1] { "" };
                 result = _userService.GetUserGroupInStepSetting(paging);
 
             }
@@ -215,7 +244,7 @@ namespace WebApi.Controllers
             ServiceResponse result = new ServiceResponse();
             try
             {
-               // string[] includes = new string[1] { "" };
+                // string[] includes = new string[1] { "" };
                 result = _userService.GetMultiPagingGroup(paging);
 
             }
@@ -227,7 +256,7 @@ namespace WebApi.Controllers
             return result;
         }
 
-  
+
         [HttpPost("AddGroup")]
         public ServiceResponse AddGroup(UserGroup userGrp)
         {
@@ -246,8 +275,8 @@ namespace WebApi.Controllers
 
 
             return result;
-        }  
-        
+        }
+
 
         [HttpPost("UpdateGroup")]
         public ServiceResponse UpdateGroup(UserGroup userGrp)
@@ -366,7 +395,7 @@ namespace WebApi.Controllers
 
             return result;
         }
-        
+
         [HttpPost("GetMultiPagingInGroup")]
         public ServiceResponse GetMultiPagingInGroup(Paging paging)
         {

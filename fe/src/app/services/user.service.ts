@@ -21,6 +21,20 @@ export class UserService {
     constructor(
         private http: HttpClient,) { }
 
+    changePassword(newPw) {
+        return this.http.post<ServiceResponse>(`${this.processUrl}/UpdatePassword`, newPw, this.httpOptions)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+    
+    updateFirstTimeLogin() {
+        return this.http.get<ServiceResponse>(`${this.processUrl}/UpdateFirstTimeLogin`)
+            .pipe(
+                catchError(this.handleError<ServiceResponse>('', null))
+            );
+    }
+    
 
     getPaging(paging) {
         return this.http.post<ServiceResponse>(`${this.processUrl}/GetMultiPaging`, paging, this.httpOptions)

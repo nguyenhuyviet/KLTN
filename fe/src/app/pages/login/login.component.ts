@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import * as CryptoJS from 'crypto-js';
 import { AuthenticationService } from '../../_services';
+import { encryptPassword } from '../../shared/fn/common.fn';
+import { TransferService } from '../../services/transfer.service';
 
 @Component({
   selector: 'ngx-login',
@@ -30,6 +33,7 @@ export class LoginComponent implements OnInit {
     private authSV: AuthenticationService,
     private route: ActivatedRoute,
     private router: Router,
+    private transferSV: TransferService
   ) { }
 
   ngOnInit(): void {
@@ -50,9 +54,12 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.authSV.login(this.user.Username, this.user.Password).subscribe(data => {
+    let passwordEncrypt = encryptPassword(this.user.Password, CryptoJS).toString();
+
+    this.authSV.login(this.user.Username, passwordEncrypt).subscribe(data => {
       if (data && data.Data) {
         localStorage.setItem('currentUser', JSON.stringify(data.Data));
+
         this.router.navigate([this.returnUrl]);
       } else {
         this.error = data.Message;

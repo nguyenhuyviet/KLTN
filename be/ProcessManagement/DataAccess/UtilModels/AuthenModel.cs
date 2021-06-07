@@ -16,6 +16,7 @@ namespace DataAccess.Models
         public string Role { get; set; }
 
         public string Token { get; set; }
+        public bool IsFirstTimeLogin { get; set; }
 
         public AuthenModel(UserInfor user, string token)
         {
@@ -29,6 +30,13 @@ namespace DataAccess.Models
             this.Role = user.Role.RoleName;
             this.Token = token;
 
+            if (user.UserLogin != null && (user.UserLogin.IsFirstTimeLogin == 1 || user.UserLogin.IsFirstTimeLogin == null))
+            {
+                this.IsFirstTimeLogin = true;
+
+            }
+
+
         }
     }
 
@@ -36,6 +44,6 @@ namespace DataAccess.Models
     {
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
-       
+
     }
 }

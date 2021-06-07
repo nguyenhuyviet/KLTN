@@ -8,6 +8,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import { ProcessExecutionModule } from './process-execution/process-execution.module';
 import { UserSettingModule } from './user-setting/user-setting.module';
+import { ChangePasswordModule } from '../shared/components/change-password/change-password.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { UserSettingModule } from './user-setting/user-setting.module';
     ECommerceModule,
     MiscellaneousModule,
     ProcessExecutionModule,
-    UserSettingModule
+    UserSettingModule,
+    ChangePasswordModule
   ],
   declarations: [
     PagesComponent,

@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NbDialogService, NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
 
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
@@ -41,17 +41,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Hồ sơ',value: UserActionNav.Profile }, { title: 'Đổi mật khẩu' ,value: UserActionNav.ChangePassword}, { title: 'Đăng xuất' ,value: UserActionNav.Logout} ];
+  userMenu = [{ title: 'Hồ sơ', value: UserActionNav.Profile }, { title: 'Đổi mật khẩu', value: UserActionNav.ChangePassword }, { title: 'Đăng xuất', value: UserActionNav.Logout }];
+
+  @ViewChild('dialog') dialog;
+  isOpenDialog = false;
 
   constructor(private sidebarService: NbSidebarService,
-              private menuService: NbMenuService,
-              private themeService: NbThemeService,
-              private userService: UserData,
-              private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService,
-              private authenticationService: AuthenticationService,
-              private router: Router
-              ) {
+    private menuService: NbMenuService,
+    private themeService: NbThemeService,
+    private dialogService: NbDialogService,
+    private layoutService: LayoutService,
+    private breakpointService: NbMediaBreakpointsService,
+    private authenticationService: AuthenticationService,
+    private router: Router
+  ) {
   }
 
   ngOnInit() {
@@ -75,20 +78,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(themeName => this.currentTheme = themeName);
 
 
-      this.menuService.onItemClick()
+    this.menuService.onItemClick()
       .pipe(
         filter(({ tag }) => tag === 'my-context-menu'),
         map(item => item.item)
       )
-      .subscribe(title => 
-          {
-            if(title[`value`] == 3){
-              this.authenticationService.logout();
-              this.router.navigateByUrl('auth');
-            }
+      .subscribe(title => {
+        if (title[`value`] == 3) {
+          this.authenticationService.logout();
+          this.router.navigateByUrl('auth');
+        } else if (title[`value`] == 2) {
+          if (this.dialog) {
+            this.dialogService.open(this.dialog);
           }
-        );
-      ;
+        }
+      }
+      );
+    ;
   }
 
   ngOnDestroy() {
@@ -110,5 +116,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
     return false;
+  }
+
+  closeDialog(ref){
+    ref.close();
+    this.isOpenDialog = false;
   }
 }

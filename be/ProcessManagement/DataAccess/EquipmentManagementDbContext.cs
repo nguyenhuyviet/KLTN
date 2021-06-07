@@ -7,16 +7,16 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataAccess
 {
-        public partial class ProcessManagementDbContext : DbContext
+    public partial class ProcessManagementDbContext : DbContext
+    {
+        public ProcessManagementDbContext()
         {
-            public ProcessManagementDbContext()
-            {
-            }
+        }
 
-            public ProcessManagementDbContext(DbContextOptions<ProcessManagementDbContext> options)
-                : base(options)
-            {
-            }
+        public ProcessManagementDbContext(DbContextOptions<ProcessManagementDbContext> options)
+            : base(options)
+        {
+        }
 
 
         public virtual DbSet<AssigneeUser> AssigneeUsers { get; set; }
@@ -614,10 +614,13 @@ namespace DataAccess
 
                 entity.Property(e => e.IsFirstTimeLogin).HasColumnType("bit(1)");
 
-                entity.Property(e => e.Password)
-                    .HasColumnType("varchar(255)")
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_bin");
+                entity.Property(e => e.PasswordHash)
+                .HasMaxLength(64)
+                .IsFixedLength(true);
+
+                entity.Property(e => e.PasswordSalt)
+                    .HasMaxLength(128)
+                    .IsFixedLength(true);
 
                 entity.Property(e => e.Username)
                     .HasColumnType("varchar(50)")

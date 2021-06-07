@@ -1,4 +1,5 @@
-﻿using DataAccess.Enums;
+﻿using BusinessAccess.Helpers;
+using DataAccess.Enums;
 using DataAccess.Infrastructure;
 using DataAccess.Models;
 using DataAccess.UtilModels;
@@ -28,6 +29,7 @@ namespace BusinessAccess.Services
         string GetToken(UserInfor userInfor);
         UserInfor GetUserInforLogin(UserLogin userLogin);
         ServiceResponse UpdatePassword(int currentUserID, string oldPw, string newPw);
+        ServiceResponse UpdateFirstTimeLogin(int currentUserID);
         ServiceResponse AddMulti(List<UserLogin> user, int currentUserID, string currentUsername);
         ServiceResponse GetInStepSetting(Paging paging, string[] includes = null);
 
@@ -250,15 +252,25 @@ namespace BusinessAccess.Services
         {
             var userInfor = new UserInfor();
 
-            var user = _userLoginRepository.GetSingleByCondition(x => x.Username == userLogin.Username && x.Password == userLogin.Password);
+            var user = _userLoginRepository.GetSingleByCondition(x => x.Username == userLogin.Username);
             if (user == null)
             {
                 return null;
             }
             else
             {
-                string[] includes = new string[1] { "Role" };
-                userInfor = _userRepository.GetSingleByCondition(x => x.UserId == user.UserId, includes);
+                var passwordDecrypt = CommonUltils.DecryptStringAES(userLogin.Password);
+                var validPw = CommonUltils.VerifyPasswordHash(passwordDecrypt, user.PasswordHash, user.PasswordSalt);
+                if (validPw == false)
+                {
+                    return null;
+                }
+                else
+                {
+
+                    string[] includes = new string[1] { "Role" };
+                    userInfor = _userRepository.GetSingleByCondition(x => x.UserId == user.UserId, includes);
+                }
             }
 
             return userInfor;
@@ -269,60 +281,63 @@ namespace BusinessAccess.Services
             unitOfWork.Commit();
 
         }
-        // private helper methods
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            if (password == null) throw new ArgumentNullException("password");
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
-        {
-            if (password == null) throw new ArgumentNullException("password");
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
-            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != storedHash[i]) return false;
-                }
-            }
-
-            return true;
-        }
 
         public ServiceResponse UpdatePassword(int currentUserID, string oldPw, string newPw)
         {
             ServiceResponse result = new ServiceResponse();
+
             var userLogin = _userLoginRepository.GetSingleById(currentUserID);
             if (userLogin != null)
             {
-                if (userLogin.Password.Equals(oldPw))
+                var oldPwDecrypt = CommonUltils.DecryptStringAES(oldPw);
+                var newPwDecrypt = CommonUltils.DecryptStringAES(newPw);
+
+                var validPw = CommonUltils.VerifyPasswordHash(oldPwDecrypt, userLogin.PasswordHash, userLogin.PasswordSalt);
+
+                if (validPw)
                 {
-                    userLogin.Password = newPw;
+                    userLogin.Password = newPwDecrypt;
+                    CommonUltils.CreatePasswordHash(newPwDecrypt, out byte[] passwordHash, out byte[] passwordSalt);
+                    userLogin.PasswordHash = passwordHash;
+                    userLogin.PasswordSalt = passwordSalt;
+                    userLogin.IsFirstTimeLogin = 1;
                     _userLoginRepository.Update(userLogin);
+
                     this.Save();
                     result.OnSuccess(null);
                 }
                 else
                 {
-                    result.OnError("Old password incorrect", (int)ResponseCode.SomeError);
+                    result.OnError("Old password incorrect", 10);
                 }
             }
             else
             {
-                result.OnError("Cannot find User", (int)ResponseCode.SomeError);
+                result.OnError("Cannot find User", 11);
+            }
+
+            return result;
+
+        }
+
+        public ServiceResponse UpdateFirstTimeLogin(int currentUserID)
+        {
+            ServiceResponse result = new ServiceResponse();
+
+            var userLogin = _userLoginRepository.GetSingleById(currentUserID);
+            if (userLogin != null)
+            {
+
+                userLogin.IsFirstTimeLogin = 0;
+                _userLoginRepository.Update(userLogin);
+
+                this.Save();
+                result.OnSuccess(null);
+
+            }
+            else
+            {
+                result.OnError("Cannot find User", 11);
             }
 
             return result;

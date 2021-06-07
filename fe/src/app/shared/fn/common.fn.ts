@@ -63,3 +63,13 @@ export function checkFileType(fileName) {
     return "text/csv";
   }
 }
+
+
+export function encryptPassword(val, CryptoJS) {
+  let key = CryptoJS.enc.Utf8.parse('b14ca5898a4e4133bbce2ea2315a1916');
+  let iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+  let encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(val), key,
+    { keySize: 128 / 8, iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+
+  return encrypted;
+}
